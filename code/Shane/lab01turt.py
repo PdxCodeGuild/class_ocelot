@@ -1,9 +1,10 @@
 from turtle import *
 
 def human():
+    #from shane's lab01
     penup()
 
-    goto(75,180)
+    goto(175,135)
 
     pendown()
 
