@@ -1,5 +1,4 @@
 from turtle import *
-import lab01_
 speed(0)
 fillcolor('brown')
 begin_fill()
