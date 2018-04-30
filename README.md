@@ -3,6 +3,19 @@
 python fullstack course starting April 4, 2018
 
 
+- Matthew Cooper
+  - matthew@pdxcodeguild.com
+- Tim Wilson
+  - timwilsonr@gmail.com
+- Nathan Kinney
+  - nathankeithkinney@gmail.com
+- Jon Book
+  - jbook85@gmail.com
+- Steven Brown
+  - stevenrobertbrown.1@gmail.com
+- Shane Cheek
+  - unitedideas@gmail.com
+
 
 ## Introductory Questions
 
