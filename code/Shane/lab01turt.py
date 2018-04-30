@@ -7,9 +7,11 @@ def human():
 
     pendown()
 
+    setheading(0)
+
     for i in range(180):
-    forward (1)
-    left(2)
+        forward (1)
+        left(2)
 
     setheading(270)
 
@@ -44,3 +46,5 @@ def human():
     forward (90)
 
     backward(90)
+
+human()
