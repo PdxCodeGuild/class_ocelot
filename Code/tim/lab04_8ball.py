@@ -21,12 +21,11 @@ My sources say no
 Outlook not so good
 Very doubtful""".split('\n')
 
-
-
-
-name = input('What is your name? ')
+print('Welcome to Magic Eight Ball, ' + input('What is your name? > '))
 
 while True:
-    input('What would you like to know ' + name + '? ')
+    question = input('What is your question? > ')
+    if question == 'I\'m done with you':
+        print('Fine! I don\' like you either!')
+        break
     print(random.choice(choices))
-
