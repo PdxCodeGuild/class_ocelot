@@ -7,11 +7,11 @@ user_response_digits = int(input('How many digits would you like in the password
 password= []
 
 for i in range(user_response_letters):
-    password += (random.choice(string.ascii_letters))
+    password.append(random.choice(string.ascii_letters))
 
 for i in range(user_response_digits):
     password += (random.choice(string.digits))
 random.shuffle(password)
-password= ''.join(password)
+password = ''.join(password)
 print(password)
 
