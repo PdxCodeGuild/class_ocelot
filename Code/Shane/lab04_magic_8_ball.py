@@ -23,19 +23,18 @@ out_list = ['It is certain',
 'Outlook not so good',
 'Very doubtful']
 
+
 while True:
 
     input('...Ask any yes or no question...\n')
 
     print(random.choice(out_list))
 
-    play = input('Would you like to play again? yes or no\n')
-
+    while True:
+        play = input('Would you like to play again? yes or no\n')
+        if play == 'yes' or play == 'no':
+            break
     if play == 'no':
         break
-
-    #while play != 'yes' and play != 'no':
-        # play = input('Would you like to play again? yes or no\n')
-
 
 
