@@ -30,11 +30,13 @@ elif user_selection == 'Scissors' and computer_selection == 'Paper':
 
 
 # Display Results
+print()
 print('I shoot ' + computer_selection + '...')
 print('You shoot ' + user_selection + '...')
 print()
-print(play_result + '!')
-
+if play_result != 'Tie':
+    print('You ' + play_result + '!')
+else: print(play_result + '!')
 
 
 
