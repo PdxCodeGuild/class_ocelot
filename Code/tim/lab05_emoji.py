@@ -19,6 +19,6 @@ while i < 10:
     p_eyes = f'{random.choice(eyes)}\t{random.choice(eyes)}\t{random.choice(eyes)}'
     p_noses = f'{random.choice(noses)}\t{random.choice(noses)}\t{random.choice(noses)}'
     p_mouths = f'{random.choice(mouths)}\t{random.choice(mouths)}\t{random.choice(mouths)}'
-    print(p_eyes + '\n' + p_noses + '\n' + p_mouths)
+    print(p_eyes + '\n' + p_noses + '\n' + p_mouths + '\n')
     time.sleep(1)
     i += 1
