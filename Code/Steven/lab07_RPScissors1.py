@@ -30,9 +30,11 @@ elif user_selection == 'Scissors' and computer_selection == 'Paper':
 
 
 # Display Results
-print(user_selection)
-print(computer_selection)
-print(play_result)
+print('I shoot ' + computer_selection + '...')
+print('You shoot ' + user_selection + '...')
+print()
+print(play_result + '!')
+
 
 
 
