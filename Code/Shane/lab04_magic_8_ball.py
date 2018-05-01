@@ -23,7 +23,6 @@ out_list = ['It is certain',
 'Outlook not so good',
 'Very doubtful']
 
-
 while True:
 
     input('...Ask any yes or no question...\n')
@@ -36,5 +35,3 @@ while True:
             break
     if play == 'no':
         break
-
-
