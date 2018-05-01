@@ -1,6 +1,6 @@
 import random
 
-print('Welcome')
+print('Welcome\n')
 
 out_list = ['It is certain',
 'It is decidedly so',
@@ -33,8 +33,9 @@ while play == 'yes':
 
     play = input('Would you like to play again? yes or no\n')
 
+    while play != 'yes' and play != 'no':
 
-
+        play = input('Would you like to play again? yes or no\n')
 
 
 
