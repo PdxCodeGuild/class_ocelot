@@ -1,7 +1,7 @@
 import random
 eyes_list = [':', ';']
 nose_list = ['<', '>']
-mouth_list = ['o', 'O']
+mouth_list = ["J",")","(","|","P","]","[","D"]
 
 complete = 0
 while complete <= 5:
