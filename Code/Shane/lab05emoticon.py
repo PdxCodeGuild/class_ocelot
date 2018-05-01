@@ -1,7 +1,7 @@
 import random
 
 eye_lst = [":", ";", "=", "}","8"]
-nose_lst = [">","-","^","{","~","=="]
+nose_lst = ["==",">","-","^","{","~"]
 mouth_lst = ["J",")","(","|","P","]","[","D"]
 
 count = input("How many faces do you want?\n")
