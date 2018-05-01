@@ -1,4 +1,4 @@
-import random, fnmatch
+import random
 
 positive = """It is certain
 It is decidedly so
