@@ -12,5 +12,6 @@ count = int(input('how many puncuation?\n'))
 for i in range(count):
     pword += random.choice(string.punctuation)
 print(pword)
-outword = random.shuffle(pword)
-print(outword)
+random.shuffle(pword)
+pword = "".join(pword)
+print(pword)
