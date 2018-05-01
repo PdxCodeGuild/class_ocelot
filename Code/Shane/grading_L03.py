@@ -1,6 +1,6 @@
 import math
 
-"""def grading_v1(score):
+def grading_v1(score):
     while score not in range(0,101):
         score = int(input("What's your score please?\n"))
     if score in range(90,101):
@@ -14,7 +14,7 @@ import math
     else:
         print("F")
 
-gradingv1(int(input("What's your test (0-100) score please?\n")))"""
+gradingv1(int(input("What's your test (0-100) score please?\n")))
 
 def roundup(num):
     if num == 100:
