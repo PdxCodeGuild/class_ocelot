@@ -2,7 +2,7 @@ import random
 
 name = input('What is your name?')
 
-print('give me on moment to find your fate ')
+print('give me one moment to find your fate ')
 
 output_list = ['It is certain','It is decidedly so', 'Without a doubt', 'Yes definitely']
 
