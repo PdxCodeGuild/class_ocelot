@@ -23,4 +23,4 @@ if h_ans in rps:
     else:
         print('Scissors cuts paper, you win')
 else:
-    print(f'{c_ans} beats {h_ans} because you didn\'t follow the instructions, ya hoser')
+    print(f'you didn\'t follow the instructions, you lose')
