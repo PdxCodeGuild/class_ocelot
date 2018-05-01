@@ -22,10 +22,7 @@ counter1 = 0
 while counter1 < 5:
     # mouth select
     emo_mouth = random.choice(emo_mouths)
-
-
     print(emo_eyes + emo_nose + emo_mouth + emo_beard)
-
     counter1 += 1
 
 print()
