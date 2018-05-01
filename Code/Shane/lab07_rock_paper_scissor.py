@@ -1,9 +1,7 @@
 
 import random
 
-cases = {'paper' : ['rock', 'scissor'], "rock" : ['scissor','paper'], "scissor": ['paper', 'rock']}
-
-
+cases = {'paper': ['rock', 'scissor'], "rock": ['scissor', 'paper'], "scissor": ['paper', 'rock']}
 
 while True:
     human = input("Choose... rock, paper or scissor\n").lower()
