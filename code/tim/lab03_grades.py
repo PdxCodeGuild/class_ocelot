@@ -3,7 +3,7 @@ while True:
         answer = float(input('What did you get on the test? > '))
         break
     except ValueError:
-        print('Enter as Number')
+        print('LIES! Try again.')
         continue
 
 if answer > 100:
