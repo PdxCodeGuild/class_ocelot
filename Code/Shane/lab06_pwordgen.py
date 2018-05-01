@@ -1,14 +1,17 @@
 import random
 import string
 
-count = int(input("How long should the password be: \n"))
-print(count)
-password = ""
-
-selection = string.ascii_letters + string.digits + string.punctuation
-
-while count > 0:
-	password += random.choice(selection)
-	count -= 1
-
-print(password)
+count = int(input('lowercase?\n'))
+pword = []
+for i in range(count):
+    pword.append(random.choice(string.ascii_lowercase))
+count = int(input('how many upper?\n'))
+for i in range(count):
+    pword.append(random.choice(string.ascii_uppercase))
+count = int(input('how many puncuation?\n'))
+for i in range(count):
+    pword.append(random.choice(string.punctuation))
+print(pword)
+random.shuffle(pword)
+pword = "".join(pword)
+print(pword)
