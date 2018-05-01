@@ -35,9 +35,10 @@ while True:
         print('Fine! I don\'t like you either!')
         break
     response = response.split(' ')
+    l = None
     for word in response:
         if word in neg_keywords:
             l = negative
-    if not l:
+    if l is None:
         l = random.choice(choices)
     print(random.choice(l))
