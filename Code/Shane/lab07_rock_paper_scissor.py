@@ -12,7 +12,7 @@ while True:
 
     if human == computer:
         print("you tied")
-    elif human == computer[0]:
+    elif human == cases[computer][0]:
         print("you lose")
     else:
         print('you win')
