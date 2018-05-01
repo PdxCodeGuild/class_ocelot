@@ -1,5 +1,13 @@
 from turtle import *
 
+
+
+
+from ..Nathan import LabOne
+
+
+
+
 def human():
     #from shane's lab01
     penup()
@@ -49,3 +57,5 @@ def human():
     backward(90)
 
 human()
+
+
