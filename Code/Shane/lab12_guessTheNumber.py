@@ -17,7 +17,7 @@ how_big = int(input("How big is this guessing game?\n:"))
 answer = random.choice(range(1, how_big+1))
 
 # here for sanity check
-print(answer)
+# print(answer)
 
 guess_lst = []
 
@@ -31,9 +31,9 @@ while True:
 
     hot_or_cold.append(abs(guess - answer))
 
-    print(guess_lst)
+    # print(guess_lst)
     # sanity check
-    print(hot_or_cold)
+    # print(hot_or_cold)
 
     if answer == guess:
         print(f"You win, the answer was {answer}.\nYou answered in {len(guess_lst)} tries\n"
