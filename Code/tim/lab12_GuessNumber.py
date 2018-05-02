@@ -32,7 +32,7 @@ def DisplayHeatMap(guesses, diffs):
     print(p)
 
 target = random.randrange(1,101)
-print('Guess a number 1 to 100. You get 5 guesses and 2 hint (type "hint").')
+print('Guess a number 1 to 100. You get 10 guesses and 2 hint (type "hint").')
 
 for i in range(10):
     guess = input(f'Guess #{i + 1}: ')
