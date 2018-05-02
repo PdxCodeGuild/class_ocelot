@@ -37,6 +37,7 @@ print('Guess a number 1 to 100. You get 5 guesses and 2 hint (type "hint").')
 for i in range(10):
     guess = input(f'Guess #{i + 1}: ')
     if guess.lower() == 'hint':
+        x = 1
         # if hints == 0:
         #     print('You have no more hints remaining')
         #     i -= 1
