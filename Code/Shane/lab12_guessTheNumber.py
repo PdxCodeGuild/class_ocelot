@@ -28,6 +28,8 @@ while True:
 
     guess = int(input("guess a number between 1 and 10\n:"))
 
+    print(f"Guess: #{len(guess_lst)+1}")
+
     guess_lst.append(guess)
 
     hot_or_cold.append(abs(guess - answer))
@@ -54,7 +56,6 @@ while True:
             if input("N to stop... Enter to play again.\n").upper() == "N":
                 break
             else:
-
                 how_big = int(input("How big is this guessing game? 1 - ?\n:"))
 
                 answer = random.choice(range(1, how_big + 1))
