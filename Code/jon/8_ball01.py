@@ -1,4 +1,4 @@
-import random
+ import random
 
 choices = """It is certain
 It is decidedly so
