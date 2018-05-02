@@ -26,8 +26,6 @@ def DisplayHeatMap(guesses, diffs):
         if i == 0:
             p = f'{guesses[i]}\n'
         else:
-            print(diffs[i])
-            print(diffs[i - 1])
             p += f'{guesses[i]} {diffs[i] < diffs[i - 1]}\n'.replace('True', 'Warmer').replace('False', 'Colder')
     print(p)
 
