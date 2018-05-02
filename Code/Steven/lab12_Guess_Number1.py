@@ -12,10 +12,10 @@ print(num_target)
 while user_guess != num_target:
     user_guess = int(input('\tENTER DEACTIVATION CODE >'))
     user_guess_count = user_guess_count + 1
-    print(f'{10-user_guess_count} attempts remaining...')
+    print(f'\nWrong! {10-user_guess_count} attempts remaining until self-destruct...\n')
 
 
 # Indicate result
 
-print(f'You guessed the number in {user_guess_count} tries!')
+print(f'Self-destruct DEACTIVATED. \n\t  You took {user_guess_count} tries.')
 
