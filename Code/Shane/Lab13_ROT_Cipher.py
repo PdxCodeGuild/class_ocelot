@@ -1,7 +1,7 @@
 import string
 
 def move_right(moves):
-    shuffled_lst = list((string.ascii_lowercase))
+    shuffled_lst = list(string.ascii_lowercase)
     for i in range(n_rot):
         shuffled_lst.insert(0, shuffled_lst[-1])
         del shuffled_lst[-1]
@@ -14,12 +14,12 @@ encode = input("input something to encode")
 
 alpha = move_right(n_rot)
 
-reg_lst = list((string.ascii_lowercase))
+reg_lst = list(string.ascii_lowercase)
 
 out = []
 
 for l in encode:
     out.append(reg_lst[alpha.index(l)])
-print(out)
+print(''.join(out))
 
 
