@@ -1,12 +1,11 @@
 import random
 
-# def change(o, p):
-#
-#     return(due)
-
-#randrange(self, start, stop=None, step=1, _int=int)
-
-pennies = int(input('How many pennies? > '))
+pennies = random.randrange(500,2000)
+paid = float(input('You owe $' + ('%.2f' % (pennies / 100)) + ', how much are you paying? > '))
+pennies = paid * 100 - pennies
+if pennies < 0:
+    print('You\'ve underpaid, no change for you.')
+    exit()
 
 dollars = pennies // 100
 pennies -= dollars * 100
