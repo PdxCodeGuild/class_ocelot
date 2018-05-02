@@ -25,8 +25,13 @@ remainder = remainder % 5
 pennies_needed = remainder // 1
 
 
-print(f'{name}, you will need, {quarters_needed} Quarters, {dimes_needed} Dimes, {nickels_needed} Nickels and {pennies_needed} Pennies')
+print(f'{name} the total amount of coins needed is {quarters_needed + dimes_needed + nickels_needed + pennies_needed}\nyou will need\n{quarters_needed} Quarters\n{dimes_needed} Dimes\n{nickels_needed} Nickels\n{pennies_needed} Pennies')
 
+if value_1 > 10000:
+    print('Go out to a nice dinner')
+
+else:
+    print('Save up and eat top Ramen')
 
 
 
