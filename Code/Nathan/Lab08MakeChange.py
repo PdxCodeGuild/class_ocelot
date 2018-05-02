@@ -25,7 +25,7 @@ remainder = remainder % 5
 pennies_needed = remainder // 1
 
 
-print(f'{name} You will need {quarters_needed} Quarters {dimes_needed} Dimes {nickels_needed} Nickels {pennies_needed} Pennies')
+print(f'{name}, You will need, {quarters_needed} Quarters, {dimes_needed} Dimes, {nickels_needed} Nickels and {pennies_needed} Pennies')
 
 
 
