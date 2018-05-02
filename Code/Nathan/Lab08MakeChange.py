@@ -31,7 +31,7 @@ if value_1 > 10000:
     print('Go out to a nice dinner')
 
 else:
-    print('Save up and eat top Ramen')
+    print('Save up and eat Top Ramen')
 
 
 
