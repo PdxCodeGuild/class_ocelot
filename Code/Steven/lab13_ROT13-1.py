@@ -6,8 +6,9 @@ import string
 text_in = input('Enter text to encode. \n>')
 
 for x in range(len(text_in)):
-    text_in_num = ord(text_in[x])
-    print(text_in_num)
+    text_in_num = int(ord(text_in[x]))
+    text_in_num = text_in_num + 13
+    print(chr(text_in_num), end="")
 
 
 # convert to number
