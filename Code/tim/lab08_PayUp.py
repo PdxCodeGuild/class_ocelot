@@ -7,6 +7,8 @@ if pennies < 0:
     print('You\'ve underpaid, no change for you.')
     exit()
 
+pennies = int(pennies)
+
 dollars = pennies // 100
 pennies -= dollars * 100
 
