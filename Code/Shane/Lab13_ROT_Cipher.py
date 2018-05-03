@@ -21,5 +21,3 @@ out = []
 for l in encode:
     out.append(reg_lst[alpha.index(l)])
 print(''.join(out))
-
-
