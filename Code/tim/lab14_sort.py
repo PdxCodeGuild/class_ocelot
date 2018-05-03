@@ -24,18 +24,31 @@ def is_sorted(lst):
     return True
 
 
-lst = random_list(8)
-saved_list = lst.copy()
+def accuracy(lst):
+    y = 0
+    for i in range(1, len(lst)):
+        if lst[i - 1] <= lst[i]:
+            y += 1
+    return y / len(lst)
 
-shuffle(lst)
 
-print(saved_list)
-print(lst)
-
+lst = random_list(20)
 i = 0
-while not is_sorted(lst):
+b_acc = 0
+b_lst = lst.copy()
+while not is_sorted(b_lst):
+    lst = b_lst.copy()
+    r1 = random.randrange(len(b_lst))
+    r2 = random.randrange(len(b_lst))
+
+    t = lst[r1]
+    lst[r1] = lst[r2]
+    lst[r2] = t
+
+    t_acc = accuracy(lst)
+    if t_acc > b_acc:
+        b_lst = lst.copy()
     i += 1
-    shuffle(lst)
 
 print(f'That took {i} tries')
 
