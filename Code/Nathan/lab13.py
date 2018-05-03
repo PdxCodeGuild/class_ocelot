@@ -1,13 +1,17 @@
-import string
-text_in = input('Enter text to encrypt\n')
+text_in = ''
 
-#for x in string.ascii_lowercase:
-#print(ord(x))
-
-for x in range(len(text_in)):
-   text_in_num = ord(text_in[x])
-   print(text_in_num)
+while text_in != '.':
+    encoding = int(input('\nSelect distance moved (1-25) >'))
+    text_selected = input('Enter text to encode. \n> ')
 
 
-#for char in text_in:
-#    print(char)
+    for x in range(len(text_in)):
+        text_in_num = int(ord(text_selected[x]))
+        text_in_num = text_in_num + encoding
+
+        if text_in_num > 26:
+            text_in_num -= 26
+
+        print(chr(text_in_num), end="")
+
+
