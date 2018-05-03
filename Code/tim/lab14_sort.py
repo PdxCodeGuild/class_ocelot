@@ -58,4 +58,3 @@ while not is_sorted(b_lst):
     i += 1
 
 print(f'That took {i} tries')
-
