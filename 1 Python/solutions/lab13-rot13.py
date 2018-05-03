@@ -24,7 +24,7 @@ def rot13(text):
 def rotn(text, n):
     alphabet = 'abcdefghijklmnopqrstuvwxyz'
     output = ''
-    for char in text:
+    for char in text:8
         index = alphabet.find(char)
         index += n
 

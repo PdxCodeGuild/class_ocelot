@@ -6,12 +6,14 @@ while text_in != '.':
 
 
     for x in range(len(text_in)):
-        text_in_num = int(ord(text_selected[x]))
+        text_in_num = ord(text_selected[x]))
         text_in_num = text_in_num + encoding
 
-        if text_in_num > 26:
+        if text_in_num > ord('z'):
             text_in_num -= 26
 
         print(chr(text_in_num), end="")
 
 
+if input == none:
+    input = 13
