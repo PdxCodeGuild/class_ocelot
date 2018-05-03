@@ -25,26 +25,6 @@ def deep_copy(grid):
 # def grid_test1(x,y):
 #
 
-grid = []
-for j in range(height):
-    grid.append([])
-    for i in range(width):
-        grid[j].append(random.choice([True, False]))
-        # grid[j].append([True])
-
-
-
-# The Grid writer
-for i in range(10):
-    print_grid(grid)
-
-    # for j in range(50):
-    #     random_j = random.randint(0, height-1)
-    #     random_i = random.randint(0, width-1)
-    #     grid[random_j][random_i] = True #random.choice([True, False])
-
-    print()
-
 
 
 
@@ -62,9 +42,31 @@ def count_alive(grid, i, j):
     count = 0
     if check_alive(grid, i-1, j-1):
         count += 1
+    if check_alive(grid, i, j-1):
+        count += 1
+    if check_alive(grid, i+1, j-1):
+        count += 1
+
     if check_alive(grid, i-1, j):
         count += 1
+
+  # You are here
+
+    if check_alive(grid, i+1, j):
+        count += 1
+
+    if check_alive(grid, i-1, j+1):
+        count += 1
+    if check_alive(grid, i, j+1):
+        count += 1
+    if check_alive(grid, i+1, j+1):
+        count += 1
+
+
+
+
     # ...
+
     return count
 
 
@@ -73,10 +75,48 @@ def next_state(old_grid):
     for j in range(height):
         new_grid.append([])
         for i in range(width):
-            # what is the new value for i, j?
+            old_value = old_grid[j][i]
             n_alive = count_alive(grid, i, j)
-            # write the rules
-            # set the new value for i, j
+            new_value = False
+            # using the rules, figure out what new_value is
+
+
+            new_grid[j].append(new_value)
+
+
+    return new_grid
+
+
+
+
+grid = []
+for j in range(height):
+    grid.append([])
+    for i in range(width):
+        grid[j].append(random.choice([True, False]))
+        # grid[j].append([True])
+
+
+
+import time
+
+# The Grid writer
+for i in range(10):
+
+
+
+    print_grid(grid)
+
+    grid = next_state(grid)
+    #time.sleep(1)
+    input()
+
+    # for j in range(50):
+    #     random_j = random.randint(0, height-1)
+    #     random_i = random.randint(0, width-1)
+    #     grid[random_j][random_i] = True #random.choice([True, False])
+
+    print()
 
 
 
