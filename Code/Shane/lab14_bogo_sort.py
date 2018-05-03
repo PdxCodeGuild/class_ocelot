@@ -23,14 +23,22 @@ def sorted(n_list):
 
 def bogo(n_lst):
     i = 0
-    while not sorted:
+    while not sorted(n_lst):
         i += 1
         shuffle(n_lst)
-    print (i)
+    print(i)
 
 n_lst = random_list(length)
-print(n_lst)
-shuffle(n_lst)
-print(n_lst)
-sorted(n_lst)
 bogo(n_lst)
+print(n_lst)
+
+
+
+
+
+
+
+
+
+
+
