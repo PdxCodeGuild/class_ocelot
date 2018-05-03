@@ -1,14 +1,16 @@
-text_in = ''
-
-# Select encoding rotation (1-25).
-
 import string
+
+text_in = ''
 
 
 # Enter text to encode.
-
 while text_in != '.':
-    encoding = int(input('\nSelect encoding rotation (1-25) >'))
+    # Select encoding num (1-25, 'Return' for default 13)
+    encoding_val = int(input('Select encoding rotation from 1 to 25 \n\t(Hit \'Return\' only for 13, period to quit.) >'))
+    print(encoding_val)
+    if encoding_val > 0:
+        encoding_val = 13
+
     text_in = input('Enter text to encode. \n>')
 
 
@@ -16,14 +18,18 @@ while text_in != '.':
         text_in_num = int(ord(text_in[x]))
 
         # Adds the rotation value to the ascii num
-        text_in_num = text_in_num + encoding
+        text_in_num = text_in_num + encoding_val
 
         # Cycles text_nums > 26 to # 1, etc.
         if text_in_num > 26:
             text_in_num -= 26
 
         # Prints entire output string to single line.
+        # print(text_in_num, ' ', end="")
         print(chr(text_in_num), end="")
+    print()
+
+
 
 # convert to number
 
