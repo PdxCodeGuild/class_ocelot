@@ -32,25 +32,18 @@ def accuracy(lst):
 
 
 lst = random_list(14)
+
 i = 0
 b_acc = 0
 b_lst = lst.copy()
 while not is_sorted(b_lst):
-    # make temp list 'lst' and swap 2 random places
     t_lst = b_lst.copy()
     r1 = random.randrange(len(t_lst))
     r2 = random.randrange(len(t_lst))
-
     t_lst[r1] = b_lst[r2]
     t_lst[r2] = b_lst[r1]
 
-    print(t_lst)
-    print(b_lst)
-
-    # check accuracy of new temp list
     t_acc = accuracy(t_lst)
-    print(r1, r2, t_acc)
-
     if t_acc >= b_acc:
         b_acc = t_acc
         b_lst = t_lst.copy()
