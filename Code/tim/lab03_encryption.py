@@ -1,8 +1,8 @@
 import string
 import random
 
-o_list = list(string.ascii_letters + string.punctuation + string.digits)
-s_list = list(string.ascii_letters + string.punctuation + string.digits)
+o_list = list(string.ascii_letters + string.punctuation + string.digits + ' ')
+s_list = list(string.ascii_letters + string.punctuation + string.digits + ' ')
 random.shuffle(s_list)
 
 e_dict = {}
@@ -19,11 +19,7 @@ while True:
         break
     else:
         for c in str:
-            if c == ' ':
-                p_e += ' '
-                p_d += ' '
-            else:
-                p_e += e_dict[c]
-                p_d += d_dict[c]
+            p_e += e_dict[c]
+            p_d += d_dict[c]
     print(f'Encrypted > {p_e}')
     print(f'Decrypted > {p_d}')
