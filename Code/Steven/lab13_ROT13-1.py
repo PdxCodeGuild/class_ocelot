@@ -15,7 +15,7 @@ while text_in != '.':
 
 
     for x in range(len(text_in)):
-        text_in_num = int(ord(text_in[x]))
+        text_in_num = ord(text_in[x]))
 
         # Adds the rotation value to the ascii num
         text_in_num = text_in_num + encoding_val
