@@ -53,6 +53,7 @@ def draw_rand_sq(grid):
     grid[i + 3][j + 3] = ''
     grid[i + 1][j + 2] = ''
     grid[i + 3][j + 2] = ''
+    grid[i + 3][j + 3] = False
 
 def draw_rand_streak(grid):
     vh = random.randrange(2)
@@ -145,9 +146,14 @@ while n_alive != 0:
     r_ct += 1
     if r_ct == 25:
         draw_rand_sq(grid)
+        print_grid(grid)
+        time.sleep(1)
     elif r_ct == 50:
         r_ct = 0
         draw_rand_streak(grid)
-    print_grid(grid)
+        print_grid(grid)
+        time.sleep(1)
+    else:
+        print_grid(grid)
+        time.sleep(.3)
     print('')
-    time.sleep(.3)
