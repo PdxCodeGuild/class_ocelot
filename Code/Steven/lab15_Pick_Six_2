@@ -1,0 +1,32 @@
+import random
+
+try_count = 0
+cost_count = 0
+ticket_cost = 5
+bank_account = 10000
+payout_amount = 10000
+
+lotto_num_count = int(input('Enter quantity of lotto numbers from 1 to 7 \n >'))
+
+# Define winning number.
+num_win = []
+for i in range(lotto_num_count):
+    num_win.append(random.randint(1, 99))
+
+# Buy lottery tickets.
+num_try = []
+
+while num_try != num_win:
+    num_try = []
+    try_count += 1
+    bank_account -= ticket_cost
+    for i in range(lotto_num_count):
+        num_try.append(random.randint(1, 99))
+    print(f'Winner: {num_win} \t You:{num_try} \t Try # {try_count} \t Acct: ${bank_account}\n')
+
+
+print(f'You win! \n \n Your balance is {bank_account + payout_amount}')
+
+
+
+
