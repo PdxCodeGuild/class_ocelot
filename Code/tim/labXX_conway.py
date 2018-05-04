@@ -4,8 +4,8 @@ import time
 
 height = 20
 width = 100
-
 r_sq = chalk.red('■')
+
 
 def print_grid(grid):
     p_grid = ''
@@ -53,7 +53,8 @@ def draw_rand_sq(grid):
     grid[i + 3][j + 3] = ''
     grid[i + 1][j + 2] = ''
     grid[i + 3][j + 2] = ''
-    grid[i + 3][j + 3] = False
+    grid[i + 2][j + 2] = False
+
 
 def draw_rand_streak(grid):
     vh = random.randrange(2)
@@ -129,7 +130,7 @@ draw_rand_sq(grid)
 draw_rand_streak(grid)
 draw_rand_streak(grid)
 print_grid(grid)
-time.sleep(2)
+time.sleep(1)
 
 n_alive = 1
 r_ct = 1
@@ -144,16 +145,16 @@ while n_alive != 0:
             n_alive += t_grid[i][j]
     grid = deep_copy(t_grid)
     r_ct += 1
-    if r_ct == 25:
+    if r_ct == 10:
         draw_rand_sq(grid)
         print_grid(grid)
-        time.sleep(1)
-    elif r_ct == 50:
+        time.sleep(.5)
+    elif r_ct == 20:
         r_ct = 0
         draw_rand_streak(grid)
         print_grid(grid)
-        time.sleep(1)
+        time.sleep(.5)
     else:
         print_grid(grid)
-        time.sleep(.3)
+        time.sleep(.2)
     print('')
