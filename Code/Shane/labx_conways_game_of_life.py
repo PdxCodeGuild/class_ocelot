@@ -8,7 +8,7 @@ height = 11
 def print_grid(grids):
     for x in range(height):
         for y in range(width):
-            if grids[x][y]:
+            if grids[x][y] == True:
                 print('■', end='')
             else:
                 print('□', end='')
