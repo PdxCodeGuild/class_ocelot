@@ -1,17 +1,21 @@
 import random
-import time
+import chalk
 
 height = 30
 width = 100
 
+
 def print_grid(grid):
+    p_grid = ''
     for i in range(height):
         for j in range(width):
             if grid[i][j]:
-                print('■', end='')
+                p_grid += chalk.red('■')
             else:
-                print('□', end='')
-        print('')
+                p_grid += '□'
+        p_grid += '\n'
+    print(p_grid)
+
 
 def alive(grid, i, j):
     n_alive = 0
@@ -40,12 +44,12 @@ def alive(grid, i, j):
         if grid[i - 1][j]:
             n_alive += 1
     # below
-    if i < len(grid[1]) - 1:
+    if j < len(grid[1]) - 1:
         if grid[i][j + 1]:
             n_alive += 1
     # right
-    if j < len(grid) - 1:
-        if grid[i - 1][j]:
+    if i < len(grid) - 1:
+        if grid[i + 1][j]:
             n_alive += 1
     # check results
     if n_alive == 3:
@@ -88,6 +92,5 @@ while n_alive != 0:
             t_grid[i].append(alive(grid, i, j))
             n_alive += t_grid[i][j]
     grid = deep_copy(t_grid)
-    time.sleep(.1)
 
 print_grid(grid)
