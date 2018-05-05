@@ -53,12 +53,12 @@ class Bouncy:
 
 class Floater:
 
-    def __init__(self, ang, x, y, v):
+    def __init__(self, ang, x, y, xv, yv):
         self.xpos = x
         self.ypos = y
         theta = math.radians(ang)
-        self.xvel = v * math.cos(theta)
-        self.yvel = 30
+        self.xvel = (xv + abs(yv)) * math.cos(theta)
+        self.yvel = max(20, yv * math.sin(theta) * .9)
 
     def update(self, time):
         self.xpos += time * self.xvel
@@ -119,7 +119,7 @@ def main():
             b_balls.append([b, t])
         if len(win.checkKey()) > 0:
             r = random.randrange(len(b_balls))
-            b = Floater(ang, b_balls[r][0].getX(), b_balls[r][0].getY(), b_balls[r][0].xvel + abs(b_balls[r][0].yvel0))
+            b = Floater(ang, b_balls[r][0].getX(), b_balls[r][0].getY(), b_balls[r][0].xvel, b_balls[r][0].yvel0)
             t = Tracker(win, b)
             f_balls.append([b, t])
             b_balls[r][1].delete()
