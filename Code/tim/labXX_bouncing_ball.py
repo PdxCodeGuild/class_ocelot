@@ -1,20 +1,24 @@
 import graphics
 import math
 import time as sleeper
+import pygame
+import random
 
 class Tracker:
 
-    def __init__(self, win, bncy):
-        self.bncy = bncy
-        self.cir = graphics.Circle(graphics.Point(bncy.getX(), bncy.getY()), 2)
+    def __init__(self, win, ball):
+        self.ball = ball
+        self.cir = graphics.Circle(graphics.Point(ball.getX(), ball.getY()), 2)
         self.cir.draw(win)
 
     def update(self):
         p = self.cir.getCenter()
         x = p.getX()
         y = p.getY()
-        self.cir.move(self.bncy.getX() - x, self.bncy.getY() - y)
+        self.cir.move(self.ball.getX() - x, self.ball.getY() - y)
 
+    def delete(self):
+        self.cir.undraw()
 
 class Bouncy:
 
@@ -43,6 +47,24 @@ class Bouncy:
 
     def reset_x(self):
         self.xpos = 0.0
+
+
+class Floater:
+
+    def __init__(self, x, y, v):
+        self.xpos = x
+        self.ypos = y
+        self.vel = v
+
+    def update(self, time):
+        self.ypos += time * self.vel
+        self.vel *= 1.2
+
+    def getY(self):
+        return self.ypos
+
+    def getX(self):
+        return self.xpos
 
 
 def get_inputs():
@@ -74,24 +96,44 @@ def get_inputs():
     time = .1
     return balls, ang, vel, freq, hei, time
 
+
 def main():
     balls, ang, vel, freq, hei, time = get_inputs()
     win = graphics.GraphWin('Bouncy bouncy bouncy...', 1500, 600)
     win.setCoords(0, 0, 1500, 600)
     b_ct = 0
+    f_ct = 0
+    b_balls = []
     f_balls = []
     while b_ct / freq < balls + 100:
         sleeper.sleep(.05)
         b_ct += 1
-        if b_ct % freq == 1 and len(f_balls) < balls:
+        if b_ct % freq == 1 and len(b_balls) + f_ct < balls:
             b = Bouncy(ang, vel, hei)
             t = Tracker(win, b)
+            b_balls.append([b, t])
+        if len(win.checkKey()) > 0:
+            r = random.randrange(len(b_balls))
+            b = Floater(b_balls[r][0].getX(), b_balls[r][0].getY(), 20)
+            t = Tracker(win, b)
             f_balls.append([b, t])
-        for b in f_balls:
+            b_balls[r][1].delete()
+            b_balls.remove(b_balls[r])
+            f_ct += 1
+        for b in b_balls:
             b[0].update(time)
             if b[0].getY() < 0:
                 b[0].bounce()
             if b[0].getX() > 1500:
                 b[0].reset_x()
             b[1].update()
+        for f in f_balls:
+            f[0].update(time)
+            if f[0].getY() > 700:
+                f_balls.remove(f)
+                if f_ct == balls:
+                    f[1].update()
+                    exit()
+            f[1].update()
+
 main()
