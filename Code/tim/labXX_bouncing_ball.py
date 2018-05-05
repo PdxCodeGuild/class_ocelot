@@ -38,6 +38,7 @@ class Bouncy:
     def bounce(self):
         self.yvel0 *= -1
         self.ypos = 0.0
+        self.yvel0 *= .95
 
     def getY(self): # didn't work with name "get_y"?
         return self.ypos
@@ -105,7 +106,7 @@ def main():
     f_ct = 0
     b_balls = []
     f_balls = []
-    while b_ct / freq < balls + 100:
+    while b_ct / freq < balls + 200:
         sleeper.sleep(.05)
         b_ct += 1
         if b_ct % freq == 1 and len(b_balls) + f_ct < balls:
@@ -129,7 +130,7 @@ def main():
             b[1].update()
         for f in f_balls:
             f[0].update(time)
-            if f[0].getY() > 700:
+            if f[0].getY() > 1000:
                 f_balls.remove(f)
                 if f_ct == balls:
                     f[1].update()
