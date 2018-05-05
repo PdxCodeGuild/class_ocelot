@@ -48,6 +48,12 @@ def next_state(old_cells):
             new_value = not old_value
 
             # apply the rules to find the new value
+            if n_alive == 2:
+                return random.choice([True, False])
+            elif n_alive == 3:
+                return True
+            elif n_alive < 2 or live_count > 3:
+                return False
 
             new_cells[j].append(new_value)
 

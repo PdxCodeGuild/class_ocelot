@@ -9,9 +9,9 @@ import time
 
 live_grid = []
 
-height = 5
+height = 50
 
-width = 10
+width = 100
 
 def make_lst(lst, height, width ):
     for i in range(height):
@@ -36,7 +36,9 @@ def print_out(lst, height, width):
     print()
 
 def set_state(live_count):
-    if live_count == 2 or live_count == 3:
+    if live_count == 2:
+        return random.choice([True, False])
+    elif live_count == 3:
         return True
     elif live_count < 2 or live_count > 3:
         return False
@@ -65,7 +67,7 @@ def counts(change_grid, height, width):
     for x in range(1, height -1):
         for y in range(1, width -1):
             change_grid[x][y] = (live_count(live_grid,x,y))
-    print(change_grid)
+    return change_grid
 
 def change_state(live_grid, height, width):
     for x in range(height):
@@ -76,7 +78,7 @@ def change_state(live_grid, height, width):
 make_lst(live_grid, height, width)
 
 while True:
-    change_grid = live_grid
+    change_grid = live_grid.copy()
 
     counts(change_grid,height, width)
 
@@ -84,6 +86,6 @@ while True:
 
     print_out(live_grid, height, width)
 
-    time.sleep(.3)
+    time.sleep(.00000000000000000001)
 
 
