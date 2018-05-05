@@ -19,6 +19,7 @@ else:
 
 # display emoticon
 counter1 = 0
+print('\n')
 while counter1 < 5:
     # mouth select
     emo_mouth = random.choice(emo_mouths)

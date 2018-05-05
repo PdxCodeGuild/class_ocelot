@@ -1,4 +1,4 @@
-# print('Welcome to Change-maker Pro plus, Version 2 Extended (Home version) (multi-user) (Trial)')
+print('\nWelcome to Change-maker Pro plus')
 print()
 
 # Define Coin Values:
@@ -9,7 +9,7 @@ coin_penny = 1
 
 while True:
 
-    input_amount = input('Enter total dollar amount and press \'Return\' to see the minimal number of coins required.\n(hit \'Return\' again to quit)\n>:')
+    input_amount = input('Enter total dollar amount and press \'Return\' to see the minimal number of coins required.\n(hit \'Return\' again to quit)\n>')
     if input_amount == '':
         break
 

@@ -1,4 +1,6 @@
+
 import string
+
 import random
 
 x = ''
