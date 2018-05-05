@@ -20,6 +20,7 @@ class Tracker:
     def delete(self):
         self.cir.undraw()
 
+
 class Bouncy:
 
     def __init__(self, ang, vel, hei):
@@ -52,14 +53,17 @@ class Bouncy:
 
 class Floater:
 
-    def __init__(self, x, y, v):
+    def __init__(self, ang, x, y, v):
         self.xpos = x
         self.ypos = y
-        self.vel = v
+        theta = math.radians(ang)
+        self.xvel = v * math.cos(theta)
+        self.yvel = v
 
     def update(self, time):
-        self.ypos += time * self.vel
-        self.vel *= 1.2
+        self.xpos += time * self.xvel
+        self.ypos += time * self.yvel
+        self.yvel *= 1.1
 
     def getY(self):
         return self.ypos
@@ -100,7 +104,7 @@ def get_inputs():
 
 def main():
     balls, ang, vel, freq, hei, time = get_inputs()
-    win = graphics.GraphWin('Bouncy bouncy bouncy...', 1500, 600)
+    win = graphics.GraphWin('Bouncy bouncy bouncy... float away', 1500, 600)
     win.setCoords(0, 0, 1500, 600)
     b_ct = 0
     f_ct = 0
@@ -115,7 +119,7 @@ def main():
             b_balls.append([b, t])
         if len(win.checkKey()) > 0:
             r = random.randrange(len(b_balls))
-            b = Floater(b_balls[r][0].getX(), b_balls[r][0].getY(), 20)
+            b = Floater(ang, b_balls[r][0].getX(), b_balls[r][0].getY(), 30)
             t = Tracker(win, b)
             f_balls.append([b, t])
             b_balls[r][1].delete()
@@ -130,11 +134,11 @@ def main():
             b[1].update()
         for f in f_balls:
             f[0].update(time)
+            f[1].update()
             if f[0].getY() > 1000:
                 f_balls.remove(f)
-                if f_ct == balls:
-                    f[1].update()
+                if f_ct == balls and len(f_balls) == 0:
                     exit()
-            f[1].update()
+
 
 main()
