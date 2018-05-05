@@ -58,7 +58,7 @@ class Floater:
         self.ypos = y
         theta = math.radians(ang)
         self.xvel = v * math.cos(theta)
-        self.yvel = v
+        self.yvel = 30
 
     def update(self, time):
         self.xpos += time * self.xvel
@@ -119,7 +119,7 @@ def main():
             b_balls.append([b, t])
         if len(win.checkKey()) > 0:
             r = random.randrange(len(b_balls))
-            b = Floater(ang, b_balls[r][0].getX(), b_balls[r][0].getY(), 30)
+            b = Floater(ang, b_balls[r][0].getX(), b_balls[r][0].getY(), b_balls[r][0].xvel + abs(b_balls[r][0].yvel0))
             t = Tracker(win, b)
             f_balls.append([b, t])
             b_balls[r][1].delete()
