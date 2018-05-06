@@ -32,18 +32,34 @@ class Bouncy:
 
     def update(self, time, w):
         self.xpos += time * self.xvel
-        yvel1 = self.yvel0 - 32.174 * time
+        yvel1 = self.yvel0 - 50 * time
         self.ypos += time * (self.yvel0 + yvel1) / 2.0
-        self.yvel0 = yvel1 * .99
+        self.yvel0 = yvel1
         if self.xpos > w:
-            self.reset_x()
+            self.reset_left()
+        elif self.xpos < 0:
+            self.reset_right(w)
         if self.ypos < 0:
             self.bounce()
+            return True
+
+    def go_right(self):
+        self.xvel = abs(self.xvel)
+
+    def go_left(self):
+        self.xvel = -abs(self.xvel)
+
+    def jump(self, ang, vel):
+        theta = math.radians(ang)
+        self.yvel0 = vel * math.sin(theta)
 
     def bounce(self):
         self.yvel0 = abs(self.yvel0)
         self.ypos = 0.0
         self.yvel0 *= .95
+
+    def flutter(self, vel):
+        self.yvel0 = vel * .3
 
     def getY(self): # didn't work with name "get_y"?
         return self.ypos
@@ -51,8 +67,11 @@ class Bouncy:
     def getX(self): # didn't work with name "get_x"?
         return self.xpos
 
-    def reset_x(self):
+    def reset_left(self):
         self.xpos = 0.0
+
+    def reset_right(self, w):
+        self.xpos = w
 
 
 class Floater:
@@ -65,11 +84,14 @@ class Floater:
 
     def update(self, time, w):
         self.xpos += time * self.xvel
-        yvel1 = self.yvel0 - 32.174 * time
+        yvel1 = self.yvel0 + 50 * time
         self.ypos += time * (self.yvel0 + yvel1) / 2.0
-        self.yvel0 += 32.174 * time
+        self.yvel0 = yvel1
+        self.xvel *= .95
         if self.xpos > w:
-            self.reset_x()
+            self.reset_left()
+        elif self.xpos < 0:
+            self.reset_right(w)
         if self.ypos < 0:
             self.bounce()
 
@@ -77,14 +99,21 @@ class Floater:
         self.yvel0 = abs(self.yvel0)
         self.ypos = 0.0
 
+    def blow(self):
+        self.yvel0 -= 20
+        self.xvel += 1
+
     def getY(self):
         return self.ypos
 
     def getX(self):
         return self.xpos
 
-    def reset_x(self):
+    def reset_left(self):
         self.xpos = 0.0
+
+    def reset_right(self, w):
+        self.xpos = w
 
 
 class Target:
@@ -112,38 +141,38 @@ class Target:
 def get_inputs():
     diff = int(input('What difficulty level?\n > '))
     if diff == 1:
-        diff = 54
+        diff = 70
     elif diff == 2:
-        diff = 44
+        diff = 60
     elif diff == 3:
-        diff = 36
+        diff = 50
     elif diff == 4:
-        diff = 30
+        diff = 40
     else:
         diff = 24
-    ang = float(input('What launch angle (in degrees, 1 to 90)?\n > '))
-    a = int(input('What launch speed (1 to 5, 5 = fastest)?\n > '))
+    ang = 60  # float(input('What launch angle (in degrees, 1 to 90)?\n > '))
+    a = 4 # int(input('What launch speed (1 to 5, 5 = fastest)?\n > '))
     if a == 1:
         vel = 150
     elif a == 2:
         vel = 180
     elif a == 3:
-        vel = 210
+        vel = 220
     elif a == 4:
-        vel = 240
+        vel = 260
     else:
-        vel = 270
-    a = int(input('How compact (1 to 5, 5 = most compact)?\n > '))
+        vel = 300
+    a = 5 # int(input('How compact (1 to 5, 5 = most compact)?\n > '))
     if a == 1:
-        freq = 30
-    elif a == 2:
-        freq = 20
-    elif a == 3:
         freq = 12
+    elif a == 2:
+        freq = 8
+    elif a == 3:
+        freq = 5
     elif a == 4:
-        freq = 6
-    else:
         freq = 3
+    else:
+        freq = 2
     hei = 0
     time = .1
     return diff, ang, vel, freq, hei, time
@@ -158,7 +187,12 @@ def main():
     tar = Target(win, random.randrange(w // 2, w) - 10, h - 5, diff)
     b_ct = 0
     f_ct = 0
+    h_ct = 0
     score = 0
+    fx = 0
+    l_ck = ''
+    turn = -1
+    changing = False
     b_balls = []
     f_balls = []
     while True:
@@ -167,16 +201,76 @@ def main():
         if b_ct % freq == 1 and len(b_balls) + f_ct < 10:
             b = Bouncy(ang, vel, hei)
             t = Balls(win, b, 2)
-            b_balls.append([b, t])
-        if len(win.checkKey()) > 0:
+            b_balls.append([b, t, 0])
+        ck = win.checkKey()
+        if ck == l_ck:
+            h_ct += 1
+        if ck != '' and not changing:
+            turn = 0
+            if ck == 'Right':
+                for b in b_balls:
+                    b[2] = 1
+            elif ck == 'Left':
+                for b in b_balls:
+                    b[2] = 2
+            elif ck == 'Up':
+                if h_ct < 3:
+                    for b in b_balls:
+                        b[2] = 3
+                else:
+                    for b in b_balls:
+                        b[2] = 4
+            elif ck == 'Down':
+                for f in f_balls:
+                    f[0].blow()
+        else:
+            h_ct = 0
+        if ck == 'space':
             b = Floater(b_balls[0][0].getX(), b_balls[0][0].getY(), b_balls[0][0].xvel, b_balls[0][0].yvel0)
             t = Balls(win, b, 5)
             f_balls.append([b, t])
             b_balls[0][1].delete()
             b_balls.remove(b_balls[0])
             f_ct += 1
+            if changing:
+                turn -= 1
+        l_ck = ck
         for b in b_balls:
-            b[0].update(time, w)
+            j = b[0].update(time, w)
+            if j and b[2] != 0 and b_balls.index(b) == turn:
+                turn += 1
+                if b == b_balls[0]:
+                    changing = True
+                if b == b_balls[-1]:
+                    changing = False
+                    turn = -1
+                if b[2] == 1:
+                    b[0].go_right()
+                elif b[2] == 2:
+                    b[0].go_left()
+                elif b[2] == 3:
+                    b[0].jump(ang, vel)
+                b[2] = 0
+            elif b[2] == 4 and b_balls.index(b) == turn:
+                if b == b_balls[0]:
+                    changing = True
+                    fx = b[0].getX()
+                if b[0].xvel > 0 and b[0].getX() >= fx:
+                    b[0].flutter(vel)
+                    b[2] = 0
+                    turn += 1
+                    if b == b_balls[-1]:
+                        changing = False
+                        turn = -1
+                        fx = 0
+                elif b[0].xvel < 0 and b[0].getX() <= fx:
+                    b[0].flutter(vel)
+                    b[2] = 0
+                    turn += 1
+                    if b == b_balls[-1]:
+                        changing = False
+                        turn = -1
+                        fx = 0
             b[1].update()
         for f in f_balls:
             f[0].update(time, w)
