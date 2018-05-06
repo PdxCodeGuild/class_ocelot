@@ -1,6 +1,5 @@
 
-
-def single_digit(num_str):
+def single(num_str):
     if num_str == '0':
         return 'Zero'
     elif num_str == '1':
@@ -35,7 +34,7 @@ def teens(num_str):
     elif num_str == '5':
         return 'Fifteen'
     else:
-        return single_digit(num_str) + 'teen'
+        return single(num_str) + 'teen'
 
 
 def tens(num_str):
@@ -57,22 +56,20 @@ def tens(num_str):
         return 'Ninety'
 
 
-
-
 num_str = input('What number do you want to translate into words?\n > ')
 num_list = list(num_str)
 
 if len(num_list) == 1:
-    print(single_digit(num_str))
+    print(single(num_str))
 elif len(num_list) == 2:
     if num_list[0] == '1':
         print(teens(num_list[1]))
     else:
         pre = tens(num_list[0])
-        suf = single_digit(num_list[1])
+        suf = single(num_list[1])
         print(pre + '-' + suf.lower())
 else:
-    h = single_digit(num_list[0]) + ' hundred '
+    h = single(num_list[0]) + ' hundred '
     if num_list[1] == '1':
         t = teens(num_list[2]).lower() + ' '
     elif int(num_list[1]) > 1:
@@ -80,7 +77,7 @@ else:
     else:
         t = ''
     if int(num_list[2]) > 0:
-        s = single_digit(num_list[2]).lower()
+        s = single(num_list[2]).lower()
     else:
         s = ''
     print(h + t + s)
