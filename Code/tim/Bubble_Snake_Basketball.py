@@ -118,73 +118,83 @@ class Floater:
 
 class Target:
 
-    def __init__(self, win, r, h, diff):
-        self.center = r - diff // 2
-        self.ov = graphics.Oval(graphics.Point(r - diff, h), graphics.Point(r, h + 5))
+    def __init__(self, win, r, h, tar_wid, tar_max_vel, tar_acc):
+        self.center = r - tar_wid // 2
+        self.ov = graphics.Oval(graphics.Point(r - tar_wid, h), graphics.Point(r, h + 5))
         self.ov.draw(win)
+        self.max_vel = tar_max_vel
+        self.acc = tar_acc
+        self.xvel0 = 0.0
 
-    def check_floater(self, x, diff):
-        if self.center - diff // 2 < x < self.center + diff // 2:
+    def check_floater(self, x, tar_wid):
+        if self.center - tar_wid // 2 - 1 <= x <= self.center + tar_wid // 2 + 1:
             return True
         return False
 
-    def change(self, w, diff):
-        m = random.randrange(w // 4)
-        if self.center + m < w - diff // 2:
-            self.center += m
-            self.ov.move(m, 0)
-        else:
-            self.center -= m
-            self.ov.move(-m, 0)
+    def new_target(self, r):
+        self.ov.move(r, 0)
+        self.center += r
+        self.xvel0 = 0.0
 
+    def move(self, time, x, w):
+        if self.center >= x:
+            if x - self.center < 500:
+                xvel1 = min(self.xvel0 + self.acc, self.max_vel)
+            else:
+                xvel1 = self.xvel0
+            self.ov.move(time * (self.xvel0 + xvel1) / 2, 0)
+            self.center += time * (self.xvel0 + xvel1) / 2
+            self.xvel0 = xvel1
+        else:
+            if self.center - x < 500:
+                xvel1 = max(self.xvel0 - self.acc, -self.max_vel)
+            else:
+                xvel1 = self.xvel0
+            self.ov.move(time * (self.xvel0 + xvel1) / 2, 0)
+            self.center += time * (self.xvel0 + xvel1) / 2
+            self.xvel0 = xvel1
+        if self.center > w:
+            return 'over'
+        elif self.center < 0:
+            return 'under'
 
 def get_inputs():
-    diff = int(input('What difficulty level?\n > '))
-    if diff == 1:
-        diff = 70
-    elif diff == 2:
-        diff = 60
-    elif diff == 3:
-        diff = 50
-    elif diff == 4:
-        diff = 40
-    else:
-        diff = 24
-    ang = 60  # float(input('What launch angle (in degrees, 1 to 90)?\n > '))
-    a = 4 # int(input('What launch speed (1 to 5, 5 = fastest)?\n > '))
+    a = int(input('What difficulty level?\n > '))
     if a == 1:
-        vel = 150
+        tar_wid = 80
+        tar_max_vel = 0
+        tar_acc = 0
     elif a == 2:
-        vel = 180
+        tar_wid = 70
+        tar_max_vel = 6
+        tar_acc = 1
     elif a == 3:
-        vel = 220
+        tar_wid = 60
+        tar_max_vel = 12
+        tar_acc = 1.5
     elif a == 4:
-        vel = 260
+        tar_wid = 50
+        tar_max_vel = 18
+        tar_acc = 1.8
     else:
-        vel = 300
-    a = 5 # int(input('How compact (1 to 5, 5 = most compact)?\n > '))
-    if a == 1:
-        freq = 12
-    elif a == 2:
-        freq = 8
-    elif a == 3:
-        freq = 5
-    elif a == 4:
-        freq = 3
-    else:
-        freq = 2
+        tar_wid = 40
+        tar_max_vel = 24
+        tar_acc = 2
+    ang = 60
+    vel = 260
+    freq = 2
     hei = 0
     time = .1
-    return diff, ang, vel, freq, hei, time
+    return tar_wid, tar_max_vel, tar_acc, ang, vel, freq, hei, time
 
 
 def main():
     w = 1500
     h = 600
-    diff, ang, vel, freq, hei, time = get_inputs()
-    win = graphics.GraphWin('BALLOON SNAKE BASKETBALL', w, h)
+    tar_wid, tar_max_vel, tar_acc, ang, vel, freq, hei, time = get_inputs()
+    win = graphics.GraphWin('BUBBLE SNAKE BASKETBALL', w, h)
     win.setCoords(0, 0, w, h)
-    tar = Target(win, random.randrange(w // 2, w) - 10, h - 5, diff)
+    tar = Target(win, random.randrange(w // 2, w) - 10, h - 5, tar_wid, tar_max_vel, tar_acc)
     b_ct = 0
     f_ct = 0
     h_ct = 0
@@ -276,14 +286,23 @@ def main():
             f[0].update(time, w)
             f[1].update()
             if f[0].getY() > h - 5:
-                if tar.check_floater(f[0].getX(), diff):
+                if tar.check_floater(f[0].getX(), tar_wid):
                     score += 1
-                    tar.change(w, diff)
+                    tar.new_target(random.randrange(0, w // 2))
                 f[1].delete()
                 f_balls.remove(f)
                 if f_ct == 10 and len(f_balls) == 0:
                     return(score)
-
+        if len(b_balls) > 0:
+            x = b_balls[0][0].getX()
+        else:
+            x = w // 2
+        t = tar.move(time, x, w)
+        if t == 'over':
+            tar.new_target(-random.randrange(tar_wid + 10, w - 10))
+        elif t == 'under':
+            tar.new_target(random.randrange(tar_wid + 10, w - 10))
 
 score = main()
 print(f'You got a {score}')
+
