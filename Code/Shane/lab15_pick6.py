@@ -7,7 +7,7 @@ how_many_numbers = 6
 
 pick_range = 100
 
-times_to_run = 10
+times_to_run = 100000
 
 balance = 0
 
