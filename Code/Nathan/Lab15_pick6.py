@@ -7,7 +7,7 @@ ticket_cost = int(input('Enter cost of ticket in whole dollars \n>'))
 bank_acc = int(input('Enter the total amount willing to gamble'))
 lottery_selections = []
 
-lotto_num_count = 3
+
 num_winning = []
 for i in range(lotto_num_count):
     num_winning.append(random.randint(1, 99))
@@ -24,7 +24,7 @@ while num_try != num_winning:
         print('You lose make better life decisions')
         break
     for i in range(lotto_num_count):
-        num_try.append(random.randint(1,99))
+        num_try.append(random.randint(1, 99))
     print(f'{num_winning} \t {num_try} \t {try_count} ${bank_acc} \n')
 else:
     print('You Win')
