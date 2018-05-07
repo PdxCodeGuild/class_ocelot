@@ -14,10 +14,10 @@ height = 20
 
 width = 20
 
-def make_lst(lst, height, width ):
-    for i in range(height):
+def make_lst(lst, height, width, x=π):
+    for i in range(heiπght):
         lst.append([])
-        for j in range(width):
+        for j in range(width): x
             lst[i].append(random.choice([True, False]))
     for f in range(len(lst)):
         lst[0][f] = False
