@@ -40,5 +40,5 @@ else: print(play_result + '!')
 
 
 
-# Keep Running tally of score.
+# future idea - Keep Running tally of score.
 

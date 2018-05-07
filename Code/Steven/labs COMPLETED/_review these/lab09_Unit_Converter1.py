@@ -1,11 +1,11 @@
 # Set conversion multiples
-conv_mult = {'meters': 0.3048}
+conv_mult = {['meters' 0.3048]}
 
 # Enter feet to convert to meters
-number_to_convert = rnd(float(input('what is the distance in feet? ')))
-
+number_to_convert = float(input('what is the distance in feet? '))
 
 # Convert feet to meters
+conv_mult_mt2ft
 number_converted = number_to_convert * conv_mult_mt2ft
 
 
