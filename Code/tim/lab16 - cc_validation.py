@@ -1,6 +1,6 @@
 
 def step_1_convert(in_str):
-    return [int(x) for x in list(in_str)]
+    return [int(c) for c in in_str]
 
 def step_2_slice_check(in_lst):
     ck = in_lst.pop()
