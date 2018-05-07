@@ -34,7 +34,7 @@ class Bouncy:
         self.xpos += time * self.xvel
         yvel1 = self.yvel0 - 50 * time
         self.ypos += time * (self.yvel0 + yvel1) / 2.0
-        self.yvel0 = yvel1
+        self.yvel0 = yvel1 * .99
         if self.xpos > w:
             self.reset_left()
         elif self.xpos < 0:
@@ -158,46 +158,61 @@ class Target:
         elif self.center < 0:
             return 'under'
 
+
+class Monster:
+
+    def __init__(self, win, r, mon_wid, mon_max_vel, mon_acc):
+        self.center = r - mon_wid // 2
+        self.ov = graphics.Rectangle(graphics.Point(r - mon_wid, 0), graphics.Point(r, mon_wid))
+        self.ov.draw(win)
+        self.max_vel = mon_max_vel
+        self.acc = mon_acc
+        self.xvel0 = 0.0
+
+    def move(self, time, x, w):
+        if self.center >= x:
+            xvel1 = min(self.xvel0 - self.acc, self.max_vel)
+            self.ov.move(time * (self.xvel0 + xvel1) / 2, 0)
+            self.center += time * (self.xvel0 + xvel1) / 2
+            self.xvel0 = xvel1
+        else:
+            xvel1 = max(self.xvel0 + self.acc, -self.max_vel)
+            self.ov.move(time * (self.xvel0 + xvel1) / 2, 0)
+            self.center += time * (self.xvel0 + xvel1) / 2
+            self.xvel0 = xvel1
+
+
 def get_inputs():
     a = int(input('What difficulty level?\n > '))
+
     if a == 1:
-        tar_wid = 80
-        tar_max_vel = 0
-        tar_acc = 0
+        settings = [80, 0, 0, 40, 0, 0]
     elif a == 2:
-        tar_wid = 70
-        tar_max_vel = 6
-        tar_acc = 1
+        settings = [70, 6, 1, 50, 8, .8]
     elif a == 3:
-        tar_wid = 60
-        tar_max_vel = 12
-        tar_acc = 1.5
+        settings = [60, 12, 1.5, 60, 12, 1]
     elif a == 4:
-        tar_wid = 50
-        tar_max_vel = 18
-        tar_acc = 1.8
+        settings = [50, 18, 1.8, 50, 20, 1.2]
     else:
-        tar_wid = 40
-        tar_max_vel = 24
-        tar_acc = 2
+        settings = [40, 24, 2, 40, 30, 3]
     ang = 60
     vel = 260
     freq = 2
     hei = 0
     time = .1
-    return tar_wid, tar_max_vel, tar_acc, ang, vel, freq, hei, time
+    return settings[0], settings[1], settings[2], settings[3], settings[4], settings[5], ang, vel, freq, hei, time
 
 
 def main():
     w = 1500
     h = 600
-    tar_wid, tar_max_vel, tar_acc, ang, vel, freq, hei, time = get_inputs()
+    tar_wid, tar_max_vel, tar_acc, mon_wid, mon_max_vel, mon_acc, ang, vel, freq, hei, time = get_inputs()
     win = graphics.GraphWin('BUBBLE SNAKE BASKETBALL', w, h)
     win.setCoords(0, 0, w, h)
     tar = Target(win, random.randrange(w // 2, w) - 10, h - 5, tar_wid, tar_max_vel, tar_acc)
+    mon = Monster(win, random.randrange(w // 2, w) - 10, mon_wid, mon_max_vel, mon_acc)
     b_ct = 0
     f_ct = 0
-    h_ct = 0
     score = 0
     fx = 0
     l_ck = ''
@@ -213,8 +228,6 @@ def main():
             t = Balls(win, b, 2)
             b_balls.append([b, t, 0])
         ck = win.checkKey()
-        if ck == l_ck:
-            h_ct += 1
         if ck != '' and not changing:
             turn = 0
             if ck == 'Right':
@@ -224,17 +237,17 @@ def main():
                 for b in b_balls:
                     b[2] = 2
             elif ck == 'Up':
-                if h_ct < 3:
+                if ck != l_ck:
                     for b in b_balls:
                         b[2] = 3
+                    l_ck = ck
                 else:
                     for b in b_balls:
                         b[2] = 4
+                    l_ck = ''
             elif ck == 'Down':
                 for f in f_balls:
                     f[0].blow()
-        else:
-            h_ct = 0
         if ck == 'space':
             b = Floater(b_balls[0][0].getX(), b_balls[0][0].getY(), b_balls[0][0].xvel, b_balls[0][0].yvel0)
             t = Balls(win, b, 5)
@@ -244,7 +257,7 @@ def main():
             f_ct += 1
             if changing:
                 turn -= 1
-        l_ck = ck
+
         for b in b_balls:
             j = b[0].update(time, w)
             if j and b[2] != 0 and b_balls.index(b) == turn:
@@ -302,6 +315,8 @@ def main():
             tar.new_target(-random.randrange(tar_wid + 10, w - 10))
         elif t == 'under':
             tar.new_target(random.randrange(tar_wid + 10, w - 10))
+        mon.move(time, x, w)
+
 
 score = main()
 print(f'You got a {score}')
