@@ -1,4 +1,4 @@
-num_list = int(input('Please enter a number 0-99:\n'))
+num_list = int(input('Please enter a number 0-999:\n'))
 ones_list = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine']
 teens_list = ['eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen']
 tens_list = ['ten', 'twenty', 'thirty', 'fourty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety']
