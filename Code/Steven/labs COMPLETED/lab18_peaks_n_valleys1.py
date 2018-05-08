@@ -21,8 +21,9 @@ for i in range(20):
     elif data_left > data_current and data_right > data_current:
         valley_data.append(i)
 
-print(peak_data)
-print(valley_data)
+print(f'Peaks: ' {peak_data}')
+print(f'Valleys: ' {valley_data}')
 
-
+# print(peak_data)
+# print(valley_data)
 
