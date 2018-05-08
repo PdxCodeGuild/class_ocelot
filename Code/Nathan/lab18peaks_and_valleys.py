@@ -28,18 +28,18 @@ def pv(data_input):
 
 peak_data, valley_data = pv(data_input)
 
-# print(peak_data)
-# print(valley_data)
+print(peak_data)
+print(valley_data)
 
 # for i in range(len(data_input)):
 #     print('X' * data_input[i])
 
 max_value = max(data_input)
 
-for i in range(max_value), 0, -1):
+for i in range(max_value, 0, -1):
     for x in range(len(data_input)):
         if data_input[x] >= i:
-            print('X', end=' ')
+            print('X', end='')
         else:
-            print('', end=' ')
+            print(' ', end='')
     print()
