@@ -6,8 +6,8 @@ lotto_num_count = int(input('Enter quantity of numbers from 3 to 7 \n>'))
 ticket_cost = int(input('Enter cost of ticket in whole dollars \n>'))
 bank_acc = int(input('Enter the total amount willing to gamble'))
 lottery_selections = []
-
-
+win_return_rate = (lotto_num_count*1000)*(ticket_cost*10)
+total_expenses = (ticket_cost * try_count)
 num_winning = []
 for i in range(lotto_num_count):
     num_winning.append(random.randint(1, 99))
@@ -25,7 +25,7 @@ while num_try != num_winning:
         break
     for i in range(lotto_num_count):
         num_try.append(random.randint(1, 99))
-    print(f'{num_winning} \t {num_try} \t {try_count} ${bank_acc} \n')
+    print(f'{num_winning} \t {num_try} \t {try_count} ${bank_acc}\n')
 else:
-    print('You Win')
+    print(f'You Won ${win_return_rate} however {total_expenses}')
 

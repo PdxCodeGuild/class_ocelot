@@ -24,12 +24,13 @@ def rot13(text):
 def rotn(text, n):
     alphabet = 'abcdefghijklmnopqrstuvwxyz'
     output = ''
-    for char in text:8
+    for char in text:
         index = alphabet.find(char)
         index += n
 
-        while index >= len(alphabet):
-            index -= len(alphabet)
+        # while index >= len(alphabet):
+        #     index -= len(alphabet)
+        index %= len(alphabet)
 
         #if index >= len(alphabet):
         #    index -= len(alphabet)
@@ -73,5 +74,8 @@ def rotn_v3(text, offset):
             output += chr(ord('A') + index)
         else:
             output += char
-
     print(output)
+
+
+
+

@@ -1,3 +1,4 @@
+import copy
 import random
 import time
 # rules:
@@ -9,9 +10,9 @@ import time
 
 live_grid = []
 
-height = 50
+height = 20
 
-width = 100
+width = 20
 
 def make_lst(lst, height, width ):
     for i in range(height):
@@ -37,7 +38,7 @@ def print_out(lst, height, width):
 
 def set_state(live_count):
     if live_count == 2:
-        return random.choice([True, False])
+        pass
     elif live_count == 3:
         return True
     elif live_count < 2 or live_count > 3:
@@ -78,7 +79,7 @@ def change_state(live_grid, height, width):
 make_lst(live_grid, height, width)
 
 while True:
-    change_grid = live_grid.copy()
+    change_grid = copy.deepcopy(live_grid)
 
     counts(change_grid,height, width)
 
@@ -86,6 +87,4 @@ while True:
 
     print_out(live_grid, height, width)
 
-    time.sleep(.00000000000000000001)
-
-
+    time.sleep(.4)

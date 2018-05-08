@@ -3,17 +3,12 @@
 import random
 import time
 
-# n = int(input('Enter the number: '))
-n = 10
 
 def random_list(n):
     nums = []
     for i in range(n):
         nums.append(random.randint(0, 100))
     return nums
-
-nums = random_list(n)
-
 
 def shuffle(nums):
     for i in range(len(nums)):
@@ -47,8 +42,14 @@ def bogo_sort(nums):
     print(f'steps:            {count}')
 
 
+
+
+
+# n = int(input('Enter the number: '))
+n = 10
 # print(nums)
 # shuffle(nums)
 # print(nums)
-
+nums = random_list(n)
 bogo_sort(nums)
+
