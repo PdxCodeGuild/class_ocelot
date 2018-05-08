@@ -1,0 +1,9 @@
+
+num 1 to 9
+num 10, 11, 12
+num 13 to 19
+num 20 to 99
+
+num_words1 =
+
+tel = {'jack': 4098, 'sape': 4139}
