@@ -16,6 +16,7 @@ lines = contents.split()
 print(lines)
 
 for word in lines:
+
     if word in words
         words.update({'item3': 3})
         if 'item3' in words:
