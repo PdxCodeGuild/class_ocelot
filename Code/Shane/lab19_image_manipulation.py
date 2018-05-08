@@ -1,4 +1,4 @@
-"""import random
+import random
 from PIL import Image
 img = Image.open("lenna.png") # must be in same folder
 width, height = img.size
@@ -7,10 +7,10 @@ pixels = img.load()
 for i in range(width):
     for j in range(height):
         r, g, b = pixels[j, i]
-        #if r < 100 or g < 100 or b <100:
-        r = 222
-        g = 222
-        b = 222
+        if r < 200 or g < 100 or b <100:
+            r = 100
+            g = 100
+            b = 100
 
 
         # your code here
@@ -19,7 +19,7 @@ for i in range(width):
         pixels[j, i] = (r, g, b)
 
 img.show()
-"""
+
 
 from PIL import Image, ImageDraw
 
@@ -54,5 +54,5 @@ draw.ellipse([150,50,250,250],fill='lightblue')
 img.show()
 
 draw.line([150,50])
-help(ImageDraw)
+
 
