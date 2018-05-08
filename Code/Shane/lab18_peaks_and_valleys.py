@@ -1,4 +1,5 @@
 
+
 data = [1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 5, 6, 7, 8, 9, 8, 7, 6, 7, 8, 9]
 
 peaks = []
@@ -14,7 +15,7 @@ if x - 1 < 0 or x + 1 > len(data):
 """
 
 
-"""def find_P_and_V(lst):
+def find_P_and_V(lst):
     for x in range(1, len(data)-1):
         if data[x-1] < data[x] and data[x+1] < data[x]:
             peaks.append(x)
@@ -23,7 +24,7 @@ if x - 1 < 0 or x + 1 > len(data):
     return f"{valleys} - Valleys Data\n{peaks} - Peaks Data\n{valleys + peaks} - Peaks and Valleys Data"
 
 print(find_P_and_V(data))
-"""
+
 
 
 """
