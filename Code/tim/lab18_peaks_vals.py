@@ -1,6 +1,6 @@
-
 import random
 import chalk
+
 
 def print_grid(g, h, w):  # Borrowed from Conway labXX
     p_grid = ''
@@ -29,6 +29,7 @@ g = []
 t = 10
 force_dir = False
 force_dir_ct = 0
+d = 0
 for j in range(w):
     g.append([])
     if t >= h - 2:
