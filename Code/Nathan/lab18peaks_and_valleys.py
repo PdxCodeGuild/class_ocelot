@@ -36,7 +36,10 @@ for i in range(len(data_input)):
 
 max_value = max(data_input)
 
-for i in range(0, max_value, -1):
-    if i == max_value:
-        print('X')
-
+for i in range(max(data_input), 0, -1):
+    for x in range(len(data_input)):
+        if data_input[x] >= i:
+            print('X', end='')
+        else:
+            print('', end= '')
+    print()
