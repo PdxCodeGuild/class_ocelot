@@ -8,6 +8,8 @@ like twenty nine etc.
 def z_to_19_dict(lst):
     if lst[0] == 1:
         return 10+lst[1]
+    else:
+        return lst[0]
 
 
 z_19 = {   0: '',
@@ -39,7 +41,7 @@ z_19 = {   0: '',
            80: 'eighty',
            90: 'ninety', }
 
-x = 116989
+x = 9
 
 remain = x
 
