@@ -31,7 +31,7 @@ force_dir = False
 force_dir_ct = 0
 for j in range(w):
     g.append([])
-    if t >= h - 1:
+    if t >= h - 2:
         d = -1
         force_dir = True
     elif t <= 1:
