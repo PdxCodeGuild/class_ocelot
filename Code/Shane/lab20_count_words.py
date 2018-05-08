@@ -13,11 +13,12 @@ contents = contents.lower()
 
 lines = contents.split()
 
-print(lines)
+#print(lines)
 
 for word in lines:
-
-    if word in words
-        words.update({'item3': 3})
-        if 'item3' in words:
+    if word not in words:
+        words.update({word: 1})
+        if word in words:
             print('I\'m here')
+
+print(words)
