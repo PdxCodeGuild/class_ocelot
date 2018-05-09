@@ -22,10 +22,12 @@ with open('clue_golden_coin.txt', 'r', encoding='utf-8') as f:
         else:
             c4[word] += 1
 
-c5 = list(c4.items())
-c5.sort(key=lambda tup: tup[1], reverse=True)
-for i in range(min(10, len(c5))):
-    print(c5[i])
+print(c4)
+
+# c5 = list(c4.items())
+# c5.sort(key=lambda tup: tup[1], reverse=True)
+# for i in range(min(10, len(c5))):
+#     print(c5[i])
 
 
 
