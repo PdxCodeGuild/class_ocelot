@@ -1,6 +1,39 @@
-with open('the_clue_of_the_golden_coin.txt', 'r', encoding='utf-8') as f:
+import string
+with open('goldencoin.txt', 'r', encoding='utf-8') as f:
     contents = f.read()
+    contents = contents.lower()
+    contents = contents.replace('\n', ' ')
+    c2 = ''
 
-lines = contents.split('\n')
-for line in lines:
-    print(line)
+
+    for current_char in contents:
+        if current_char in (string.ascii_lowercase + ' '):
+            c2 += current_char
+
+
+    c3 = c2.split()
+
+    c4 = {}
+    for word in c3:
+        if word not in c4:
+            c4[word] = 1
+        else:
+            c4[word] += 1
+
+c5 = list(c4.items())
+c5.sort(key=lambda tup: tup[1], reverse=True)
+for i in range(min(10, len(c5))):
+    print(c5[i])
+
+
+
+
+
+
+
+
+
+
+
+
+
