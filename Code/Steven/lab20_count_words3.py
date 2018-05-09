@@ -16,20 +16,10 @@ with open('clue_golden_coin.txt', 'r', encoding='utf-8') as f:
     c3 = c2.split()
 
 
-
-
 word_pair_list = []
 for i in range(len(c3)-1):
     word_pair_list.append(c3[i] + ' ' + c3[i+1])
-#
-# print(word_pair_list)
 
-# c4 = {}
-# for word in c3:
-#     if word not in c4:
-#         c4[word] = 1
-#     else:
-#         c4[word] += 1
 
 word_pair_dict = {}
 
