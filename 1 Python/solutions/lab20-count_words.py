@@ -6,9 +6,16 @@ import math
 with open('the_clue_of_the_gold_coin.txt', 'r', encoding='utf-8') as f:
     contents = f.read().lower().replace('’', '')
 
+<<<<<<< HEAD
+lines = contents.split('\n')
+
+for line in lines:
+    print(line)
+=======
 #words = re.findall(r'\b[^A-Z\s\d]+\b', contents, re.UNICODE)
 words = re.findall(r'\b[A-Za-z]+\b', contents, re.UNICODE)
 print(words)
+>>>>>>> origin/master
 
 pairs = []
 for i in range(len(words)-1):
