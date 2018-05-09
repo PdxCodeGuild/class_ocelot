@@ -1,5 +1,28 @@
 import random
+#load english.txt itterate through char by char
+#build giant list of characters, and count letters
+#CREATE DICt keys = letters values = count
+#convert to giant list(most frequent letters first)
 
+def get_word_frequecies():
+    with open('../data/english.txt', 'r', encoding='utf-8') as f:
+        contents = f.read().lower()
+    d = {}
+    for char in contents:
+        if not char.isspace():
+            if char in d:
+                d[char] += 1
+            else:
+                d[char] = 1
+    d = list(d.items())
+    d.sort(key=lambda t: t[1], reverse=True)
+
+
+    d = [t[0] for t in d]
+    return d
+
+
+ordered_letters = get_word_frequecies()
 hangman_pics = ['''
   +---+
   |   |
@@ -106,7 +129,7 @@ def check_win(guessed):
 def load_words():
     with open('../data/english.txt', 'r', encoding='utf-8') as f:
         contents = f.read().upper().split('\n')
-    words = [word for word in contents if len(word) > 8]
+    words = [word for word in contents if len(word) > 12]
 
     return words
 
@@ -137,57 +160,74 @@ def check_letter(word, guessed, letter):
 # randomly pick a word out of that list#
 words = load_words()
 
-word = random.choice(words)
 
-# make the word into a list#
 
-word = list(word)
 
-# make a list of of underscores, same length as the word#
+wins = 0
+winning_words = []
+losing_words = []
 
-guessed = ['_'] * len(word)
 
-# start a counter at 0
+for i in range(10000):
+    word = random.choice(words)
 
-death_counter = len(hangman_pics)
+    # make the word into a list#
 
-guessed_letters = []
+    word = list(word)
 
-# ask for a letter, store in a variable#
+    # make a list of of underscores, same length as the word#
 
-# Read Evaluate Print Loop
-while True:
+    guessed = ['_'] * len(word)
+
+    # start a counter at 0
+
+    death_counter = len(hangman_pics)
+
+    guessed_letters = []
+
+    # ask for a letter, store in a variable#
+
+    # Read Evaluate Print Loop
+    for ordered_letter in ordered_letters:
+        print(' '.join(guessed))
+        letter = ordered_letter.upper()
+        # check to see if the letter has been guessed before
+        # if it has, we don't try it, tell the user, express snarkiness
+
+        if list(letter) == word:
+            print('awesome, you win.')
+            break
+        elif len(letter) > 1:
+            print("One letter at a time please. b")
+            continue
+        if letter in guessed_letters:
+            print('letter already guessed, guess again. c\'mon man #snark')
+            continue
+        guessed_letters.append(letter)
+        # if there aren't any underscores in the underscore list
+        if not check_letter(word, guessed, letter):
+            death_counter -= 1
+            print(f'Letter not found. {death_counter} tries remaining.')
+            print(hangman_pics[death_counter])
+
+        print(f"Guessed letters: {', '.join(guessed_letters)}")
+
+        # if the mistake counter is 0, you lose
+        if death_counter == 0:
+            print('loser')
+            print(''.join(word))
+            losing_words.append(''.join(word))
+            break
+        if check_win(guessed):
+            print('You win!')
+            winning_words.append(''.join(word))
+            wins += 1
+            break
+
     print(' '.join(guessed))
-    letter = input('Guess a letter: \n>').upper()
-    # check to see if the letter has been guessed before
-    # if it has, we don't try it, tell the user, express snarkiness
-
-    if list(letter) == word:
-        print('awesome, you win.')
-        break
-    elif len(letter) > 1:
-        print("One letter at a time please. b")
-        continue
-    if letter in guessed_letters:
-        print('letter already guessed, guess again. c\'mon man #snark')
-        continue
-    guessed_letters.append(letter)
-    # if there aren't any underscores in the underscore list
-    if not check_letter(word, guessed, letter):
-        death_counter -= 1
-        print(f'Letter not found. {death_counter} tries remaining.')
-        print(hangman_pics[death_counter])
-
-    print(f"Guessed letters: {', '.join(guessed_letters)}")
-
-    # if the mistake counter is 0, you lose
-    if death_counter == 0:
-        print('loser')
-        print(''.join(word))
-        break
-    if check_win(guessed):
-        print('You win!')
-        break
 
 
 
+print(f'{round(wins/10000*100,2)}%')
+print(f'winning words: {",".join(winning_words)}')
+print(f'losing words: {",".join(losing_words)}')
