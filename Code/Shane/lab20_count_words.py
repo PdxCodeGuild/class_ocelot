@@ -9,7 +9,7 @@ def word_count(lines):
             words.update({word: 1})
             first_loop_count += 1
         elif word in words:
-            words[word] = words[word]+1
+            words[word] = words[word] + 1
             second_loop_count += 1
     print(f'{first_loop_count} - Original words')
     print(f'{second_loop_count} - Duplicate words')
@@ -28,11 +28,13 @@ contents = contents.lower()
 
 lines = contents.split()
 
-#check_for_pairs = lines #This is for using in version 2
+# check_for_pairs = lines #This is for using in version 2
 
-top_ten = sorted((word_count(lines)).items(), key=lambda x: x[1], reverse = True)
+"""
+
+"""
+
+top_ten = sorted((word_count(lines)).items(), key=lambda x: x[1], reverse=True)
 
 for i in range(min(10, len(top_ten))):
     print(top_ten[i])
-
-
