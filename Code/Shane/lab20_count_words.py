@@ -28,7 +28,11 @@ contents = contents.lower()
 
 lines = contents.split()
 
+#check_for_pairs = lines #This is for using in version 2
+
 top_ten = sorted((word_count(lines)).items(), key=lambda x: x[1], reverse = True)
 
 for i in range(min(10, len(top_ten))):
     print(top_ten[i])
+
+

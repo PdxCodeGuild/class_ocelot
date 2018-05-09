@@ -8,7 +8,7 @@
                             TENTH EDITION.\
 \
              ...... _Sibi cognomen in hoste\
-             \'91Fecit; et Hispanam sanguine tinxit humum._\
+             \'Fecit; et Hispanam sanguine tinxit humum._\
                                           OV. FAST. 6.\
 \
                                 London:\
@@ -193,8 +193,8 @@
         The hard unequal field,\
     They view the foe with kindling eye,\
     And, in their generous transport, cry\
-    \'93Conquer we may--perhaps must die;\
-         But never, never yield!\'94\
+    \'Conquer we may--perhaps must die;\
+         But never, never yield!\'\
 \
 \
                VIII.\
@@ -442,7 +442,7 @@
     And well their prudent councils weigh\
     The eventful danger of the day,\
         Where Britains banners shine.\
-    \'91What though the Spanish spear we foil,\
+    \'What though the Spanish spear we foil,\
     Poor were the prize, and vain the toil:--\
     Nothing is done till Britains spoil\
         Attest our victory:\
@@ -532,15 +532,15 @@
     A dusty whirlwind rides the sky,\
     A living tempest rushes by\
         With deafening clang and tread--\
-    \'91A charge! a charge! the British cry,\
-        \'91And Seymour at its head.\
+    \'A charge! a charge! the British cry,\
+        \'And Seymour at its head.\
 \
 \
                XXI.\
 \
     Belluno sees the coming storm,\
         And feels the instant need--\
-    \'91Break up the line, the column form,\
+    \'Break up the line, the column form,\
         And break and form with speed,\
     Or under Britains thundering arm\
         In rout and ruin bleed!\
@@ -549,14 +549,14 @@
         The lengthend lines are gone,\
     And broken into nimble bands\
         Across the plain they run:\
-    \'91Spur, Britain, spur thy foaming horse,\
+    \'Spur, Britain, spur thy foaming horse,\
     Oertake them in their scatterd course,\
         And sweep them from the land!\
     She spurs, she flies; in vain, in vain--\
     Already they have passd the plain,\
     And now the broken ground they gain,\
         And now, a column, stand!\
-    \'91Rein up thy courser, Britain, rein!--\
+    \'Rein up thy courser, Britain, rein!--\
     But who the tempest can restrain?\
         The mountain flood command?\
     Down the ravine, with hideous crash,\
@@ -569,7 +569,7 @@
     With glorious rashness pour along,\
         Too prodigal of life;\
     And they had died, ay every one,\
-    But Wellesley cries, \'91On, Anson, on,\
+    But Wellesley cries, \'On, Anson, on,\
     Langworth, and Albuquerque and Payne,\
     Lead Britain, Hanover, and Spain,\
         And turn the unequal strife.\
@@ -725,8 +725,8 @@
         In mingled clamours rise;\
     Till France at length before the weight\
         Of British onset flies:\
-    \'91Forward, the fiery victors shout,\
-    \'91Forward, the enemys in rout,\
+    \'Forward, the fiery victors shout,\
+    \'Forward, the enemys in rout,\
         Pursue him and he dies!\
 \
 \
@@ -1246,7 +1246,7 @@ TRAFALGAR.\
     And oft they cried, (as memory rolld\
         On Him, so late their hope and guide\
     But now a bloody corse and cold,)\
-        \'91Was it for _this_, that NELSON died?\
+        \'Was it for _this_, that NELSON died?\
 \
     For three short days, and three long nights,\
         They wrestled with the tempests force;\
@@ -1266,7 +1266,7 @@ TRAFALGAR.\
     And now they cried, (because they found\
         Old Englands fleet in all its pride,\
     While Spains and Frances hopes were drownd,)\
-        \'91It _was_ for _this_ that NELSON died!\
+        \'It _was_ for _this_ that NELSON died!\
 \
     He died, with many an hundred bold\
         And honest hearts as ever beat!--\
@@ -1401,7 +1401,7 @@ WHO DESPAIRS OF SPAIN.\
         Great in adversity,\
     Do Saragossa and her train--\
     Heroes and Saints--survive in vain,\
-    Shall they be told \'91Despair of Spain,\
+    Shall they be told \'Despair of Spain,\
         And told, alas! by _thee_?\
 \
     Oh, no; tho Frances murderous hand\
@@ -1433,7 +1433,7 @@ French army.\
 \
 St. II. l. 2.--_He of the borrowed crown._\
 \
-    \'91The _borrowed_ Majesty of England.\
+    \'The _borrowed_ Majesty of England.\
               _Shakspeare, King John._\
 \
 Joseph (el Rey botilla) was in the field, and of course nominally\
@@ -1456,7 +1456,7 @@ ramparts were very strong, constructed of immense blocks of free-stone,\
 and flanked, as it is said, with eighteen square towers; but the most\
 ancient ramparts and towers have fallen into a state of dilapidation.\
 The inhabitants themselves, indeed, have been more destructive even than\
-Time, and, to procure stones for the erection of dwelling-houses, \'91have\
+Time, and, to procure stones for the erection of dwelling-houses, \'have\
 industriously pillaged the dismantled walls, and reduced to an\
 insignificant heap of stones all those stately fragments of majesty and\
 strength, which had so long been preserved in Talavera as venerable\
@@ -1578,8 +1578,8 @@ of persons in Spain, who, to say the best of them, are inclined to\
 _temporize_; and too many of this class have found means to influence\
 the national operations.--In spite of them, however, the spirit of the\
 people may save their country; and I shall not despair, however\
-\'91Princes and Lords may flourish or may fade, of the cause of Spain,\
-till \'91the bold peasantry, its countrys pride, shall have passed under\
+\'Princes and Lords may flourish or may fade, of the cause of Spain,\
+till \'the bold peasantry, its countrys pride, shall have passed under\
 the usurpers yoke.\
 \
 \
@@ -1587,7 +1587,7 @@ St. VIII. l. 14.--_The agony of fame._\
 \
 This expression, and another in the last line of the XXVIIth Stanza, are\
 borrowed from a splendid passage of Mr. Burkes, in which, speaking of\
-Lord Keppel, he says, \'91With what zeal and anxious affection I attended\
+Lord Keppel, he says, \'With what zeal and anxious affection I attended\
 him through his trial, _that agony of his glory_--with what prodigality\
 I _squandered_ myself in courting almost every sort of enmity for his\
 sake, &c. _Burkes Works_, v. 8, p. 54.\
@@ -1599,7 +1599,7 @@ The calumniators of Sir Arthur Wellesley have been so industrious in\
 publishing their malignity, that it is unnecessary to recal to the\
 public observation any particular instance of it. In reading their base\
 absurdities, one cannot but recollect the expression of Marshal Villars\
-(I think it was) to Lewis XIV. \'91Sire, je vais combattre vos ennemis, &\
+(I think it was) to Lewis XIV. \'Sire, je vais combattre vos ennemis, &\
 je vous laisse au milieu des miens.--Sir Arthur, much worse treated\
 than M. de Villars, says nothing about it, but beats his countrys\
 enemies, and despises his own.\
@@ -1667,12 +1667,12 @@ every hour less improbable. 1812.\
 \
 St. XVII. l. 12.--_Leopards._\
 \
-This is an image which Buonaparte himself has chosen to use: \'91When I\
+This is an image which Buonaparte himself has chosen to use: \'When I\
 shall shew myself (said his speech to the Legislative Body, in Dec.\
-1809), \'91beyond the Pyrenees, the _frightened leopard_ will fly to the\
+1809), \'beyond the Pyrenees, the _frightened leopard_ will fly to the\
 ocean to avoid shame, defeat, and death.--This is bold; what follows\
 might well be called by the coarser epithet which Doctor Bentley applied\
-to the imitator of Pindar--\'91The triumph of my arms will be the triumph\
+to the imitator of Pindar--\'The triumph of my arms will be the triumph\
 of the genius of good over that of evil; of _moderation_, _order_, and\
 _morality_, over civil war, anarchy, and the bad passions!!! My\
 friendship and protection will, I hope, restore tranquillity and\
@@ -1720,7 +1720,7 @@ Morning Chronicle.\
 \
 St. XIX. l. 12.--_Strong covert._\
 \
-\'91The right, consisting of Spanish troops, extended immediately in front\
+\'The right, consisting of Spanish troops, extended immediately in front\
 of the town of Talavera, down to the Tagus. This part of the ground was\
 covered by olive-trees, and much intersected by banks and ditches. The\
 high road leading from the bridge over the Alberche, was defended by a\
@@ -1758,48 +1758,6 @@ well as to the still greater offence of miserably deteriorating what I\
 have stolen: but the first of these faults was unintentional, and I need\
 scarcely say that the second was inevitable.\
 \
-    ---- 
-\f1 \uc0\u8182 \u962 
-\f0  
-\f1 \uc0\u8005 \u964 \u953 \u962 
-\f0  
-\f1 \uc0\u968 \u940 \u956 \u945 \u952 \u959 \u957 
-\f0  
-\f1 \uc0\u8182 \u940 \u7989 \u962 
-\f0  
-\f1 \uc0\u7940 \u947 \u967 \u953 
-\f0  
-\f1 \uc0\u948 \u945 \u955 \u940 \u963 \u963 \u951 \u962 
-\f0 ,\
-    
-\f1 \uc0\u8010 \u963 \u964 
-\f0
-\f1 \uc0\u7952 \u8182 \u949 \u7984 
-\f0  
-\f1 \uc0\u959 \u8166 \u957 
-\f0  
-\f1 \uc0\u8182 \u959 \u953 \u942 \u963 \u942 
-\f0  
-\f1 \uc0\u940 \u952 \u965 \u961 \u956 \u945 \u953 \u945 
-\f0  
-\f1 \uc0\u957 \u951 \u8182 \u953 \u941 \u951 \u963 \u953 \u957 
-\f0 ,\
-    
-\f2 \uc0\u913 
-\f1 \uc0\u968 
-\f0  
-\f1 \uc0\u7936 \u965 \u964 \u953 \u962 
-\f0  
-\f1 \uc0\u963 \u965 \u957 \u941 \u967 \u949 \u965 \u949 
-\f0  
-\f1 \uc0\u8182 \u959 \u962 \u7984 \u957 
-\f0  
-\f1 \uc0\u954 \u945 \u7984 
-\f0  
-\f1 \uc0\u967 \u949 \u961 \u963 \u953 \u957 
-\f0 , 
-\f1 \uc0\u7936 \u952 \u973 \u961 \u969 \u957 
-\f0 .\
               Iliad, XV. 362.\
 \
 \
@@ -1873,21 +1831,21 @@ The 48th regiment, by whose coolness and courage (and both were severely\
 tried) the Guards were enabled to form again. Col. Donellan was\
 unfortunately severely wounded at the head of this gallant corps. 1809.\
 \
-This wound was mortal. This good and gallant man now \'91sleeps the slumber\
+This wound was mortal. This good and gallant man now \'sleeps the slumber\
 of the brave. 1810.\
 \
 \
 St. XXX. l. 7.--_He vainly toils and dies._\
 \
 I have lately observed that this line is almost literally borrowed from\
-a description of circumstances nearly similar in \'91Marmion.\
+a description of circumstances nearly similar in \'Marmion.\
 \
-      \'91While yet on Flodden side,\
-    \'91Afar, the royal standard flies,\
-    \'91And round it toils, and bleeds, and dies,\
-      \'91Our Caledonian pride.--_Cant._ IV. _St._ XXXIII.\
+      \'While yet on Flodden side,\
+    \'Afar, the royal standard flies,\
+    \'And round it toils, and bleeds, and dies,\
+      \'Our Caledonian pride.--_Cant._ IV. _St._ XXXIII.\
 \
-I have so many other and greater obligations to the author of \'91Marmion,\
+I have so many other and greater obligations to the author of \'Marmion,\
 that I should hardly have thought it worth while to notice this\
 involuntary plagiarism, but that, by doing so, I obtain an opportunity\
 of publicly acknowledging these obligations, and of expressing my\
@@ -1919,14 +1877,14 @@ their retreat towards Santa Olalla, leaving in the hands of the British\
 \
 St. XXXIII. l. 18.--_Windy car._\
 \
-\'91Ventoso gloria curru.\
+\'Ventoso gloria curru.\
 \
 \
 St. XXXIII. l. 34.--_Glory of the day._\
 \
 If, says an eloquent writer in the Quarterly Review, we cherished, in\
 _former_ circumstances of the war, a hope of the success of our efforts\
-for the assistance of Spain, and of her final deliverance, \'91We own we\
+for the assistance of Spain, and of her final deliverance, \'We own we\
 cannot consent to abandon it _now_, when such a day as that of Talavera\
 has re-established, in its old and romantic proportion, the relative\
 scale of British and French prowess; when an achievement, the recital of\
@@ -2041,7 +1999,7 @@ St. XVI.\
     _Give every streamer to the sky,_\
       _Let all your conquering cannon roar._\
 \
-\'91If any flag-officer shall die in actual service, his flag shall be\
+\'If any flag-officer shall die in actual service, his flag shall be\
 lowered half-mast, and shall continue so till he is buried; and at his\
 funeral the commanding officer present shall direct such a number of\
 minute-guns, not exceeding twenty-five, as he may think proper, to be\
@@ -2093,12 +2051,12 @@ Line 49.--_Thither shall youthful heroes climb._\
 \
 This and some other passages, (in these songs of Trafalgar,) so much\
 resemble some thoughts in the vigorous and beautiful verses entitled,\
-\'91Ulm and Trafalgar, that it is necessary for me to say that the former\
+\'Ulm and Trafalgar, that it is necessary for me to say that the former\
 were written and published in Ireland in Nov. 1805, and that it was not\
 until a very considerable time after, that I had the pleasure of reading\
 the latter, which were printed in London early, I believe, in 1806. I\
 should also add, that I think it highly improbable that my little\
-publication could have reached the author of \'91Ulm and Trafalgar, before\
+publication could have reached the author of \'Ulm and Trafalgar, before\
 his poem appeared: so that whatever coincidence there may be is purely\
 accidental. I cannot but confess that I have thought much the better of\
 my own lines since I have discovered them to have any resemblance to\
@@ -2132,14 +2090,14 @@ their heroic leader, Don Josef Palafox, is one of the most splendid and\
 extraordinary events of modern times; and if any one of my readers shall\
 not have seen the narrative of the siege published by Mr. Vaughan, I\
 cannot (though the subject is, in some degree, gone by) but recommend it\
-to his perusal, as a valuable record \'91of an event which teaches so\
+to his perusal, as a valuable record \'of an event which teaches so\
 forcibly the resources of patriotism and courage; and of an example\
 which ought not to be lost to the world.\
 \
 \
 Line 17.--_Heroes and saints._\
 \
-\'91One character which developed itself during the siege of Zaragoza, must\
+\'One character which developed itself during the siege of Zaragoza, must\
 not be overlooked in this narrative. In every part of the town where the\
 danger was most imminent, and the French the most numerous, was Padre\
 St. Jago Sass, curate of a parish of Zaragoza. As General Palafox made\
@@ -2315,7 +2273,7 @@ FIELD OF WATERLOO.\
     Now, seest thou aught in this lone scene\
     Can tell of that which late hath been?--\
         A stranger might reply,\
-    \'93The bare extent of stubble-plain\
+    \'The bare extent of stubble-plain\
     Seems lately lightend of its grain;\
     And yonder sable tracks remain\
     Marks of the peasants ponderous wain,\
@@ -2326,7 +2284,7 @@ FIELD OF WATERLOO.\
     And where the earth seems scorchd by flame,\
     To dress the homely feast they came,\
     And toild the kerchiefd village dame\
-        Around her fire of straw.\'94--\
+        Around her fire of straw.\'--\
 \
 \
                V.\
@@ -2444,13 +2402,13 @@ FIELD OF WATERLOO.\
 \
                X.\
 \
-    \'93On! On!\'94 was still his stern exclaim;\
-    \'93Confront the batterys jaws of flame!\
-        \'93Rush on the levelld gun!\
-    \'93My steel-clad cuirassiers, advance!\
-    \'93Each Hulan forward with his lance,\
-    \'93My Guard--my chosen--charge for France,\
-        \'93France and Napoleon!\'94\
+    \'On! On!\' was still his stern exclaim;\
+    \'Confront the batterys jaws of flame!\
+        \'Rush on the levelld gun!\
+    \'My steel-clad cuirassiers, advance!\
+    \'Each Hulan forward with his lance,\
+    \'My Guard--my chosen--charge for France,\
+        \'France and Napoleon!\'\
     Loud answerd their acclaiming shout,\
     Greeting the mandate which sent out\
     Their bravest and their best to dare\
@@ -2460,8 +2418,8 @@ FIELD OF WATERLOO.\
     Where danger fiercest swept the field,\
         Came like a beam of light,\
     In action prompt, in sentence brief--\
-    \'93Soldiers, stand firm,\'94 exclaimd the Chief,\
-        \'93England shall tell the fight!\'94\
+    \'Soldiers, stand firm,\' exclaimd the Chief,\
+        \'England shall tell the fight!\'\
 \
 \
                XI.\
@@ -2535,7 +2493,7 @@ FIELD OF WATERLOO.\
         The British host had stood\
     That morn gainst charge of sword and lance\
     As their own ocean-rocks hold stance,\
-    But when thy voice had said, \'93Advance!\'94\
+    But when thy voice had said, \'Advance!\'\
         They were their oceans flood.--\
     O Thou, whose inauspicious aim\
     Hath wrought thy host this hour of shame,\
@@ -2603,7 +2561,7 @@ FIELD OF WATERLOO.\
         Who, as thy flight they eyed,\
     Exclaimed,--while tears of anguish came,\
     Wrung forth by pride and rage and shame,--\
-        \'93Oh that he had but died!\'94\
+        \'Oh that he had but died!\'\
     But yet, to sum this hour of ill,\
     Look, ere thou leavst the fatal hill,\
         Back on yon broken ranks--\
@@ -2670,7 +2628,7 @@ FIELD OF WATERLOO.\
     Come, howsoeer--but do not hide\
     Close in thy heart that germ of pride,\
     Erewhile by gifted bard espied,\
-        That \'93yet imperial hope;\'94\
+        That \'yet imperial hope;\'\
     Think not that for a fresh rebound,\
     To raise ambition from the ground,\
         We yield thee means or scope.\
@@ -2711,10 +2669,10 @@ FIELD OF WATERLOO.\
     The ducal rank, the garterd knee,\
     Not these such pure delight afford\
     As that, when, hanging up thy sword,\
-    Well mayst thou think, \'93This honest steel\
+    Well mayst thou think, \'This honest steel\
     Was ever drawn for public weal;\
     And, such was rightful Heavens decree,\
-    Neer sheathed unless with victory!\'94\
+    Neer sheathed unless with victory!\'\
 \
 \
                XX.\
@@ -2912,8 +2870,8 @@ Brussels.\
 \
 Note III.\
 \
-    \'93_Confront the batterys jaws of flame!_\
-          \'93_Rush on the levelld gun!_\'94--P. 204.\
+    \'_Confront the batterys jaws of flame!_\
+          \'_Rush on the levelld gun!_\'--P. 204.\
 \
 The characteristic obstinacy of Napoleon was never more fully displayed\
 than in what we may be permitted to hope will prove the last of his\
@@ -2921,7 +2879,7 @@ fields. He would listen to no advice, and allow of no obstacles. An\
 eye-witness has given the following account of his demeanour towards the\
 end of the action:--\
 \
-\'93It was near seven oclock; Buonaparte, who, till then, had remained\
+\'It was near seven oclock; Buonaparte, who, till then, had remained\
 upon the ridge of the hill whence he could best behold what passed,\
 contemplated, with a stern countenance, the scene of this horrible\
 slaughter. The more that obstacles seemed to multiply, the more his\
@@ -2931,14 +2889,14 @@ confidence in him was boundless, he ceased not to pour down fresh\
 troops, and to give orders to march forward--to charge with the\
 bayonet--to carry by storm. He was repeatedly informed, from different\
 points, that the day went against him, and that the troops seemed to be\
-disordered; to which he only replied,--\'91_En avant! en avant!_\
+disordered; to which he only replied,--\'_En avant! en avant!_\
 \
-\'93One general sent to inform the Emperor that he was in a position which\
+\'One general sent to inform the Emperor that he was in a position which\
 he could not maintain, because it was commanded by a battery, and\
 requested to know, at the same time, in what way he should protect his\
-division from the murderous fire of the English artillery. \'91Let him\
+division from the murderous fire of the English artillery. \'Let him\
 storm the battery, replied Buonaparte, and turned his back on the\
-aid-de-camp who brought the message.\'94--_Relation de la Bataille de\
+aid-de-camp who brought the message.\'--_Relation de la Bataille de\
 Mont-Saint-Jean. Par un Temoin Occulaire._ Paris, 1815, 8vo. p. 51.\
 \
 \
@@ -2978,8 +2936,8 @@ Note V.\
 _England shall tell the fight._--P. 205.\
 \
 In riding up to a regiment which was hard pressed, the Duke called to\
-the men, \'93Soldiers, we must never be beat,--what will they say in\
-England?\'94 It is needless to say how this appeal was answered.\
+the men, \'Soldiers, we must never be beat,--what will they say in\
+England?\' It is needless to say how this appeal was answered.\
 \
 \
 Note VI.\
@@ -2989,7 +2947,7 @@ Note VI.\
 \
 A private soldier of the 95th regiment compared the sound which took\
 place immediately upon the British cavalry mingling with those of the\
-enemy, to \'93_a thousand tinkers at work mending pots and kettles_.\'94\
+enemy, to \'_a thousand tinkers at work mending pots and kettles_.\'\
 \
 \
 Note VII.\
@@ -3001,7 +2959,7 @@ No persuasion or authority could prevail upon the French troops to stand\
 the shock of the bayonet. The imperial guards, in particular, hardly\
 stood till the British were within thirty yards of them, although the\
 French author, already quoted, has put into their mouths the magnanimous\
-sentiment, \'93The guards never yield--they die.\'94 The same author has\
+sentiment, \'The guards never yield--they die.\' The same author has\
 covered the plateau, or eminence, of St Jean, which formed the British\
 position, with redoubts and entrenchments which never had an existence.\
 As the narrative, which is in many respects curious, was written by an\
