@@ -1,6 +1,5 @@
 import string
 
-
 def open_ebook_file():
     with open('clue_golden_coin.txt', 'r', encoding='utf-8') as f:
         ebook_contents = f.read()  # read the contents
@@ -61,9 +60,7 @@ while num_input != '':
 
 # c3 = open_ebook_file()
 #
-# c3 = open_ebook_file()
-#
-# c3 = open_ebook_file()
+
 
 # print(c3)
 
