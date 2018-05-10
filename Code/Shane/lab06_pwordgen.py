@@ -1,7 +1,7 @@
 import random
 import string
 
-count = int(input('lowercase?\n'))
+count = int(input('how many lowercase?\n'))
 pword = []
 for i in range(count):
     pword.append(random.choice(string.ascii_lowercase))
