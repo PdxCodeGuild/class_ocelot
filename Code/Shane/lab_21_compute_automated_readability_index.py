@@ -26,6 +26,6 @@ chars = len(re.findall(r'[\w]', contents))
 
 sentences = len(re.findall(r'[^!.?]+', contents))
 
-score = round((4.71*(chars/words)+.5*(words/sentences)-21.43)+.5)
+score = round((4.71*chars/words+.5*words/sentences-21.43)+.5)
 
 print(f'ARI score of {score} = {ari_scale[score]}')
