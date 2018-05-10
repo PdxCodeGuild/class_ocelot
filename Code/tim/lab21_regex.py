@@ -1,6 +1,7 @@
 
 import re
-import string
+import matplotlib.pyplot as plt
+
 
 with open('book.txt', 'r', encoding='utf-8') as f:
     contents = f.read().lower().replace('\n', ' ').replace('\t', ' ')
