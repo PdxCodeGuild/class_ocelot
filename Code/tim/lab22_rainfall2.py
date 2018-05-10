@@ -1,9 +1,7 @@
 
 import re
-from functools import reduce
 import matplotlib.pyplot as plt
 from dateutil.parser import parse
-
 
 
 def is_date(string):
@@ -35,7 +33,7 @@ while True:
     days = [d for d in data if s_date <= d[0] <= e_date]
     for d in days:
         if d[1] > 0:
-            plt.plot(d[0].date(), d[1] / 10, 'ro')
+            plt.plot(d[0].date(), d[1] / 10)
     plt.show()
     break
 
