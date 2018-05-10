@@ -10,7 +10,7 @@ def move_right(moves):
 
 n_rot = int(input("What n ROT Cypher do you want?\n:"))
 
-encode = input("input something to encode")
+encode = input("input something to encode\n")
 
 alpha = move_right(n_rot)
 

@@ -1,4 +1,4 @@
-import string
+import string, nltk
 
 with open('clue_golden_coin.txt', 'r', encoding='utf-8') as txt_src_in1:
 
@@ -15,21 +15,14 @@ with open('clue_golden_coin.txt', 'r', encoding='utf-8') as txt_src_in1:
 
     char_src1b = char_src1a.split()
 
-with open('clue_golden_coin.txt', 'r', encoding='utf-8') as txt_src_in1:
+# nltk stuff 1
 
-    contents = txt_src_in1.read()  # read the contents
+from nltk.corpus import stopwords
+stop_words = set(stopwords.words('english'))
+print(len(stop_words))
+print(stop_words)
 
-    contents = contents.lower()
-    contents = contents.replace('\n', ' ')
-
-    char_src1a = ''
-
-    for char_current in contents:
-        if char_current in (string.ascii_lowercase + ' '):
-            char_src1a += char_current
-
-    char_src1b = char_src1a.split()
-
+# other stuff
 word_pair_list = []
 for i in range(len(char_src1b) - 1):
     word_pair_list.append(char_src1b[i] + ' ' + char_src1b[i + 1])

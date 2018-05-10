@@ -1,107 +1,90 @@
-
+import copy
 import random
+import time
+# rules:
+# false = Any live cell with fewer than two live neighbors dies, as if caused by under population.
+# true = Any live cell with two or three live neighbors lives on to the next generation.
+# false = Any live cell with more than three live neighbors dies, as if by overpopulation.
+# true = Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.
 
-width = 11
-height = 11
 
+live_grid = []
 
-def print_grid(grids):
+height = 20
+
+width = 20
+
+def make_lst(lst, height, width ):
+    for i in range(height):
+        lst.append([])
+        for j in range(width):
+            lst[i].append(random.choice([True, False]))
+    for f in range(len(lst)):
+        lst[0][f] = False
+        lst[-f][0] = False
+        lst[f][-1] = False
+        lst[-1][f] = False
+
+def print_out(lst, height, width):
     for x in range(height):
         for y in range(width):
-            if grids[x][y] == True:
-                print('■', end='')
+            if lst[x][y]:
+                print("■", end = "")
             else:
-                print('□', end='')
+                print("□", end = "")
         print()
+    print()
+    print()
 
-
-def check_alive(cells, i, j):
-    if i < 0 or i >= width:
-        return False
-    elif j < 0 or j >= height:
-        return False
-    return cells[j][i]
-
-
-def count_alive_around_cell(cells, i, j):
-    count_of_live = 0
-    for m in range(-1,2):
-        for n in range(-1,2):
-            if m == 0 and n == 0:
-                continue
-            if check_alive(cells, j+m, i+n):
-                count_of_live += 1
-
-    return count_of_live
-
-
-
-def next_state(old_cells):
-    new_cells = []
-    for j in range(height):
-        new_cells.append([])
-        for i in range(width):
-
-            old_value = old_cells[j][i]
-            n_alive = count_alive_around_cell(old_cells, i, j)
-
-            new_value = not old_value
-
-            # apply the rules to find the new value
-            if n_alive == 2:
-                return random.choice([True, False])
-            elif n_alive == 3:
-                return True
-            elif n_alive < 2 or live_count > 3:
-                return False
-
-            new_cells[j].append(new_value)
-
-    return new_cells
-
-
-
-def rule1(count):
-    if count > 3:
+def set_state(live_count):
+    if live_count == 2:
+        pass
+    elif live_count == 3:
+        return True
+    elif live_count < 2 or live_count > 3:
         return False
 
+def live_count(grid, x, y):
+    live_count = 0
+    if grid[x - 1][y - 1] == True:
+        live_count += 1
+    if grid[x - 1][y] == True:
+        live_count += 1
+    if grid[x - 1][y + 1] == True:
+        live_count += 1
+    if grid[x][y - 1] == True:
+        live_count += 1
+    if grid[x][y + 1] == True:
+        live_count += 1
+    if grid[x + 1][y - 1] == True:
+        live_count += 1
+    if grid[x + 1][y] == True:
+        live_count += 1
+    if grid[x + 1][y + 1] == True:
+        live_count += 1
+    return live_count
 
-grid = []
+def counts(change_grid, height, width):
+    for x in range(1, height -1):
+        for y in range(1, width -1):
+            change_grid[x][y] = (live_count(live_grid,x,y))
+    return change_grid
 
-for j in range(height):
-    grid.append([])
-    for i in range(width):
-        grid[j].append(random.choice([True, False]))
+def change_state(live_grid, height, width):
+    for x in range(height):
+        for y in range(width):
+            live_grid[x][y] = set_state(live_grid[x][y])
+    return live_grid
 
-# for f in range(len(grid)):
-#     grid[0][f] = False
-#     grid[-f][0] = False
-#     grid[f][-1] = False
-#     grid[-1][f] = False
+make_lst(live_grid, height, width)
 
+while True:
+    change_grid = copy.deepcopy(live_grid)
 
-# rules:
-# Any live cell with fewer than two live neighbors dies, as if caused by under population.
-# Any live cell with two or three live neighbors lives on to the next generation.
-# Any live cell with more than three live neighbors dies, as if by overpopulation.
-# Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.
+    counts(change_grid,height, width)
 
+    live_grid = change_state(change_grid, height, width)
 
-# for j in range(1, height-1):
-#     for i in range(1, width-1):
-#         cell = grid[j][i]
-#         if grid[j][i]:
-#             count_alive_around_cell(cell)
-#         else:
-#             print("off")
-#
+    print_out(live_grid, height, width)
 
-
-
-for i in range(100):
-    print_grid(grid)
-
-    grid = next_state(grid)
-    input()
-
-
+    time.sleep(.4)
