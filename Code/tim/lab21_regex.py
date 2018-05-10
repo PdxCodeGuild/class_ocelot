@@ -1,5 +1,6 @@
 
 import re
+import string
 
 with open('book.txt', 'r', encoding='utf-8') as f:
     contents = f.read().lower().replace('\n', ' ').replace('\t', ' ')
@@ -21,12 +22,11 @@ ari_scale = {
     14: {'ages': '18-22', 'grade_level':      'College'}
 }
 
-regex = r'([a-zA-Z]+)'
 t_words = 0
 t_words_len = 0
 t_sent = 0
 
-sentences = re.split(regex, contents)
+sentences = re.split('[.?!]', contents)
 for s in sentences:
     words = s.split(' ')
     if len(words) > 1:
