@@ -6,7 +6,7 @@ with open(bk_name, 'r', encoding='utf-8') as bk_contents:
     bk_contents = bk_contents.read()  # read the contents
 
 # make word list of book contents
-wds_all = bk_contents.split()
+# wds_all = bk_contents.split()
 
 characters = len(re.findall(r'\w', bk_contents))
 
