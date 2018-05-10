@@ -14,7 +14,7 @@ def grading_v1(score):
     else:
         print("F")
 
-gradingv1(int(input("What's your test (0-100) score please?\n")))
+gradingv1=(int(input("What's your test (0-100) score please?\n")))
 
 def roundup(num):
     if num == 100:

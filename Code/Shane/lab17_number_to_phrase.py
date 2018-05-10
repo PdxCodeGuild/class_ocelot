@@ -41,7 +41,7 @@ z_19 = {   0: '',
            80: 'eighty',
            90: 'ninety', }
 
-x = 9
+x = int(input("Input a number\n"))
 
 remain = x
 

@@ -21,5 +21,5 @@ while True:
 
     print(
         f'Your change is {change_lst[0]} quarters, {change_lst[1]} dimes, {change_lst[2]} nickles, {change_lst[3]} pennies')
-    if input('run again?, hit enter otherwise typ no\n:').lower() == 'no':
+    if input('run again?, hit enter otherwise type no\n:').lower() == 'no':
         break

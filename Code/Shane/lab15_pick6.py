@@ -45,5 +45,5 @@ for i in range(times_to_run):
     addition = check_if_win(winning_numbers, computer_ticket)
     balance += addition
 
-print(f"balance = {balance}")
+print(f"balance = ${balance}")
 print(f"ROI = {round((balance/(2*times_to_run))*100)}%")
