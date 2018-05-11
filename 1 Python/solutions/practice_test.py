@@ -115,7 +115,7 @@ def common_elements(nums1, nums2):
 
     common_nums = []
     for n in nums1:
-        if n in nums2
+        if n in nums2:
             common_nums.append(n)
     return common_nums
 
@@ -192,7 +192,7 @@ combine(['a', 'b', 'c'], [1, 2, 3])  # → ['a', 1, 'b', 2, 'c', 3]
 
 def find_pair(nums, target):
     for i in range(len(nums)):
-        for j in range(i + 1, len(nums))
+        for j in range(i + 1, len(nums)):
             if nums[i] + nums[j] == target:
                 return [nums[i], nums[j]]
 
