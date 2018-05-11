@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
-import string, re, datetime
-import requests
+import string, re, datetime, requests
 
 # get data from web
 url = 'https://or.water.usgs.gov/non-usgs/bes/'
@@ -21,22 +20,21 @@ i = int(45)
 
 data_source_1 = get_file(locations[i])
 
-# get data from
-date_rain1 = re.findall(r'(\d+-\w+-\d\d\d\d) *(\d+)', data_source_1)
+# use regex to extract rainfall per date
+rain_data = re.findall(r'(\d+-\w+-\d\d\d\d) *(\d+)', data_source_1)
 
 def parse_date(date_str):
     date = datetime.datetime.strptime(date_str, '%d-%b-%Y')
     return (date.year, date.month, date.day)
 
-
 d = {}
-for i in range(len(date_rain1)):
-    date_1 = date_rain1[i][0]
-    d[parse_date(date_1)] = int(date_rain1[i][1])
+for i in range(len(rain_data)):
+    date_1 = rain_data[i][0]
+    d[parse_date(date_1)] = int(rain_data[i][1])
     # convert date to datetime
     date = datetime.datetime.strptime(date_1, '%d-%b-%Y')
-    daily_total = int(date_rain1[i][1])
-    date_rain1[i] = (date, daily_total)
+    daily_total = int(rain_data[i][1])
+    rain_data[i] = (date, daily_total)
     #date_rain1[i][1] = int(date_rain1[i][1])
 
 
@@ -56,6 +54,12 @@ td_y = [t[1] for t in ten_day3]
 
 plt.plot(td_x, td_y)
 plt.show()
+
+# plt.bar(td_x, td_y, 128)
+# plt.show()
+#
+# plt.bar(td_x, td_y, 128)
+# plt.show()
 
 
 print(ten_day3)

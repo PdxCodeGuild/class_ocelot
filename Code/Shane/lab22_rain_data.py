@@ -48,8 +48,8 @@ elif y_m_d == "day":
 
 # print(mlist)
 
-# average = sum([r[1] for r in ymd_data]) / len(ymd_data)
-# print(average)
+average = sum([r[1] for r in ymd_data]) / len(ymd_data)
+print(average)
 
 
 
