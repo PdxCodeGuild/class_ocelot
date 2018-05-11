@@ -18,3 +18,5 @@ print('\n'.join([f'{i} {location}' for i, location in enumerate(locations)]))
 i = int(input('enter a number: '))
 print(get_file(locations[i]))
 
+
+
