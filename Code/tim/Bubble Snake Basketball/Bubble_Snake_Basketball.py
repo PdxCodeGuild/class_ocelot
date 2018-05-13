@@ -1,4 +1,4 @@
-import graphics
+import graphics as gr
 import math
 import time as sleeper
 import random
@@ -8,14 +8,24 @@ class Balls:
 
     def __init__(self, win, ball, r):
         self.ball = ball
-        self.cir = graphics.Circle(graphics.Point(ball.getX(), ball.getY()), r)
+        self.cir = gr.Circle(gr.Point(ball.getX(), ball.getY()), r)
+        if r > 3:
+            self.cir.setFill('Blue')
+
+        else:
+            self.cir.setFill('Yellow')
         self.cir.draw(win)
 
-    def update(self):
+    def update(self, o_ct, win):
         p = self.cir.getCenter()
         x = p.getX()
         y = p.getY()
         self.cir.move(self.ball.getX() - x, self.ball.getY() - y)
+        if o_ct > 0:
+            if o_ct % 2 == 0:
+                self.cir.undraw()
+            else:
+                self.cir.draw(win)
 
     def delete(self):
         self.cir.undraw()
@@ -30,31 +40,40 @@ class Bouncy:
         self.xvel = vel * math.cos(theta)
         self.yvel0 = vel * math.sin(theta)
 
-    def update(self, time, w, ang, vel):
-        self.xpos += time * self.xvel
-        yvel1 = self.yvel0 - 50 * time
+    def update(self, time, w, ang, vel, a_zone, b_dir, b_pos):
+        if b_dir != '' and b_pos == 0 and self.ypos + time * (self.yvel0 * 2 - 70 * time) / 2.0 <= 0:
+            set_action_zone(self.xpos + time * self.xvel, 0, b_dir, a_zone)
+            b_dir = ''
+        for a in a_zone:
+            if a[0] + .5 > self.xpos > a[0] - .5 and a[1] + .5 > self.ypos > a[1] - .5 and b_pos == a[3]:
+                if a[2] == 'up':
+                    self.flutter(vel)
+                    a[3] += 1
+                elif a[2] == 'down':
+                    self.plunge()
+                    a[3] += 1
+        yvel1 = self.yvel0 - 140 * time
         self.ypos += time * (self.yvel0 + yvel1) / 2.0
-        self.yvel0 = yvel1 * .99
+        self.yvel0 = yvel1
+        self.xpos += time * self.xvel
         if self.xpos > w:
             self.reset_left()
-        elif self.xpos < 0:
+        elif self.xpos <= 0:
             self.reset_right(w)
         if self.ypos < 0:
             self.bounce(ang, vel)
-            return True
-
-    def go_right(self):
-        self.xvel = abs(self.xvel)
-
-    def go_left(self):
-        self.xvel = -abs(self.xvel)
+        for a in a_zone:
+            if a[0] + .5 > self.xpos > a[0] - .5 and a[1] + .5 > self.ypos > a[1] - .5 and b_pos == a[3]:
+                if a[2] == 'left':
+                    self.xvel = -abs(self.xvel)
+                    a[3] += 1
+                elif a[2] == 'right':
+                    self.xvel = abs(self.xvel)
+                    a[3] += 1
+        return b_dir
 
     def plunge(self):
-        self.yvel0 = -300
-
-    def jump(self, ang, vel):
-        theta = math.radians(ang)
-        self.yvel0 = vel * math.sin(theta)
+        self.yvel0 = -400
 
     def bounce(self, ang, vel):
         theta = math.radians(ang)
@@ -64,7 +83,7 @@ class Bouncy:
         self.yvel0 *= .95
 
     def flutter(self, vel):
-        self.yvel0 = vel * .3
+        self.yvel0 = vel * .32
 
     def getY(self):  # didn't work with name "get_y"?
         return self.ypos
@@ -89,7 +108,7 @@ class Floater:
 
     def update(self, time, w):
         self.xpos += time * self.xvel
-        yvel1 = self.yvel0 + 50 * time
+        yvel1 = self.yvel0 + 140 * time
         self.ypos += time * (self.yvel0 + yvel1) / 2.0
         self.yvel0 = yvel1
         self.xvel *= .95
@@ -121,7 +140,8 @@ class Target:
 
     def __init__(self, win, r, h, tar_wid, tar_max_vel, tar_acc):
         self.center = r - tar_wid // 2
-        self.ov = graphics.Oval(graphics.Point(r - tar_wid, h), graphics.Point(r, h + 5))
+        self.ov = gr.Oval(gr.Point(r - tar_wid, h), gr.Point(r, h + 5))
+        self.ov.setFill('green')
         self.ov.draw(win)
         self.max_vel = tar_max_vel
         self.acc = tar_acc
@@ -163,96 +183,235 @@ class Target:
 class Monster:
 
     def __init__(self, win, r, mon_wid, mon_max_vel, mon_acc):
-        self.center = r - mon_wid // 2
-        self.sq = graphics.Rectangle(graphics.Point(r - mon_wid, 0), graphics.Point(r, mon_wid))
+        self.xpos = r - mon_wid / 2
+        self.ypos = mon_wid / 2
+        self.yvel0 = 0
+        self.xvel0 = 0
+        self.sq = gr.Rectangle(gr.Point(r - mon_wid, 0), gr.Point(r, mon_wid))
+        self.sq.setFill('Red')
         self.sq.draw(win)
         self.max_vel = mon_max_vel
         self.acc = mon_acc
-        self.xvel0 = 0.0
 
-    def move(self, time, x, w):
-        if self.center >= x:
+    def move(self, time, x, j_speed, mon_wid):
+        if j_speed > 0:
+            yvel1 = self.yvel0 + j_speed
+        else:
+            yvel1 = self.yvel0 - 180 * time
+        move_y = (self.yvel0 + yvel1) / 2
+        if self.ypos + move_y <= mon_wid / 2:
+            move_y = mon_wid / 2 - self.ypos
+            self.yvel0 = 0
+        else:
+            self.yvel0 = yvel1
+        self.ypos += move_y
+        if self.xpos >= x:
             xvel1 = min(self.xvel0 - self.acc, self.max_vel)
-            self.sq.move(time * (self.xvel0 + xvel1) / 2, 0)
-            self.center += time * (self.xvel0 + xvel1) / 2
+            self.sq.move(time * (self.xvel0 + xvel1) / 2, move_y)
+            self.xpos += time * (self.xvel0 + xvel1) / 2
             self.xvel0 = xvel1
         else:
             xvel1 = max(self.xvel0 + self.acc, -self.max_vel)
-            self.sq.move(time * (self.xvel0 + xvel1) / 2, 0)
-            self.center += time * (self.xvel0 + xvel1) / 2
+            self.sq.move(time * (self.xvel0 + xvel1) / 2, move_y)
+            self.xpos += time * (self.xvel0 + xvel1) / 2
             self.xvel0 = xvel1
 
-    def check_hit(self, a_code, bx, mon_wid):
-        if a_code == 'jump':
-            if self.center - mon_wid / 2 <= bx <= self.center + mon_wid / 2:
+    def check_hit(self, yvel, bx, by, mon_wid):
+        in_x = self.xpos - mon_wid / 2 <= bx <= self.xpos + mon_wid / 2
+        in_y = self.ypos - mon_wid / 2 <= by <= self.ypos + mon_wid / 2
+        if in_x and in_y:
+            if yvel < -400 and self.yvel0 >= 0:
                 return 'pop'
-        elif a_code != 'pass':
-            if self.center - mon_wid / 2 <= bx <= self.center + mon_wid / 2:
+            else:
                 return 'ouch'
 
     def new_target(self, r):
         self.sq.move(r, 0)
-        self.center += r
+        self.xpos += r
         self.xvel0 = 0.0
 
     def getX(self):
-        return self.center
+        return self.xpos
+
+    def getY(self):
+        return self.ypos
 
     def delete(self):
         self.sq.undraw()
 
 
+class Minion:
+
+    def __init__(self, win, x, min_wid, min_jump):
+        self.xpos = x + 100
+        self.ypos = min_wid / 2
+        self.yvel0 = 0
+        self.xvel = 0
+        self.tri = gr.Polygon(gr.Point(x + 100 - min_wid / 2, 0), gr.Point(x + 100 + min_wid / 2, 0),
+                              gr.Point(x + 100, min_wid))
+        self.tri.setFill('Red')
+        self.tri.draw(win)
+        self.jump = min_jump * 3
+        self.wid = min_wid
+
+    def update(self, time, min_wid):
+        yvel1 = 0
+        if self.ypos > min_wid / 2 or self.yvel0 > 0:
+            yvel1 = self.yvel0 - 180 * time
+        move_y = time * (self.yvel0 + yvel1) / 2
+        if self.ypos + move_y <= min_wid / 2:
+            move_y = min_wid / 2 - self.ypos
+            self.yvel0 = 0
+            self.xvel = 0
+        else:
+            self.yvel0 = yvel1
+        self.xpos += time * self.xvel
+        self.ypos += move_y
+        self.tri.move(time * self.xvel, move_y)
+
+    def shrink(self, t, min_wid, win):
+        t = max(t, 1)
+        off_x = min_wid * t / 2
+        self.tri.undraw()
+        self.tri = gr.Polygon(gr.Point(self.getX() - off_x, 0), gr.Point(self.getX() + off_x, 0),
+                              gr.Point(self.getX(), min_wid / t))
+        self.tri.setFill('Red')
+        self.tri.draw(win)
+        self.wid = off_x * 2
+        #self.ypos = min_wid / t / 2
+
+    def hop(self, x, min_wid, win):
+        self.tri.undraw()
+        self.tri = gr.Polygon(gr.Point(self.getX() - min_wid / 2, 0), gr.Point(self.getX() + min_wid / 2, 0),
+                              gr.Point(self.getX(), min_wid))
+        self.tri.setFill('Red')
+        self.tri.draw(win)
+        theta = math.radians(45)
+        self.xvel = self.jump * math.cos(theta) * (1 if self.xpos < x else -1)
+        self.yvel0 = self.jump * math.sin(theta)
+        self.wid = min_wid
+        self.ypos = min_wid / 2
+
+    def check_hit(self, yvel, bx, by):
+        x_eps = self.wid / 2
+        y_eps = min(x_eps, self.ypos)
+        if self.getX() - x_eps <= bx <= self.getX() + x_eps and self.getY() - y_eps <= by <= self.getY() + y_eps:
+            if yvel < -400:
+                return 'pop'
+            else:
+                return 'ouch'
+
+    def new_target(self, r, min_wid, win):
+        new_x = self.xpos + r
+        self.tri.undraw()
+        self.tri = gr.Polygon(gr.Point(new_x - min_wid / 2, 0), gr.Point(new_x + min_wid / 2, 0),
+                              gr.Point(new_x, min_wid))
+        self.tri.setFill('Red')
+        self.tri.draw(win)
+        self.xpos = new_x
+        self.ypos = min_wid / 2
+        self.wid = min_wid
+        self.xvel0 = 0.0
+
+
+    def getX(self):
+        return self.xpos
+
+    def getY(self):
+        return self.ypos
+
+    def delete(self):
+        self.tri.undraw()
+
+
+class Silo:
+
+    def __init__(self, win, x, min_wid, min_jump):
+        self.xpos = x
+        self.tri = gr.Polygon(gr.Point(x - min_wid / 2, 0), gr.Point(x + min_wid / 2, 0), gr.Point(x, min_wid * 2))
+        self.tri.setFill('Red')
+        self.tri.draw(win)
+        self.jump = min_jump * 3
+        self.wid = min_wid
+
+
+# class Missle:
+
+
+
+def set_action_zone(x, y, ck, a_zone):
+    a_zone.append([x, y, ck, 0])
+
+
 def get_inputs():
     a = int(input('What difficulty level?\n > '))
-    # settings [t_size, t_vel, t_acc, m_size, m_vel, m_acc]
     if a == 1:
-        settings = [80, 0, 0, 40, 0, 0]
+        settings = [100, 0, 0, 60, 0, 0, 0, 50, 30] # t_size, t_vel, t_acc, m_size, m_vel, m_acc, j_speed, j_freq, min_wid
     elif a == 2:
-        settings = [70, 6, 1, 50, 8, .8]
+        settings = [90, 10, 1, 60, 6, .8, 40, 50, 30] # t_size, t_vel, t_acc, m_size, m_vel, m_acc, j_speed, j_freq, min_wid
     elif a == 3:
-        settings = [60, 12, 1.5, 60, 12, 1]
+        settings = [80, 16, 1.5, 60, 16, 1, 50, 40, 30] # t_size, t_vel, t_acc, m_size, m_vel, m_acc, j_speed, j_freq, min_wid
     elif a == 4:
-        settings = [50, 18, 1.8, 70, 20, 1.2]
+        settings = [70, 24, 1.8, 60, 24, 1.2, 64, 30, 30] # t_size, t_vel, t_acc, m_size, m_vel, m_acc, j_speed, j_freq, min_wid
     else:
-        settings = [40, 24, 2, 80, 30, 1.5]
-    ang = 60
-    vel = 260
+        settings = [50, 34, 2, 60, 30, 1.5, 80, 20, 30] # t_size, t_vel, t_acc, m_size, m_vel, m_acc, j_speed, j_freq, min_wid
+    return settings[0], settings[1], settings[2], settings[3], settings[4], settings[5], settings[6], settings[7], settings[8]
+
+
+def get_lit():
+    w = 1500
+    h = 600
+    l_ct = 0
+    f_ct = 0
+    o_ct = 0
+    score = 0
+    turn = 0
+    ang = 55
+    vel = 400
     freq = 2
-    hei = 0
-    time = .1
-    return settings[0], settings[1], settings[2], settings[3], settings[4], settings[5], ang, vel, freq, hei, time
+    hei = 80
+    time = .05
+    b_balls = []
+    f_balls = []
+    a_zone = []
+    b_dir = ''
+    hit = False
+    return w, h, l_ct, f_ct, o_ct, score, turn, ang, vel, freq, hei, time, b_balls, f_balls, a_zone, b_dir, hit
+
+
+def random_dir():
+    return 1 if random.randrange(2) == 1 else -1
 
 
 def main():
-    w = 1500
-    h = 600
-    tar_wid, tar_max_vel, tar_acc, mon_wid, mon_max_vel, mon_acc, ang, vel, freq, hei, time = get_inputs()
-    win = graphics.GraphWin('BUBBLE SNAKE BASKETBALL', w, h)
+
+    w, h, l_ct, f_ct, o_ct, score, turn, ang, vel, freq, hei, time, b_balls, f_balls, a_zone, b_dir, hit = get_lit()
+    tar_wid, tar_max_vel, tar_acc, mon_wid, mon_max_vel, mon_acc, j_speed, j_freq, min_wid = get_inputs()
+    win = gr.GraphWin('BUBBLE SNAKE BASKETBALL', w, h)
     win.setCoords(0, 0, w, h)
-    tar = Target(win, random.randrange(w // 2, w) - 10, h - 5, tar_wid, tar_max_vel, tar_acc)
-    mon = Monster(win, random.randrange(w // 2, w) - 10, mon_wid, mon_max_vel, mon_acc)
-    b_ct = 0
-    f_ct = 0
-    score = 0
-    fx = 0
-    px = 0
-    l_ck = ''
-    turn = -1
-    changing = False
-    b_balls = []
-    f_balls = []
+
+    tx = random.randrange(w // 2, w) - 10
+    mx = random.randrange(w // 2, w) - 10
+    tar = Target(win, tx, h - 5, tar_wid, tar_max_vel, tar_acc)
+    mon = Monster(win, mx, mon_wid, mon_max_vel, mon_acc)
+    mini = Minion(win, mx, min_wid, j_speed)
+
     while True:
-        sleeper.sleep(.05)
-        b_ct += 1
-        if b_ct % freq == 1 and len(b_balls) + f_ct < 10:
+
+        sleeper.sleep(time)
+        l_ct += 1
+        if l_ct % freq == 1 and len(b_balls) + f_ct < 10:
             b = Bouncy(ang, vel, hei)
-            t = Balls(win, b, 2)
-            b_balls.append([b, t, ''])
+            t = Balls(win, b, 3)
+            b_balls.append([b, t])
+        elif l_ct > 25:
+            if l_ct % (freq * 40) == 0:
+                mini.hop(mon.getX(), min_wid, win)
+                l_ct = 0
+            elif mini.getY() <= min_wid / 2:
+                mini.shrink((l_ct - 25) / (freq * 10), min_wid, win)
+
         ck = win.checkKey().lower()
-        if ck != '' and ck != 'space' and not changing:
-            turn = 0
-            for b in b_balls:
-                b[2] = ck
         if ck == 'space':
             b = Floater(b_balls[0][0].getX(), b_balls[0][0].getY(), b_balls[0][0].xvel, b_balls[0][0].yvel0)
             t = Balls(win, b, 5)
@@ -260,87 +419,78 @@ def main():
             b_balls[0][1].delete()
             b_balls.remove(b_balls[0])
             f_ct += 1
-            if changing:
-                turn -= 1
+        elif ck != '' and len(b_balls) > 0:
+            if ck == 'left' or ck == 'right':
+                b_dir = ck
+            else:
+                set_action_zone(b_balls[0][0].getX(), b_balls[0][0].getY(), ck, a_zone)
+
+        if o_ct > 0:
+            if o_ct > 30:
+                hit = False
+                o_ct = 0
+            else:
+                o_ct += 1
+
         for b in b_balls:
-            j = b[0].update(time, w, ang, vel)
-            if j and b[2] != '' and b_balls.index(b) == turn:
-                turn += 1
-                if b == b_balls[0]:
-                    changing = True
-                if b == b_balls[-1]:
-                    changing = False
-                    turn = -1
-                if b[2] == 'right':
-                    b[0].go_right()
-                elif b[2] == 'left':
-                    b[0].go_left()
-                elif b[2] == 'jump':
-                    b[0].jump(ang, vel)
-            elif b[2] == 'down' and b_balls.index(b) == turn:
-                if b == b_balls[0]:
-                    changing = True
-                    px = b[0].getX()
-                if b[0].xvel > 0 and b[0].getX() >= px:
-                    b[0].plunge()
-                    b[2] = 'jump'
-                    turn += 1
-                    if b == b_balls[-1]:
-                        changing = False
-                        turn = -1
-                        fx = 0
-                elif b[0].xvel < 0 and b[0].getX() <= px:
-                    b[0].plunge()
-                    b[2] = 'jump'
-                    turn += 1
-                    if b == b_balls[-1]:
-                        changing = False
-                        turn = -1
-                        fx = 0
-            elif b[2] == 'up' and b_balls.index(b) == turn:
-                if b == b_balls[0]:
-                    changing = True
-                    fx = b[0].getX()
-                if b[0].xvel > 0 and b[0].getX() >= fx:
-                    b[0].flutter(vel)
-                    b[2] = ''
-                    turn += 1
-                    if b == b_balls[-1]:
-                        changing = False
-                        turn = -1
-                        fx = 0
-                elif b[0].xvel < 0 and b[0].getX() <= fx:
-                    b[0].flutter(vel)
-                    b[2] = ''
-                    turn += 1
-                    if b == b_balls[-1]:
-                        changing = False
-                        turn = -1
-                        fx = 0
-            b[1].update()
-            if b[0].getY() < mon_wid:
-                m = mon.check_hit(b[2], b[0].getX(), mon_wid)
-                if m == 'pop':
+            if o_ct == 0:
+                mon_ck = mon.check_hit(b[0].yvel0, b[0].getX(), b[0].getY(), mon_wid)
+                if mon_ck == 'pop':
+                    puff = -random.randrange(10, 50)
                     for i in range(3):
-                        puff = random.randrange(-80,80)
-                        if abs(puff) < 20:
-                            puff = 20 if puff > 0 else -20
-                        b = Floater(mon.getX(), mon_wid / 2, puff, 0)
-                        t = Balls(win, b, 5)
-                        f_balls.append([b, t])
-                    mon.new_target(random.randrange(.3 * w, .7 * w) - mon.getX())
-                elif m == 'ouch':
-                    b = Floater(b_balls[0][0].getX(), b_balls[0][0].getY(), b_balls[0][0].xvel, b_balls[0][0].yvel0)
-                    t = Balls(win, b, 5)
-                    f_balls.append([b, t])
-                    b_balls[0][1].delete()
-                    b_balls.remove(b_balls[0])
-                    for b in b_balls:
-                        b[2] = 'pass'
-                    f_ct += 1
+                        nb = Floater(mon.getX(), mon_wid / 2, puff, 0)
+                        t = Balls(win, nb, 5)
+                        f_balls.append([nb, t])
+                        puff += random.randrange(10, 50)
+                    mon.new_target(random.randrange(.2 * w, .3 * w) * random_dir())
+                elif mon_ck == 'ouch':
+                    hit = True
+                min_ck = mini.check_hit(b[0].yvel0, b[0].getX(), b[0].getY())
+                if min_ck == 'pop':
+                    l_ct = 0
+                    puff = -random.randrange(20, 50)
+                    for i in range(3):
+                        nb = Floater(mini.getX(), min_wid / 2, puff, 0)
+                        t = Balls(win, nb, 5)
+                        f_balls.append([nb, t])
+                        puff += random.randrange(20, 50)
+                    mini.new_target(random.randrange(.2 * w, .3 * w) * random_dir(), min_wid, win)
+                elif min_ck == 'ouch':
+                    hit = True
+            b_dir = b[0].update(time, w, ang, vel, a_zone, b_dir, b_balls.index(b))
+            b[1].update(o_ct, win)
+
+        if len(b_balls) > 0:
+            x = b_balls[0][0].getX()
+        else:
+            x = w // 2
+        mon.move(time, x, (random.randrange(j_freq) == 0 and mon.getY() <= mon_wid / 2) * j_speed, mon_wid)
+        mini.update(time, min_wid)
+
+        if hit and o_ct == 0:
+            nb = Floater(b_balls[0][0].getX(), b_balls[0][0].getY(), b_balls[0][0].xvel, b_balls[0][0].yvel0)
+            t = Balls(win, nb, 5)
+            f_balls.append([nb, t])
+            b_balls[0][1].delete()
+            b_balls.remove(b_balls[0])
+            o_ct = 1
+            f_ct += 1
+            for a in a_zone:
+                a[3] -= 1
+
+        for a in a_zone:
+            if a[3] >= len(b_balls):
+                a_zone.remove(a)
+
+        t = tar.move(time, x, w)
+        if t == 'over':
+            tar.new_target(-random.randrange(w // 3, 2 * w // 3))
+        elif t == 'under':
+            tar.new_target(random.randrange(w // 3, 2 * w // 3))
+
         for f in f_balls:
             f[0].update(time, w)
-            f[1].update()
+            f[1].update(0, win)
             if f[0].getY() > h - 5:
                 if tar.check_floater(f[0].getX(), tar_wid):
                     score += 1
@@ -348,17 +498,7 @@ def main():
                 f[1].delete()
                 f_balls.remove(f)
                 if f_ct == 10 and len(f_balls) == 0:
-                    return (score)
-        if len(b_balls) > 0:
-            x = b_balls[0][0].getX()
-        else:
-            x = w // 2
-        t = tar.move(time, x, w)
-        if t == 'over':
-            tar.new_target(-random.randrange(tar_wid + 50, w - 10))
-        elif t == 'under':
-            tar.new_target(random.randrange(tar_wid + 50, w - 10))
-        mon.move(time, x, w)
+                    return score
 
-score = main()
-print(f'You got a {score}')
+
+print(f'You got a {main()}')
