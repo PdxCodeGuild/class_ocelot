@@ -1,21 +1,5 @@
 
-
-
-
-
-
-
-
-
-data = []
-with open('rain_output.csv', 'r') as f:
-    contents = f.read()
-    lines = contents.split('\n')
-    lines.pop(0) # remove header
-    for line in lines:
-        if line == '':
-            continue
-        line = line.split(',')
-        data.append([float(v) if v != '' else -1 for v in line])
-
-
+n_lines = 100
+with open('../../1 Python/data/Open_Data_Sheet_data.csv', 'r') as f:
+    lines = [next(f) for _ in range(n_lines)]
+print('\n'.join(lines))
