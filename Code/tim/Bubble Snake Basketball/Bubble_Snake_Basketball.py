@@ -451,7 +451,6 @@ class Bonus:
         self.cir.undraw()
 
     def check_hit(self, bx, by):
-        print(self.cir.getCenter(), bx, by)
         if self.life < 175 and self.getX() - 7 <= bx <= self.getX() + 7 and -5 <= by <= 8:
             return 'pick'
 
