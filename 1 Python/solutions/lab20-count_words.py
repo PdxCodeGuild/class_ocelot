@@ -6,16 +6,11 @@ import math
 with open('the_clue_of_the_gold_coin.txt', 'r', encoding='utf-8') as f:
     contents = f.read().lower().replace('’', '')
 
-<<<<<<< HEAD
-lines = contents.split('\n')
 
-for line in lines:
-    print(line)
-=======
 #words = re.findall(r'\b[^A-Z\s\d]+\b', contents, re.UNICODE)
 words = re.findall(r'\b[A-Za-z]+\b', contents, re.UNICODE)
 print(words)
->>>>>>> origin/master
+
 
 pairs = []
 for i in range(len(words)-1):
@@ -31,6 +26,7 @@ for pair in pairs:
     pair_counts[pair] = pair_counts.get(pair, 0) + 1
 pair_counts = list(pair_counts.items())
 pair_counts.sort(key=lambda t: t[1], reverse=True)
+print(pair_counts)
 pair_links = {}
 for pair_count in pair_counts:
     word1 = pair_count[0][0]
@@ -40,6 +36,7 @@ for pair_count in pair_counts:
     else:
         pair_links[word1] = [word2]
 
+print(pair_links)
 
 def clamp(v, low, high):
     return low if v < low else high if v > high else v
@@ -51,16 +48,22 @@ word = random.choice(words)
 #total = 0
 for i in range(2000):
     print(word, end=' ')
-    linked_words = pair_links[word]
 
+    linked_words = pair_links[word]
     #k = int(random.expovariate(0.5)*len(linked_words))
     #k = (1-math.sqrt(random.uniform(0, 1)))*len(linked_words)
     k = random.expovariate(10)*len(linked_words)
     #total += k / len(linked_words)
+
     k = int(k)
     k = clamp(k, 0, len(linked_words)-1)
     word = linked_words[k]
-    # word = random.choice(pair_links[word])
 
 
-#print(f'{round(total/2000*100,2)}%')
+
+
+    #word = random.choice(pair_links[word])
+
+
+# print()
+# print(f'{round(total/2000*100,2)}%')
