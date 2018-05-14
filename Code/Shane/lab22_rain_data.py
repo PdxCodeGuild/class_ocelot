@@ -6,8 +6,7 @@ import matplotlib.pyplot as plt
 r = requests.get('https://or.water.usgs.gov/non-usgs/bes/hayden_island.rain')
 
 contents = r.text
-# print(contents)
-
+print(contents)
 
 # with open('rain_data.txt', 'r') as f:
 #     contents = f.read()
@@ -31,7 +30,7 @@ for x in range(len(dates_and_total)):
 # for row in dates_and_total:
 #     if row[0].month == "APR":
 #         row
-mlist =[]
+mlist = []
 
 y_m_d = input('see data for a year, month or day?\n').lower()
 input_date = int(input(f'whats the number of the {y_m_d} you want to see?\n'))
@@ -43,15 +42,12 @@ elif y_m_d == "month":
 elif y_m_d == "day":
     [mlist.append(row[1]) for row in dates_and_total if row[0].day == input_date]
 
+# rows_1998 = [row for row in dates_and_total if row[0].day == 1]
 
-#rows_1998 = [row for row in dates_and_total if row[0].day == 1]
+print(mlist)
 
-# print(mlist)
-
-average = sum([r[1] for r in ymd_data]) / len(ymd_data)
-print(average)
-
-
+# average = sum([r[1] for r in ymd_data]) / len(ymd_data)
+# print(average)
 
 
 plt.plot(mlist)
