@@ -2,7 +2,7 @@
 
 
 
-# Lab 24: Adventure
+# Lab 25: Adventure
 
 Let's build a simple board game that runs on the terminal. We'll represent the board using a **list of lists**. We'll use two `int`s to represent that player's position on the board. Every iteration of the game loop, the user will be prompted for a command. Start with the code below, and add your own modifications.
 
