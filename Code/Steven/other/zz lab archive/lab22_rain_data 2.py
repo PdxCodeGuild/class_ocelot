@@ -55,6 +55,25 @@ td_y = [t[1] for t in ten_day3]
 plt.plot(td_x, td_y)
 plt.show()
 
+# library & dataset
+from matplotlib import pyplot as plt
+import numpy as np
+
+# create data
+x = np.random.rand(15)
+y = x + np.random.rand(15)
+z = x + np.random.rand(15)
+z = z * z
+
+# Use it with a call in cmap
+plt.scatter(x, y, s=z * 2000, c=x, cmap="BuPu", alpha=0.4, edgecolors="grey", linewidth=2)
+
+# You can reverse it:
+plt.scatter(x, y, s=z * 2000, c=x, cmap="BuPu_r", alpha=0.4, edgecolors="grey", linewidth=2)
+
+# OTHER: viridis / inferno / plasma / magma
+plt.scatter(x, y, s=z * 2000, c=x, cmap="plasma", alpha=0.4, edgecolors="grey", linewidth=2)
+
 # plt.bar(td_x, td_y, 128)
 # plt.show()
 #
@@ -62,7 +81,7 @@ plt.show()
 # plt.show()
 
 
-print(ten_day3)
+# print(ten_day3)
 
 # matplotlib.pyplot.vlines(x, ymin, ymax, colors='k', linestyles='solid', label='', hold=None, data=None, **kwargs)
 
