@@ -2,10 +2,10 @@ import datetime
 import collections
 
 
-
 def now():
     date = datetime.datetime.now()
     return f'{date.year}-{date.month}-{date.day}, {date.hour}-{date.minute}-{date.second}'
+
 
 class Atm:
 
@@ -46,12 +46,10 @@ class Atm:
             self.transactions[self.transaction_count] = ('Withdrawal Failed', self.balance - amount)
             return f"Can't complete Transaction. Balance = {self.balance}"
 
-
     def check_interest(self):
         self.transaction_count += 1
         self.transactions[now()] = ('Check Interest', self.balance * self.interest)
         return f'${round(self.balance * self.interest, 2)}'
-
 
 
 p1 = Atm('Shane', 70004672920)
@@ -59,7 +57,6 @@ p1 = Atm('Shane', 70004672920)
 p2 = Atm('Tim', 12489718394)
 
 print(p1.balance, p2.balance)
-
 
 p1.check_interest()
 
@@ -82,4 +79,3 @@ p1.withdraw(3001)
 print(p1.transactions)
 
 print(p1.balance, p2.balance)
-
