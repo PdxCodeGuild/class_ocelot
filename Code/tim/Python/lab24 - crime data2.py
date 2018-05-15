@@ -7,10 +7,12 @@ raw = [r.split(',') for r in contents]
 type_dict = {}
 year_dict = {}
 targ_dict = {}
+neib_dict = {}
 
 type_index = 8
 year_index = 5
 targ_index = 2
+neib_index = 4
 
 for line in raw:
 
@@ -32,10 +34,16 @@ for line in raw:
         else:
             targ_dict[line[targ_index]] += 1
 
+        if line[neib_index] not in neib_dict:
+            neib_dict[line[neib_index]] = 1
+        else:
+            neib_dict[line[neib_index]] += 1
+
 sort_type = sorted(type_dict.items(), key=lambda k: k[1])
 sort_year = sorted(year_dict.items(), key=lambda k: k[1])
 sort_targ = sorted(targ_dict.items(), key=lambda k: k[1])
-print_str = ['', '', '']  # [type, year, targ]
+sort_neib = sorted(neib_dict.items(), key=lambda k: k[1])
+print_str = ['', '', '', '']  # [type, year, targ, neib]
 
 for i in range(1, 11):
     if len(sort_type) >= i:
@@ -47,7 +55,11 @@ for i in range(1, 11):
     if len(sort_targ) >= i:
         pad = 30 - len(sort_targ[-i][0])
         print_str[2] += '\t' + sort_targ[-i][0] + pad * ' ' + str(sort_targ[-i][1]) + '\n'
+    if len(sort_neib) >= i:
+        pad = 30 - len(sort_neib[-i][0])
+        print_str[3] += '\t' + sort_neib[-i][0] + pad * ' ' + str(sort_neib[-i][1]) + '\n'
 
 print(f'TOP 10 CRIMES BY TYPE\n{print_str[0]}')
 print(f'TOP 10 CRIMIEST YEARS\n{print_str[1]}')
 print(f'TOP 10 TARGETS OF CRIME\n{print_str[2]}')
+print(f'TOP 10 CRIMIEST NEIGHBORHOODS\n{print_str[3]}')
