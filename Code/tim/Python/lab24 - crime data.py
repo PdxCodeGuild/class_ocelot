@@ -36,7 +36,7 @@ for line in raw:
         else:
             against_dict[line[against_index]] += 1
 
-print(f'Most frequent crime type is {max(type_dict, key=lambda key: type_dict[key])}')
-print(f'Least frequent crime type is {min(type_dict, key=lambda key: type_dict[key])}')
-print(f'Most frequent crime year is {max(year_dict, key=lambda key: year_dict[key])}')
-print(f'Most frequent crime target is {max(against_dict, key=lambda key: against_dict[key])}')
+print(f'Most frequent crime type is {max(type_dict, key=lambda k: type_dict[k])}')
+print(f'Least frequent crime type is {min(type_dict, key=lambda k: type_dict[k])}')
+print(f'Most frequent crime year is {max(year_dict, key=lambda k: year_dict[k])}')
+print(f'Most frequent crime target is {max(against_dict, key=lambda k: against_dict[k])}')

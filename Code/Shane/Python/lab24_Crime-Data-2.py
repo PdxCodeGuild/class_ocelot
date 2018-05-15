@@ -5,7 +5,7 @@ def parse_csv(path):
     with open(path, 'r', encoding='utf8') as f:
         data_points = list()
 
-        lines = f.readlines()[:10]
+        lines = f.readlines()[:100]
         keys = [key.casefold().strip().replace(' ', '_').replace('\ufeff', '') for key in lines[0].split(',')]
 
         for line in lines[1:]:
