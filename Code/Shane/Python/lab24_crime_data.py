@@ -5,7 +5,7 @@ print()
 print()
 print()
 
-path = '../../../1 Python/data/Open_Data_Sheet_data.csv'
+path = '/Users/shane/Desktop/PDX_Code/full_stack/class_ocelot/1 Python/data/Open_Data_Sheet_data.csv'
 
 # f = open(path)
 # data_points = list()
@@ -19,7 +19,7 @@ path = '../../../1 Python/data/Open_Data_Sheet_data.csv'
 def parse_csv(path):
     if path.endswith('.csv'):
         with open(path) as f:
-            lines = f.readlines()[0:3]
+            lines = f.readlines()[:100]
     # print(lines)
     print()
 
@@ -34,16 +34,12 @@ def parse_csv(path):
     #     values = [value.casefold().strip() for value in line.split(',')]
     #     data_points.append(dict(zip(keys, values)))
     data_points = list()
-    values = []
-    n_line = []
     for line in lines[1:]:
-        n_line = line.split(',')
-        print(n_line)
-        print(len(n_line))
-        for value in n_line:
+        values = []
+        for value in line.split(','):
             values.append(value.lower().strip())
-            #print(values)
-            data_points.append(dict(zip(keys, values)))
+            #print(values) #testing the list build-up
+        data_points.append(dict(zip(keys, values)))
     #print(data_points)
 
     #unchanged
@@ -53,5 +49,22 @@ def parse_csv(path):
 
 data_points = parse_csv(path)
 
+#didn't change this one because it looks like a normal list comp.
+
+#added this while loop
+
+crime_against = input('property, society or person').lower()
+
+crimes = [data for data in data_points if data['crime_against'] == crime_against]
+#print(crimes)
+print(f'{len(crimes)} crimes against {crime_against} in the past 2 years\n')
+
+# crimes = sorted(crimes, key=lambda c: c['neighborhood'])....
+##### Is this right?
+# def sortting(c):
+#     return c['neighborhood']
+
+crimes_by_neighborhood
 
 
+#(crime_against\nneighborohood\noccur_time\noffense_type\n)
