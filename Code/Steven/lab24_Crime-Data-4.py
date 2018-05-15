@@ -8,7 +8,18 @@ def parse_csv(path):
         lines = f.readlines()
 
         # create keys from csv TITLES (row 0)
+
+
+        # keys = [key.casefold().strip().replace(' ', '_').replace('\ufeff', '') for key in lines[0].split(',')]
+
         keys = [key.casefold().strip().replace(' ', '_').replace('\ufeff', '') for key in lines[0].split(',')]
+
+
+
+
+
+
+
 
         # get values from each record/row/value, starting at row 1.
         for line in lines[1:]:
@@ -18,33 +29,6 @@ def parse_csv(path):
 
         return keys, data_points
 
-# def csv_headers(path):
-#
-#     # get the data from the file.
-#     with open(path, 'r', encoding='utf8') as f:
-#         data_points = list()
-#         lines = f.readlines()
-#
-#         # create keys from csv TITLES (row 0)
-#         keys = [key.casefold().strip().replace(' ', '_').replace('\ufeff', '') for key in lines[0].split(',')]
-#
-#         # create keys from csv TITLES (row 0)
-#         for line in lines[1:]:
-#             values = [value.casefold().strip() for value in line.split(',')]
-#
-#             data_points.append(dict(zip(keys, values)))
-#
-#         # create list of values from which to select (csv titles)
-#         headers_list = []
-#         for key in data_points:
-#             headers_list.append(f'{key+1}={data_points[key]}\t')
-#
-#         return headers_list
-
-
-
-
-
 
 # specify source data csv file.
 source_file = '../../1 Python/data/Open_Data_Sheet_data.csv'
@@ -52,7 +36,9 @@ source_file = '../../1 Python/data/Open_Data_Sheet_data.csv'
 keys, data_points = parse_csv(source_file)
 
 
-print(' '.join([f'{i+1} {keys[i]}' for i in range(len(keys))]))
+
+print(' '.join([f'{i+1}={keys[i]}' for i in range(len(keys))]))
+print(len(keys))
 
 # keys_list = csv_headers()
 
@@ -63,6 +49,7 @@ crimes = sorted(crimes, key=lambda c: c['offense_type'])
 
 print(len(crimes))
 crimes_by_neighborhood = dict()
+
 for neighborhood, crimes in groupby(crimes, key=lambda c: c['offense_type']):
     crimes_by_neighborhood[neighborhood] = list(crimes)
 
