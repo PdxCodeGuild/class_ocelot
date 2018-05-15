@@ -3,7 +3,6 @@ import math
 import time as sleeper
 import random
 
-
 class Balls:
 
     def __init__(self, win, ball, r):
@@ -25,7 +24,10 @@ class Balls:
             if o_ct % 2 == 0:
                 self.cir.undraw()
             else:
-                self.cir.draw(win)
+                try:
+                    self.cir.draw(win)
+                except:
+                    pass
 
     def delete(self):
         self.cir.undraw()
@@ -33,12 +35,18 @@ class Balls:
 
 class Bouncy:
 
-    def __init__(self, ang, vel, hei):
-        self.xpos = 0.0
-        self.ypos = hei
-        theta = math.radians(ang)
-        self.xvel = vel * math.cos(theta)
-        self.yvel0 = vel * math.sin(theta)
+    def __init__(self, ang, vel, hei, x_pos, y_pos, x_vel, y_vel):
+        if x_pos > 0:
+            self.xpos = x_pos
+            self.ypos = y_pos
+            self.xvel = x_vel
+            self.yvel0 = y_vel
+        else:
+            self.xpos = 0
+            self.ypos = hei
+            theta = math.radians(ang)
+            self.xvel = vel * math.cos(theta)
+            self.yvel0 = vel * math.sin(theta)
 
     def update(self, time, w, ang, vel, a_zone, b_dir, b_pos):
         if b_dir != '' and b_pos == 0 and self.ypos + time * (self.yvel0 * 2 - 70 * time) / 2.0 <= 0:
@@ -220,7 +228,7 @@ class Monster:
         in_x = self.xpos - mon_wid / 2 * 1.05 <= bx <= self.xpos + mon_wid / 2 * 1.05
         in_y = self.ypos - mon_wid / 2 * 1.05 <= by <= self.ypos + mon_wid / 2 * 1.05
         if in_x and in_y:
-            if yvel <= -380 and self.yvel0 >= 0:
+            if yvel <= -350 and self.yvel0 >= 0:
                 return 'pop'
             else:
                 return 'ouch'
@@ -279,6 +287,7 @@ class Minion:
             self.tri.draw(win)
             self.wid = off_x * 2
             self.ypos = min_wid / t / 2
+            # print(self.wid, self.ypos)
 
     def hop(self, x, min_wid, win):
         self.tri.undraw()
@@ -292,11 +301,10 @@ class Minion:
         self.wid = min_wid
         self.ypos = min_wid / 2
 
-    def check_hit(self, yvel, bx, by, min_wid):
-        x_eps = self.wid / 2 * 1.05
-        y_eps = min(x_eps, self.ypos) * 1.05
-        if self.getX() - x_eps <= bx <= self.getX() + x_eps and self.getY() - y_eps <= by <= self.getY() + y_eps:
-            if yvel <= -380:
+    def check_hit(self, bv, bx, by, min_wid):
+        eps = self.wid / 2 * 1.02
+        if self.getX() - eps <= bx <= self.getX() + eps and self.getY() - eps * 2 <= by <= self.getY() * 2.02:
+            if bv <= -350 or bv == 0:
                 if self.wid > min_wid:
                     return 'bonus'
                 else:
@@ -368,6 +376,7 @@ class Silo:
 
 
 class Missile:
+
     def __init__(self, win, x, y, ang, vel, time):
         self.xpos = x
         self.ypos = y
@@ -451,7 +460,7 @@ class Bonus:
         self.cir.undraw()
 
     def check_hit(self, bx, by):
-        if self.life < 175 and self.getX() - 7 <= bx <= self.getX() + 7 and -5 <= by <= 8:
+        if self.life < 175 and self.getX() - 10 <= bx <= self.getX() + 10 and  by <= 10:
             return 'pick'
 
     def getX(self):
@@ -476,7 +485,7 @@ def get_inputs():
     elif a == 3:
         sets = [80, 22, 1.5, 60, 16, 1, 50, 40, 30, 2, 3, 200]
     elif a == 4:
-        sets = [70, 30, 1.8, 60, 24, 1.2, 64, 30, 30, 3, 3, 250]
+        sets = [70, 30, 1.8, 60, 24, 1.2, 60, 30, 30, 3, 3, 250]
     else:
         sets = [50, 40, 2, 60, 30, 1.5, 80, 20, 30, 3, 4, 300]
     return tuple(sets)
@@ -488,6 +497,7 @@ def get_lit():
     l_ct = 0
     f_ct = 0
     o_ct = 0
+    b_ct = 0
     score = 0
     turn = 0
     ang = 55
@@ -501,10 +511,12 @@ def get_lit():
     missiles = []
     a_zone = []
     bonuses = []
+    pick_up = []
     b_dir = ''
     hit = False
-    return w, h, l_ct, f_ct, o_ct, score, turn, ang, vel, freq, hei, time, \
-        b_balls, f_balls, silos, missiles, a_zone, bonuses, b_dir, hit
+    pick_bonus = False
+    return w, h, l_ct, f_ct, o_ct, b_ct, score, turn, ang, vel, freq, hei, time, \
+        b_balls, f_balls, silos, missiles, a_zone, bonuses, pick_up, b_dir, hit, pick_bonus
 
 
 def random_dir():
@@ -513,8 +525,8 @@ def random_dir():
 
 def main():
 
-    w, h, l_ct, f_ct, o_ct, score, turn, ang, vel, freq, hei, time, \
-        b_balls, f_balls, silos, missiles, a_zone, bonuses, b_dir, hit = get_lit()
+    w, h, l_ct, f_ct, o_ct, b_ct, score, turn, ang, vel, freq, hei, time, \
+        b_balls, f_balls, silos, missiles, a_zone, bonuses, pick_up, b_dir, hit, pick_bonus = get_lit()
     tar_wid, tar_max_vel, tar_acc, mon_wid, mon_max_vel, mon_acc, j_speed, j_freq, \
         min_wid, s_shot, s_life, s_vel = get_inputs()
     win = gr.GraphWin('BUBBLE SNAKE BASKETBALL', w, h)
@@ -525,15 +537,20 @@ def main():
     tar = Target(win, tx, h - 5, tar_wid, tar_max_vel, tar_acc)
     mon = Monster(win, mx, mon_wid, mon_max_vel, mon_acc)
     mini = Minion(win, mx, min_wid, j_speed)
+    sb_header = gr.Text(gr.Point(.02 * w, .99 * h), 'SCORE')
+    sb_header.draw(win)
+    sb_score = gr.Text(gr.Point(.02 * w, .96 * h), 0)
+    sb_score.draw(win)
 
     while True:
 
         sleeper.sleep(time)
         l_ct += 1
-        if l_ct % freq == 1 and len(b_balls) + f_ct < 10:
-            b = Bouncy(ang, vel, hei)
+        if l_ct % freq == 1 and b_ct < 10:
+            b = Bouncy(ang, vel, hei, 0, 0, 0, 0)
             t = Balls(win, b, 3)
             b_balls.append([b, t])
+            b_ct += 1
         elif l_ct > j_freq and len(b_balls) > 0:
             if l_ct % (j_freq * 3) == 0:
                 for s in silos:
@@ -553,6 +570,15 @@ def main():
             elif mini.getY() <= min_wid / 2:
                 mini.shrink((l_ct - j_freq) / j_freq, min_wid, win)
 
+        if len(pick_up) > 0:
+            if pick_up[0] == 2:
+                b = Bouncy(0, 0, 0, pick_up[1], pick_up[2], pick_up[3], pick_up[4])
+                t = Balls(win, b, 3)
+                b_balls.append([b, t])
+                pick_up = []
+            else:
+                pick_up[0] += 1
+
         ck = win.checkKey().lower()
         if ck == 'space':
             b = Floater(b_balls[0][0].getX(), b_balls[0][0].getY(), b_balls[0][0].xvel, b_balls[0][0].yvel0)
@@ -561,6 +587,8 @@ def main():
             b_balls[0][1].delete()
             b_balls.remove(b_balls[0])
             f_ct += 1
+            for a in a_zone:
+                a[3] -= 1
         elif ck != '' and len(b_balls) > 0:
             if ck == 'left' or ck == 'right':
                 b_dir = ck
@@ -590,8 +618,6 @@ def main():
                 bonuses.remove(b)
 
         for b in b_balls:
-            b_dir = b[0].update(time, w, ang, vel, a_zone, b_dir, b_balls.index(b))
-            b[1].update(o_ct, win)
 
             if o_ct == 0:
                 mon_ck = mon.check_hit(b[0].yvel0, b[0].getX(), b[0].getY(), mon_wid)
@@ -632,7 +658,7 @@ def main():
             for bn in bonuses:
                 bon_ck = bn.check_hit(b[0].getX(), b[0].getY())
                 if bon_ck == 'pick':
-                    print('gotcha')
+                    pick_bonus = True
                     bn.kill()
                     bonuses.remove(bn)
                     break
@@ -640,15 +666,19 @@ def main():
             for s in silos:
                 sil_ck = s.check_hit(b[0].getX(), b[0].getY())
                 if sil_ck == 'pop':
-                    b = Floater(s.getX(), min_wid / 2, 0, 0)
-                    t = Balls(win, b, 7)
-                    f_balls.append([b, t])
+                    nb = Floater(s.getX(), min_wid / 2, 0, 0)
+                    t = Balls(win, nb, 7)
+                    f_balls.append([nb, t])
                     s.die()
                     silos.remove(s)
                     break
 
+            if pick_bonus and b is b_balls[-1]:
+                pick_up = [1, b[0].getX(), b[0].getY(), b[0].xvel, b[0].yvel0]
+                pick_bonus = False
 
-
+            b_dir = b[0].update(time, w, ang, vel, a_zone, b_dir, b_balls.index(b))
+            b[1].update(o_ct, win)
 
         if hit and o_ct == 0:
             nb = Floater(b_balls[0][0].getX(), b_balls[0][0].getY(), b_balls[0][0].xvel, b_balls[0][0].yvel0)
@@ -662,7 +692,7 @@ def main():
                 a[3] -= 1
 
         for a in a_zone:
-            if a[3] >= len(b_balls):
+            if a[3] >= len(b_balls) + (len(pick_up) > 0):
                 a_zone.remove(a)
 
         t = tar.move(time, x, w)
@@ -676,12 +706,17 @@ def main():
             f[1].update(0, win)
             if f[0].getY() > h - 5:
                 if tar.check_floater(f[0].getX(), tar_wid):
+                    sb_score.setText(int(sb_score.getText()) + 1)
                     score += 1
                     tar.new_target(random.randrange(0, w // 2))
                 f[1].delete()
                 f_balls.remove(f)
-                if f_ct == 10 and len(f_balls) == 0:
+                if len(b_balls) == 0 and len(f_balls) == 0:
                     return score
 
 
-print(f'You got a {main()}')
+score = main()
+if score < 20:
+    print(f'YOU LOSE!!!!\nScore: {score}')
+else:
+    print('YOU WIN!!!!\nCongratulations')
