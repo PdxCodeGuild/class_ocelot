@@ -16,10 +16,10 @@ path = '../../../1 Python/data/Open_Data_Sheet_data.csv'
 #
 # print(f)
 
-def parse_csv(path)
+def parse_csv(path):
     if path.endswith('.csv'):
         with open(path) as f:
-            lines = f.readlines()[0:2]
+            lines = f.readlines()[0:3]
     # print(lines)
     print()
 
@@ -46,8 +46,12 @@ def parse_csv(path)
             data_points.append(dict(zip(keys, values)))
     #print(data_points)
 
+    #unchanged
+    for data in range(len(data_points)):
+        return data_points
 
 
+data_points = parse_csv(path)
 
 
 
