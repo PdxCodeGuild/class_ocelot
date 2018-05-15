@@ -64,7 +64,15 @@ print(f'{len(crimes)} crimes against {crime_against} in the past 2 years\n')
 # def sortting(c):
 #     return c['neighborhood']
 
-crimes_by_neighborhood
 
+
+# crimes_by_neighborhood = dict()
+# for neighborhood, crimes in groupby(crimes, key=lambda c: c['neighborhood']):
+#     crimes_by_neighborhood[neighborhood] = list(crimes)
+#
+# most_crimes = max(crimes_by_neighborhood.items(), key=lambda x: len(x[1]))
+# print(most_crimes[0], len(most_crimes[1]))
+
+crimes_by_neighborhood = {}
 
 #(crime_against\nneighborohood\noccur_time\noffense_type\n)
