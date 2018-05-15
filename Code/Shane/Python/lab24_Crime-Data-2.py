@@ -29,5 +29,5 @@ for neighborhood, crimes in groupby(crimes, key=lambda c: c['neighborhood']):
     crimes_by_neighborhood[neighborhood] = list(crimes)
 
 most_crimes = max(crimes_by_neighborhood.items(), key=lambda x: len(x[1]))
-#print(most_crimes[0], len(most_crimes[1]))
+print(most_crimes[0], len(most_crimes[1]))
 
