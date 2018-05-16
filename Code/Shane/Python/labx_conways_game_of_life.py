@@ -32,7 +32,7 @@ def print_out(lst, height, width):
                 print("■", end = "")
             else:
                 print("□", end = "")
-        print()
+         print()
     print()
     print()
 
