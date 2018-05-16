@@ -161,15 +161,15 @@ while True:
 
     for enemy in enemies:
         if random.randint(0, 3) == 1:
-            enemy.location_i += (-2)
+            enemy.location_i += (-1)
         else:
             None
 
-    for star in stars:
-        if random.randint(0, 2) == 0:
-            star.location_i += (2)
-        else:
-            None
+    # for star in stars:
+    #     if random.randint(0, 2) == 0:
+    #         star.location_i += (2)
+    #     else:
+    #         None
 
     entity_touch = collision(player, entities)
 
@@ -180,18 +180,18 @@ while True:
         if type(entity_touch) is Enemy:
             print(f'You\'re score was {player_backpack}')
             quit()
-        elif type(entity_touch) is Enemy and enemy.location_i +1 == player.location_i:
-            print(f'You\'re score was {player_backpack}')
-            quit()
+        # elif type(entity_touch) is Enemy and enemy.location_i + 1 == player.location_i:
+        #     print(f'You\'re score was {player_backpack}')
+        #     quit()
 
         if type(entity_touch) is Star:
             player_backpack += entity_touch.value
             entities.remove(entity_touch)
             stars.remove(entity_touch)
-        elif type(entity_touch) is Star and star.location_i -1 == player.location_i:
-            player_backpack += entity_touch.value
-            entities.remove(entity_touch)
-            stars.remove(entity_touch)
+        # elif type(entity_touch) is Star and star.location_i - 1 == player.location_i:
+        #     player_backpack += entity_touch.value
+        #     entities.remove(entity_touch)
+        #     stars.remove(entity_touch)
 
 
 
