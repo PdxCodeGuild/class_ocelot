@@ -1,4 +1,5 @@
 import random
+from labx_conways_game_of_life import b, run
 
 
 class Entity:
@@ -11,45 +12,17 @@ class Entity:
 class Enemy(Entity):
     def __init__(self, location_i, location_j):
         super().__init__(location_i, location_j, random.choice(['👾', '👹',
-                                   '🐗', '🦇','🦑']))
+                                                                '🐗', '🦇',
+                                                                '🦑', '😈']))
 
 
 class Player(Entity):
     def __init__(self, location_i, location_j):
-        super().__init__(location_i, location_j, '😈')
+        super().__init__(location_i, location_j, '🐐')
 
 
-class Board:
-    def __init__(self, width, height):
-        self.width = width
-        self.height = height
 
-    def random_location(self):
-        return random.randint(0, self.width - 1), random.randint(0, self.height - 1)
 
-    def __getitem__(self, j):
-        return self.board[j]
-
-    def print(self, entities):
-        for i in range(self.height):
-            for j in range(self.width):
-                for k in range(len(entities)):
-                    if entities[k].location_i == i and entities[k].location_j == j:
-                        print(entities[k].character, end='')
-                        break
-                else:
-                    print(' ', end='')
-            print()
-
-# def remove_from_lists(obj, list1, list2):
-#     for i in range(len(list1)):
-#         if obj is list1[i]:
-#             list1.pop(i)
-#             break
-#     for i in range(len(list2)):
-#         if obj is list2[i]:
-#             list2.pop(i)
-#             break
 
 def collision(hero_loc, list1, list2):
     for e in range(len(list2)):
@@ -58,22 +31,30 @@ def collision(hero_loc, list1, list2):
             list2.pop(e)
             list1.pop(e+1)
             print("nom nom")
+            run()
             break
-            # for i in range(len(list1)):
-            #     if obj is list1[i]:
-            #         list1.pop(i)
-            #         break
-            # for i in range(len(list2)):
-            #     if obj is list2[i]:
-            #         list2.pop(i)
-            #         break
 
 
-b = Board(10, 10)
+def board_looper(obj):
+    if random.randint(0, 1) == 0:
+        obj.location_i += random.randint(-1, 1)
+        if obj.location_i > b.height-1:
+            obj.location_i -= b.height
+        elif obj.location_i < 0:
+            obj.location_i += b.height
+    else:
+        obj.location_j += random.randint(-1, 1)
+        if obj.location_j > b.width-1:
+            obj.location_j -= b.width
+        elif obj.location_j < 0:
+            obj.location_j += b.width
+
+
+
+
 
 pi, pj = b.random_location()
 player = Player(pi, pj)
-
 
 
 entities = [player]
@@ -85,11 +66,8 @@ for i in range(b.height):
     entities.append(enemy)
     enemies.append(enemy)
 
-print(enemies[1].location_i)
 
 while True:
-
-
 
     b.print(entities)
 
@@ -107,9 +85,6 @@ while True:
         player.location_i += 1  # move down
 
     for enemy in enemies:
-        if random.randint(0, 1) == 0:
-            enemy.location_i += random.randint(-1, 1)
-        else:
-            enemy.location_j += random.randint(-1, 1)
+        board_looper(enemy)
 
     collision((player.location_i, player.location_j), entities, enemies)
