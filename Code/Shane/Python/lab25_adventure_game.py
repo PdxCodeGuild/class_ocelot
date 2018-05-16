@@ -52,8 +52,6 @@ class Board:
         self.list_of_things = list_of_things
 
 
-    def __str__(self):
-
 
 
     # def __str__(self):

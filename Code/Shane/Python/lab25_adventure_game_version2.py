@@ -41,12 +41,40 @@ class Board:
                     print(' ', end='')
             print()
 
+# def remove_from_lists(obj, list1, list2):
+#     for i in range(len(list1)):
+#         if obj is list1[i]:
+#             list1.pop(i)
+#             break
+#     for i in range(len(list2)):
+#         if obj is list2[i]:
+#             list2.pop(i)
+#             break
+
+def collision(hero_loc, list1, list2):
+    for e in range(len(list2)):
+        enemy_loc = (list2[e].location_i, list2[e].location_j)
+        if hero_loc == enemy_loc:
+            list2.pop(e)
+            list1.pop(e+1)
+            print("nom nom")
+            break
+            # for i in range(len(list1)):
+            #     if obj is list1[i]:
+            #         list1.pop(i)
+            #         break
+            # for i in range(len(list2)):
+            #     if obj is list2[i]:
+            #         list2.pop(i)
+            #         break
 
 
 b = Board(10, 10)
 
 pi, pj = b.random_location()
 player = Player(pi, pj)
+
+
 
 entities = [player]
 enemies = []
@@ -57,8 +85,11 @@ for i in range(b.height):
     entities.append(enemy)
     enemies.append(enemy)
 
+print(enemies[1].location_i)
 
 while True:
+
+
 
     b.print(entities)
 
@@ -80,3 +111,5 @@ while True:
             enemy.location_i += random.randint(-1, 1)
         else:
             enemy.location_j += random.randint(-1, 1)
+
+    collision((player.location_i, player.location_j), entities, enemies)
