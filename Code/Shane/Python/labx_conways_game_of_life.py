@@ -2,6 +2,30 @@
 import random
 
 
+class Board:
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+
+    def random_location(self):
+        return random.randint(0, self.height - 1), random.randint(0, self.width - 1)
+
+    def __getitem__(self, j):
+        return self.board[j]
+
+    def print(self, entities):
+        for i in range(self.height):
+            for j in range(self.width):
+                for k in range(len(entities)):
+                    if entities[k].location_i == i and entities[k].location_j == j:
+                        print(entities[k].character, end='')
+                        break
+                else:
+                    print('⬜', end='')
+            print()
+
+
+
 class Grid:
     def __init__(self, width, height):
         self.width = width
@@ -12,12 +36,14 @@ class Grid:
             for i in range(self.width):
                 self.grid[j].append(random.choice([True, False]))
 
+
+
     def __str__(self):
         r = ''
         for j in range(self.height):
             for i in range(self.width):
                 if self.grid[j][i]:
-                    r += '⚪'
+                    r += random.choice(['😇', '\U0001f92c', '😂', '🤣', '😊', '😇', '👿', '😸', '☠', '👽', '😻', '🤖', '🤠', '😵', '😲', '😑', '😐', '😶', '😦', '😯', '🙄', '\U0001f92b', '🤥', '😰', '😨', '😱', '😳', '\U0001f92f', '😭', '😤', '😠', '\U0001f92c', '😩', '😫'])
                 else:
                     r += '⬛'
             r += '\n'
@@ -70,17 +96,22 @@ class Grid:
 
         return new_grid
 
+# Height can be no less than 6
+b = Board(20, 6)
 
-import time
 
-grid = Grid(50, 30)
-print(len(grid))
-print(str(grid))
-for i in range(100):
-    print(grid)
-    time.sleep(.2)
-    grid = grid.next_state()
+def run():
+    import time
 
+    grid = Grid(b.width, b.height)
+    for i in range((b.width * b.height)//3):
+        print(grid)
+        time.sleep(.1)
+        grid = grid.next_state()
+
+
+if __name__ == '__main__':
+    run()
 
 
 
