@@ -19,7 +19,7 @@ class InanimateObject(Entity):
 
 class Enemy(Entity):
     def __init__(self, location_i, location_j):
-        super().__init__(location_i, location_j, '§')
+        super().__init__(location_i, location_j, '🔥')
 
 
 class Player(Entity):
@@ -29,7 +29,7 @@ class Player(Entity):
 
 class Star(Entity):
     def __init__(self, location_i, location_j):
-        super().__init__(location_i, location_j, '*')
+        super().__init__(location_i, location_j, '🦄')
         self.value = 1
 
 
@@ -52,7 +52,7 @@ class Board:
                         print(entities[k].character, end='')
                         break
                 else:
-                    print('_', end='')
+                    print('🍀', end='')
             print()
 
 
@@ -111,8 +111,12 @@ def fill_board():
 def move_enemies(enemies):
     for enemy in enemies:
         if random.randint(0, 3) == 1:
-            enemy.location_i += -1
+            enemy.location_i -= 1
 
+def move_stars(stars):
+    for star in stars:
+        if random.randint(0, 3) == 1:
+            star.location_i += 1
 
 def collision(player, entities):
     for entity in entities:
@@ -155,7 +159,7 @@ while True:
     if counter % 40 == 0:
         fill_board()
 
-    print(counter)
+    print(f'A new wave will spawn in {40-counter} turn(s)!')
 
     b.print(entities)
     #print(player_backpack)
@@ -176,9 +180,6 @@ while True:
     # elif command in ['d', 'down', 's', 'south']:
     #     player.location_i += 1  # move down
 
-# enemy = enemy.location_i
-# star = star.location_i
-
 
     # for star in stars:
     #     if random.randint(0, 2) == 0:
@@ -188,7 +189,15 @@ while True:
 
     move_enemies(enemies)
     check_collision(player, entities)
+
     move_enemies(enemies)
     check_collision(player, entities)
 
+    move_stars(stars)
+    check_collision(player, entities)
 
+    move_stars(stars)
+    check_collision(player, entities)
+
+
+    print(player.backpack)
