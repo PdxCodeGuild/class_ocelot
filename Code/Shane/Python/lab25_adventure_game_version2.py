@@ -1,0 +1,115 @@
+import random
+
+
+class Entity:
+    def __init__(self, location_i, location_j, character):
+        self.location_i = location_i
+        self.location_j = location_j
+        self.character = character
+
+
+class Enemy(Entity):
+    def __init__(self, location_i, location_j):
+        super().__init__(location_i, location_j, random.choice(['👾', '👹',
+                                   '🐗', '🦇','🦑']))
+
+
+class Player(Entity):
+    def __init__(self, location_i, location_j):
+        super().__init__(location_i, location_j, '😈')
+
+
+class Board:
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+
+    def random_location(self):
+        return random.randint(0, self.width - 1), random.randint(0, self.height - 1)
+
+    def __getitem__(self, j):
+        return self.board[j]
+
+    def print(self, entities):
+        for i in range(self.height):
+            for j in range(self.width):
+                for k in range(len(entities)):
+                    if entities[k].location_i == i and entities[k].location_j == j:
+                        print(entities[k].character, end='')
+                        break
+                else:
+                    print(' ', end='')
+            print()
+
+# def remove_from_lists(obj, list1, list2):
+#     for i in range(len(list1)):
+#         if obj is list1[i]:
+#             list1.pop(i)
+#             break
+#     for i in range(len(list2)):
+#         if obj is list2[i]:
+#             list2.pop(i)
+#             break
+
+def collision(hero_loc, list1, list2):
+    for e in range(len(list2)):
+        enemy_loc = (list2[e].location_i, list2[e].location_j)
+        if hero_loc == enemy_loc:
+            list2.pop(e)
+            list1.pop(e+1)
+            print("nom nom")
+            break
+            # for i in range(len(list1)):
+            #     if obj is list1[i]:
+            #         list1.pop(i)
+            #         break
+            # for i in range(len(list2)):
+            #     if obj is list2[i]:
+            #         list2.pop(i)
+            #         break
+
+
+b = Board(10, 10)
+
+pi, pj = b.random_location()
+player = Player(pi, pj)
+
+
+
+entities = [player]
+enemies = []
+
+for i in range(b.height):
+    ei, ej = b.random_location()
+    enemy = Enemy(ei, ej)
+    entities.append(enemy)
+    enemies.append(enemy)
+
+print(enemies[1].location_i)
+
+while True:
+
+
+
+    b.print(entities)
+
+    command = input('Move\n')  # get the command from the user
+
+    if command == 'done':
+        break  # exit the game
+    elif command in ['l', 'left', 'w', 'west']:
+        player.location_j -= 1  # move left
+    elif command in ['r', 'right', 'e', 'east']:
+        player.location_j += 1  # move right
+    elif command in ['u', 'up', 'n', 'north']:
+        player.location_i -= 1  # move up
+    elif command in ['d', 'down', 's', 'south']:
+        player.location_i += 1  # move down
+
+    for enemy in enemies:
+        if random.randint(0, 1) == 0:
+            enemy.location_i += random.randint(-1, 1)
+        else:
+            enemy.location_j += random.randint(-1, 1)
+
+    collision((player.location_i, player.location_j), entities, enemies)
