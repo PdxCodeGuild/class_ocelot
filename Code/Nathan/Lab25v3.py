@@ -1,6 +1,5 @@
 import random
 
-
 class Entity:
     def __init__(self, location_i, location_j, character):
         self.location_i = location_i
@@ -19,17 +18,17 @@ class InanimateObject(Entity):
 
 class Enemy(Entity):
     def __init__(self, location_i, location_j):
-        super().__init__(location_i, location_j, '🔥')
+        super().__init__(location_i, location_j, '💣')
 
 
 class Player(Entity):
     def __init__(self, location_i, location_j):
-        super().__init__(location_i, location_j, '☺')
+        super().__init__(location_i, location_j, '🧗')
         self.backpack = 0
 
 class Star(Entity):
     def __init__(self, location_i, location_j):
-        super().__init__(location_i, location_j, '🦄')
+        super().__init__(location_i, location_j, '👑')
         self.value = 1
 
 
@@ -52,7 +51,7 @@ class Board:
                         print(entities[k].character, end='')
                         break
                 else:
-                    print('🍀', end='')
+                    print('🕳', end='')
             print()
 
 
