@@ -30,12 +30,18 @@ class Grid:
     def __init__(self, width, height):
         self.width = width
         self.height = height
-        self.grid = []
+        self.grid = [
+            [False, True, False, True, False, True, False, True, False, True, False, True, True, True, True],
+            [True, False, True, True, False, True, True, False, True, True, False, True, True, False, False],
+            [False, True, False, True, True, True, True, True, True, True, True, True, True, True, True, True],
+            [False, False, True, True, False, True, True, False, True, True, True, True, True, False, False],
+            [True, False, True, True, False, True, True, False, True, True, False, True, True, False, False],
+            [False, True, False, True, False, True, True, False, True, True, False, True, True, True, True]]
+
         for j in range(self.height):
             self.grid.append([])
             for i in range(self.width):
                 self.grid[j].append(random.choice([True, False]))
-
 
 
     def __str__(self):
@@ -43,7 +49,7 @@ class Grid:
         for j in range(self.height):
             for i in range(self.width):
                 if self.grid[j][i]:
-                    r += random.choice(['😇', '\U0001f92c', '😂', '🤣', '😊', '😇', '👿', '😸', '☠', '👽', '😻', '🤖', '🤠', '😵', '😲', '😑', '😐', '😶', '😦', '😯', '🙄', '\U0001f92b', '🤥', '😰', '😨', '😱', '😳', '\U0001f92f', '😭', '😤', '😠', '\U0001f92c', '😩', '😫'])
+                     r += random.choice(['😇', '\U0001f92c', '😂', '🤣', '😊', '😇', '👿', '😸', '☠', '👽', '😻', '🤖', '🤠', '😵', '😲', '😑', '😐', '😶', '😦', '😯', '🙄', '\U0001f92b', '🤥', '😰', '😨', '😱', '😳', '\U0001f92f', '😭', '😤', '😠', '\U0001f92c', '😩', '😫'])
                 else:
                     r += '⬛'
             r += '\n'
@@ -97,7 +103,15 @@ class Grid:
         return new_grid
 
 # Height can be no less than 6
-b = Board(20, 6)
+b = Board(50, 50)
+
+
+# def name_of_life(name):
+#
+#     letters = list(name)
+#     print(letters)
+#     lst = list(range(1,5))
+#     alpha_dict = dict(zip(letters,))
 
 
 def run():
@@ -106,7 +120,7 @@ def run():
     grid = Grid(b.width, b.height)
     for i in range((b.width * b.height)//3):
         print(grid)
-        time.sleep(.1)
+        time.sleep(.05)
         grid = grid.next_state()
 
 

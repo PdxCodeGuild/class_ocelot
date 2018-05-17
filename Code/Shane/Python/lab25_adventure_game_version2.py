@@ -28,6 +28,7 @@ def collision(hero_loc, list1, list2):
     for e in range(len(list2)):
         enemy_loc = (list2[e].location_i, list2[e].location_j)
         if hero_loc == enemy_loc:
+
             list2.pop(e)
             list1.pop(e+1)
             print("nom nom")
