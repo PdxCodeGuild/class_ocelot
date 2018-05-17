@@ -42,7 +42,6 @@ class Grid:
             for i in range(self.width):
                 self.grid[j].append(random.choice([True, False]))
 
-
     def __str__(self):
         r = ''
         for j in range(self.height):
@@ -118,5 +117,5 @@ def run():
 
 # print(__name__)
 # exit()
-if __name__ == '__main__':
-    run()
+# if __name__ == '__main__':
+#     run()
