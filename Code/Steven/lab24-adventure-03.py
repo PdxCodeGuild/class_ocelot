@@ -121,7 +121,7 @@ def check_boundries():
         else:
             if entity.location_j > b.width - 1:
                 entity.location_j -= b.width
-            elif entity.location_j < 0:
+            elif entity.location_j < 0:x
                 entity.location_j += b.width
 
 def move_bee_randomly(bee):
