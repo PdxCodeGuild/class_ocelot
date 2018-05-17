@@ -2,7 +2,7 @@ import random
 import time
 
 class Entity:
-    def __init__ ( self , location_i , location_j , character ):
+    def __init__ ( self , location_i , location_j , character ):            # super-class for all on-board entities
         self.location_i = location_i
         self.location_j = location_j
         self.character = character
@@ -13,24 +13,26 @@ class Entity:
     def __repr__ ( self ):
         return self.character
 
-class Bee ( Entity ):
+
+class Bee ( Entity ):                                                       # the player (bee)
     def __init__ ( self , location_i , location_j ):
         super ( ).__init__ ( location_i , location_j , '🐝' )
         self.target_flower = None
         self.last_flower = None
 
-class Pollution ( Entity ):
+
+class Enemy ( Entity ):                                                     # the enemy (bears, pollution, etc.)
     def __init__ ( self , location_i , location_j ):
         super ( ).__init__ ( location_i , location_j , '' )
-        f = random.choice ( [ (1 , '🐻') , (2 , '🐻') , (3 , '🐻') ] )
-        # other enemy emoji: 🏭 🛢 🐻
+        f = random.choice ( enemy_types )     # list of enemy damage and emoji
         self.character = f[ 1 ]
         self.health = f[ 0 ]
 
-class Flower ( Entity ):
+
+class Flower ( Entity ):                                                    # the objective (flowers)
     def __init__ ( self , location_i , location_j ):
         super ( ).__init__ ( location_i , location_j , '' )
-        f = random.choice ( [ (1 , '🌼') , (2 , '🌸') , (3 , '🌸') ] )
+        f = random.choice ( flower_types )
         self.character = f[ 1 ]
         self.health = f[ 0 ]
 
@@ -68,8 +70,8 @@ class Flower ( Entity ):
 #             print()
 #
 
-class BoardLow:
-    def __init__ ( self , width , height ):                 # define low-level map
+class BoardLow:                                                             # define low-level board
+    def __init__ ( self , width , height ):
         self.width = board_width
         self.height = board_height
 
@@ -147,9 +149,9 @@ def move_bee_randomly ( bee ):                                      # change bee
         bee.location_j += 1  # move right
     return bee
 
-
 # SET PARAMETERS
-frame_delay = .8
+frame_delay = 1
+turn_count = 0
 board_width, board_height = 20, 15                                  # global parameters
 bkgd_leaves1 = [ '🌿️' , '🌱' , '🍀' ]
 bkgd_trees1 = ['🌲', '🌳', '🌲']
@@ -158,30 +160,35 @@ bkgd_white = [ '⬜️' ]
 bd_l = BoardLow ( board_width , board_height )                      # board (low) parameters
 bkgd_low = bkgd_white
 
-# bd_h = BoardHigh(board_width, board_height)                         # board (high) parameters
+# bd_h = BoardHigh(board_width, board_height)                       # board (high) parameters
 # bkgd_high = bkgd_trees1
 
 health = 3                                                          # bee parameters
 flower_awareness_range = 4
 move_mult = 1
 
-flower_count = 12                                                   # flower parameters
 
-pollution_count = 15                                                # pollution parameters
+flower_count = 12
+flower_types = [ (1 , '🌼') , (2 , '🌸') , (3 , '🌸') ]            # flower parameters
+
+
+enemy_count = 40                                                    # enemy parameters
+enemy_types = [ (1 , '🐻') , (2 , '🐻') , (3 , '🐻') ]              # enemy hit points and emoji
+# other enemy emoji: 🏭 🛢 🐻
 
 # CREATE AND PLACE ENTITIES
 bi , bj = bd_l.random_location ( )                                  # pick random start position for bee
 bee = Bee ( bi , bj )
 
 entities = [ bee ]                                                  # define entity lists
-pollutions = [ ]
+enemies = [ ]
 flowers = [ ]
 
-for i in range ( pollution_count ):                                 # create n pollution entities
+for i in range ( enemy_count ):                                     # create n enemy entities
     pi , pj = bd_l.random_location ( )
-    pollution = Pollution ( pi , pj )
-    entities.append ( pollution )                                   # put pollutions in ENTITIES list
-    pollutions.append ( pollution )                                 # put pollutions in POLLUTIONS list
+    enemy = Enemy ( pi , pj )
+    entities.append ( enemy )                                       # put enemy in ENTITIES list
+    enemies.append ( enemy )                                        # put enemy in ENEMIES list
 
 # add flower to entity list and to flowers list
 for i in range ( flower_count ):                                    # create n flower entities
@@ -224,19 +231,20 @@ while True:
     else:
         move_bee_randomly ( bee )
 
-    print ( f'Target Flower: {vect_closest[2]}\t \t Health: {health}' )  # display next target & health
+    turn_count += 1
+    print ( f'Target Flower: {vect_closest[2]}\tTurns: {turn_count}\t Health: {health}' ) # display next target & health
 
     # ENEMY MOVEMENT
-    for pollution in pollutions:                                        # move pollution x/y +/- 1
-            pollution.location_i += random.randint ( -1 , 1 )
-        else:
-            pollution.location_j += random.randint ( -1 , 1 )
+    for enemy in enemies:                                               # move enemys x/y +/- 1
+            enemy.location_i += random.randint ( -1 , 1 )
+    else:
+        enemy.location_j += random.randint ( -1 , 1 )
 
     # TOUCH DETECTION
-    entity_touch = collision ( bee , entities )                         # detect bee touching an entity
+    entity_touch = collision ( bee , entities )         # detect bee touching an entity
 
-    if entity_touch is not None:                        # calc NEG HEALTH if bee touches pollution
-        if type ( entity_touch ) is Pollution:
+    if entity_touch is not None:                        # calc NEG HEALTH if bee touches enemy
+        if type ( entity_touch ) is Enemy:
             health -= 1
             print ( f'Ouch! (health = {health})' )
             # TEST print(type(entity_touch))
@@ -251,3 +259,4 @@ while True:
     if health <= 1:
         print ( 'You\'re dead!' )
         exit ( )
+
