@@ -1,8 +1,9 @@
 import random
 import time
 
+
 class Entity:
-    def __init__ ( self , location_i , location_j , character ):            # super-class for all on-board entities
+    def __init__ ( self , location_i , location_j , character ):  # super-class for all on-board entities
         self.location_i = location_i
         self.location_j = location_j
         self.character = character
@@ -14,22 +15,22 @@ class Entity:
         return self.character
 
 
-class Bee ( Entity ):                                                       # the player (bee)
+class Bee ( Entity ):  # the player (bee)
     def __init__ ( self , location_i , location_j ):
-        super ( ).__init__ ( location_i , location_j , '🐝' )
+        super ( ).__init__(location_i, location_j, '🐝' )
         self.target_flower = None
         self.last_flower = None
 
 
-class Enemy ( Entity ):                                                     # the enemy (bears, pollution, etc.)
+class Enemy ( Entity ):  # the enemy (bears, pollution, etc.)
     def __init__ ( self , location_i , location_j ):
         super ( ).__init__ ( location_i , location_j , '' )
-        f = random.choice ( enemy_types )     # list of enemy damage and emoji
+        f = random.choice ( enemy_types )  # list of enemy damage and emoji
         self.character = f[ 1 ]
         self.health = f[ 0 ]
 
 
-class Flower ( Entity ):                                                    # the objective (flowers)
+class Flower ( Entity ):  # the objective (flowers)
     def __init__ ( self , location_i , location_j ):
         super ( ).__init__ ( location_i , location_j , '' )
         f = random.choice ( flower_types )
@@ -70,7 +71,7 @@ class Flower ( Entity ):                                                    # th
 #             print()
 #
 
-class BoardLow:                                                             # define low-level board
+class BoardLow:  # define low-level board
     def __init__ ( self , width , height ):
         self.width = board_width
         self.height = board_height
@@ -85,20 +86,22 @@ class BoardLow:                                                             # de
     def __getitem__ ( self , j ):
         return self.boardlow[ j ]
 
-    def print ( self , entities ):                                      # populate board
+    def print ( self , entities ):  # populate board
+        output = ''
         for i in range ( self.height ):
-            for j in range ( self.width ):                              # counts through all rows
-                for k in range ( len ( entities ) ):                    # counts through all columns
-                    if entities[ k ].location_i == i and entities[ k ].location_j == j: # match entities
-                        print ( entities[ k ].character , end='' )
+            for j in range ( self.width ):  # counts through all rows
+                for k in range ( len ( entities ) ):  # counts through all columns
+                    if entities[ k ].location_i == i and entities[ k ].location_j == j:  # match entities
+                        output += entities[ k ].character
                         break
                 else:
-                    print ( random.choice ( bkgd_white ) , end='' )
+                    output += random.choice(bkgd_white)
 
-            print ( )
+            output += '\n'
+        print(output)
 
 
-def collision ( bee , entities ):               # test if bee is on same square as ANY entity
+def collision ( bee , entities ):  # test if bee is on same square as ANY entity
 
     for entity in entities:
         if entity != bee:
@@ -122,7 +125,7 @@ def check_boundries ( ):
                 entity.location_j += b.width
 
 
-def move_bee_randomly ( bee ):                                      # change bee x/y location +/-1
+def move_bee_randomly ( bee ):  # change bee x/y location +/-1
     # manual control
     # command = input('command? ')  # get the command from the user
     # if command == 'done':
@@ -149,65 +152,65 @@ def move_bee_randomly ( bee ):                                      # change bee
         bee.location_j += 1  # move right
     return bee
 
-# SET PARAMETERS
-frame_delay = 1
-turn_count = 0
-board_width, board_height = 20, 15                                  # global parameters
-bkgd_leaves1 = [ '🌿️' , '🌱' , '🍀' ]
-bkgd_trees1 = ['🌲', '🌳', '🌲']
-bkgd_white = [ '⬜️' ]
 
-bd_l = BoardLow ( board_width , board_height )                      # board (low) parameters
-bkgd_low = bkgd_white
+# SET PARAMETERS
+frame_delay = .0001
+turn_count = 0
+board_width , board_height = 20 , 15  # global parameters
+bkgd_leaves1 = [ '🌿️' , '🌱' , '🍀' ]
+bkgd_trees1 = [ '🌲' , '🌳' , '🌲' ]
+bkgd_white = bkgd_leaves1
+    # [ '⬜️' ]
+
+bd_l = BoardLow ( board_width , board_height )  # board (low) parameters
+bkgd_low = bkgd_leaves1
 
 # bd_h = BoardHigh(board_width, board_height)                       # board (high) parameters
 # bkgd_high = bkgd_trees1
 
-health = 3                                                          # bee parameters
+health = 3  # bee parameters
 flower_awareness_range = 4
 move_mult = 1
 
-
 flower_count = 12
-flower_types = [ (1 , '🌼') , (2 , '🌸') , (3 , '🌸') ]            # flower parameters
+flower_types = [ (1 , '🌼') , (2 , '🌸') , (3 , '🌸') ]  # flower parameters
 
-
-enemy_count = 40                                                    # enemy parameters
-enemy_types = [ (1 , '🐻') , (2 , '🐻') , (3 , '🐻') ]              # enemy hit points and emoji
+enemy_count = 7  # enemy parameters
+enemy_types = [ (1 , '🐻') , (2 , '🐻') , (3 , '🐻') ]  # enemy hit points and emoji
 # other enemy emoji: 🏭 🛢 🐻
 
 # CREATE AND PLACE ENTITIES
-bi , bj = bd_l.random_location ( )                                  # pick random start position for bee
+bi , bj = bd_l.random_location ( )  # pick random start position for bee
 bee = Bee ( bi , bj )
 
-entities = [ bee ]                                                  # define entity lists
+entities = [ bee ]  # define entity lists
 enemies = [ ]
 flowers = [ ]
 
-for i in range ( enemy_count ):                                     # create n enemy entities
+for i in range ( enemy_count ):  # create n enemy entities
     pi , pj = bd_l.random_location ( )
     enemy = Enemy ( pi , pj )
-    entities.append ( enemy )                                       # put enemy in ENTITIES list
-    enemies.append ( enemy )                                        # put enemy in ENEMIES list
+    entities.append ( enemy )  # put enemy in ENTITIES list
+    enemies.append ( enemy )  # put enemy in ENEMIES list
 
 # add flower to entity list and to flowers list
-for i in range ( flower_count ):                                    # create n flower entities
+for i in range ( flower_count ):  # create n flower entities
     fi , fj = bd_l.random_location ( )
     flower = Flower ( fi , fj )
-    entities.append ( flower )                                      # put flowers in ENTITIES list
-    flowers.append ( flower )                                       # put flowers in FLOWERS list
+    entities.append ( flower )  # put flowers in ENTITIES list
+    flowers.append ( flower )  # put flowers in FLOWERS list
 
-bee.last_flower2 = None                                              # revisit prevention
+bee.last_flower2 = None  # revisit prevention
 
 # THE GAME LOOP
 while True:
-    bd_l.print ( entities )                                         # print all entities to the board
-    time.sleep ( frame_delay )                                      # display delay
+    bd_l.print ( entities )  # print all entities to the board
+    time.sleep ( frame_delay )  # display delay
 
-    vect_flowers = [ ]                                              # define flower vectors
-    for flower in flowers:                                          # iterate through all placed flowers
+    vect_flowers = [ ]  # define flower vectors
+    for flower in flowers:  # iterate through all placed flowers
         if flower is bee.last_flower \
-                or flower is bee.last_flower2:                      # prevent flower revisit
+                or flower is bee.last_flower2:  # prevent flower revisit
             continue
         vect_flower = [ flower.location_i - bee.location_i , flower.location_j - bee.location_j , flower ]
         vect_flowers.append ( vect_flower )
@@ -218,45 +221,45 @@ while True:
     # BEE MOVEMENT (toward flower if close enough, else random +/- x/y)
     if abs ( vect_closest[ 0 ] ) + abs ( vect_closest[ 1 ] ) < flower_awareness_range:
 
-        if abs ( vect_closest[ 0 ] ) > abs ( vect_closest[ 1 ] ):   # select motion axis y
-            if vect_closest[ 0 ] < 0:                               # select direction
-                bee.location_i -= 1                                     # up
+        if abs ( vect_closest[ 0 ] ) > abs ( vect_closest[ 1 ] ):  # select motion axis y
+            if vect_closest[ 0 ] < 0:  # select direction
+                bee.location_i -= 1  # up
             else:
-                bee.location_i += 1                                     # down
-        else:                                                       # select motion axis y
+                bee.location_i += 1  # down
+        else:  # select motion axis y
             if vect_closest[ 1 ] < 0:
-                bee.location_j -= 1                                     # left
+                bee.location_j -= 1  # left
             else:
-                bee.location_j += 1                                     # right
+                bee.location_j += 1  # right
     else:
         move_bee_randomly ( bee )
 
     turn_count += 1
-    print ( f'Target Flower: {vect_closest[2]}\tTurns: {turn_count}\t Health: {health}' ) # display next target & health
+    print (
+        f'Target Flower: {vect_closest[2]}\tTurns: {turn_count}\t Health: {health}' )  # display next target & health
 
     # ENEMY MOVEMENT
-    for enemy in enemies:                                               # move enemys x/y +/- 1
-            enemy.location_i += random.randint ( -1 , 1 )
+    for enemy in enemies:  # move enemys x/y +/- 1
+        enemy.location_i += random.randint ( -1 , 1 )
     else:
         enemy.location_j += random.randint ( -1 , 1 )
 
     # TOUCH DETECTION
-    entity_touch = collision ( bee , entities )         # detect bee touching an entity
+    entity_touch = collision ( bee , entities )  # detect bee touching an entity
 
-    if entity_touch is not None:                        # calc NEG HEALTH if bee touches enemy
+    if entity_touch is not None:  # calc NEG HEALTH if bee touches enemy
         if type ( entity_touch ) is Enemy:
             health -= 1
             print ( f'Ouch! (health = {health})' )
             # TEST print(type(entity_touch))
 
-        if type ( entity_touch ) is Flower:             # calc POS HEALTH if bee touches flower
+        if type ( entity_touch ) is Flower:  # calc POS HEALTH if bee touches flower
             health += entity_touch.health
             print ( f'Yum! (health = {health})' )
             # TEST print(type(entity_touch))
-            bee.last_flower2 = bee.last_flower          # set 'flower-before-last' val to 'last flower'
-            bee.last_flower = entity_touch              # set 'last flower' to current touch
+            bee.last_flower2 = bee.last_flower  # set 'flower-before-last' val to 'last flower'
+            bee.last_flower = entity_touch  # set 'last flower' to current touch
 
     if health <= 1:
         print ( 'You\'re dead!' )
         exit ( )
-
