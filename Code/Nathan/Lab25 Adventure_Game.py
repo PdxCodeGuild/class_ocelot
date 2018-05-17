@@ -1,6 +1,7 @@
 import random
 
 
+
 class Entity:
     def __init__(self, location_i, location_j, character):
         self.location_i = location_i
@@ -40,7 +41,7 @@ class Board:
     def __getitem__(self, j):
         return self.board[j]
 
-#def collision(player, enemies):
+    # def collision(player, enemies):
 
     def print(self, entities):
         for i in range(self.height):
@@ -50,35 +51,42 @@ class Board:
                         print(entities[k].character, end='')
                         break
                 else:
-                    print('_', end='')
+                    print('_|_', end='')
             print()
 
 
+
 b = Board(20, 20)
+list1 = ()
+player_backpack = list1
 
 pi, pj = b.random_location()
-player = Player(19, pj)
-#enemy = Enemy()
-entities = [player]
-enemies = []
-stars = []
 
-for i in range(10):
-    ei, ej = b.random_location()
-    enemy = Enemy(0, ej)
-    entities.append(enemy)
-    enemies.append(enemy)
+player = Player(19, pj)
+
+# enemy = Enemy()
+
+entities = [player]
+
+enemies = []
+
+star = []
+
+for i in range(6):
+     ei, ej = b.random_location()
+     enemy = Enemy(0, ej)
+     entities.append(enemy)
+     enemies.append(enemy)
 
 for i in range(2):
     si, sj = b.random_location()
-    star = Star(0, sj)
-    entities.append(star)
-    stars.append(star)
+    stars = Star(0, sj)
+    entities.append(stars)
 
 
-enemy.location_j = ej
-
-enemy.location_i = ei
+# enemy.location_j = ej
+#
+# enemy.location_i = ei
 
 while True:
 
@@ -100,23 +108,27 @@ while True:
     elif command in ['d', 'down', 's', 'south']:
         player.location_i += 1  # move down
 
-    for enemy in enemies:
-        #if enemy_location_j and enemy_location_i == enemies:
-            #None
-        if random.randint(0, 1) != 0:
-            None
-        elif random.randint(0, 1) == 0:
-            enemy.location_i += random.randint(0, 3)
 
-        # else:
-        #     enemy.location_j += random.randint(-1, 1)
+    # for enemy in enemies:
+    #     if random.randint(0, 1) == 0:
+    #         enemy.location_i += random.randint(-1, 1)
+    #     else:
+    #         enemy.location_j += random.randint(-1, 1)
+
+    for star in star:
+        if random.randint(0, 1) == 0:
+            star.location_i += random.randint(-5, 0)
+        else:
+            star.location_j += random.randint(-1, 1)
 
     if random.randint(0, 3) == 0:
         s = Star(0, random.randint(0, 5))
-        entities.append(s)
-        stars.append(s)
 
-    for star in stars:
-        star.location_i += random.randint(0, 1)
-        star.location_j += random.randint(-1, 1)
+    #     entities.append(s)
+    #     stars.append(s)
 
+
+
+
+    # if player.location_i and player.location_j == stars.location_i and stars.location_j:
+    #     player_backpack.append(list(stars))
