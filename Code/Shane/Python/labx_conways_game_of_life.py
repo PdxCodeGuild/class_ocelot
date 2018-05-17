@@ -1,90 +1,122 @@
-import copy
+
 import random
-import time
-# rules:
-# false = Any live cell with fewer than two live neighbors dies, as if caused by under population.
-# true = Any live cell with two or three live neighbors lives on to the next generation.
-# false = Any live cell with more than three live neighbors dies, as if by overpopulation.
-# true = Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.
 
 
-live_grid = []
+class Board:
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
 
-height = 20
+    def random_location(self):
+        return random.randint(0, self.height - 1), random.randint(0, self.width - 1)
 
-width = 20
+    def __getitem__(self, j):
+        return self.board[j]
 
-def make_lst(lst, height, width ):
-    for i in range(height):
-        lst.append([])
-        for j in range(width):
-            lst[i].append(random.choice([True, False]))
-    for f in range(len(lst)):
-        lst[0][f] = False
-        lst[-f][0] = False
-        lst[f][-1] = False
-        lst[-1][f] = False
+    def print(self, entities):
+        for i in range(self.height):
+            for j in range(self.width):
+                for k in range(len(entities)):
+                    if entities[k].location_i == i and entities[k].location_j == j:
+                        print(entities[k].character, end='')
+                        break
+                else:
+                    print('⬜', end='')
+            print()
 
-def print_out(lst, height, width):
-    for x in range(height):
-        for y in range(width):
-            if lst[x][y]:
-                print("■", end = "")
-            else:
-                print("□", end = "")
-        print()
-    print()
-    print()
 
-def set_state(live_count):
-    if live_count == 2:
-        pass
-    elif live_count == 3:
-        return True
-    elif live_count < 2 or live_count > 3:
-        return False
+class Grid:
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+        self.grid = [
+            [False, True, False, True, False, True, False, True, False, True, False, True, True, True, True],
+            [True, False, True, True, False, True, True, False, True, True, False, True, True, False, False],
+            [False, True, False, True, True, True, True, True, True, True, True, True, True, True, True, True],
+            [False, False, True, True, False, True, True, False, True, True, True, True, True, False, False],
+            [True, False, True, True, False, True, True, False, True, True, False, True, True, False, False],
+            [False, True, False, True, False, True, True, False, True, True, False, True, True, True, True]]
 
-def live_count(grid, x, y):
-    live_count = 0
-    if grid[x - 1][y - 1] == True:
-        live_count += 1
-    if grid[x - 1][y] == True:
-        live_count += 1
-    if grid[x - 1][y + 1] == True:
-        live_count += 1
-    if grid[x][y - 1] == True:
-        live_count += 1
-    if grid[x][y + 1] == True:
-        live_count += 1
-    if grid[x + 1][y - 1] == True:
-        live_count += 1
-    if grid[x + 1][y] == True:
-        live_count += 1
-    if grid[x + 1][y + 1] == True:
-        live_count += 1
-    return live_count
+        for j in range(self.height):
+            self.grid.append([])
+            for i in range(self.width):
+                self.grid[j].append(random.choice([True, False]))
 
-def counts(change_grid, height, width):
-    for x in range(1, height -1):
-        for y in range(1, width -1):
-            change_grid[x][y] = (live_count(live_grid,x,y))
-    return change_grid
 
-def change_state(live_grid, height, width):
-    for x in range(height):
-        for y in range(width):
-            live_grid[x][y] = set_state(live_grid[x][y])
-    return live_grid
+    def __str__(self):
+        r = ''
+        for j in range(self.height):
+            for i in range(self.width):
+                if self.grid[j][i]:
+                     r += random.choice(['😇', '\U0001f92c', '😂', '🤣', '😊', '😇', '👿', '😸', '☠', '👽', '😻', '🤖', '🤠', '😵', '😲', '😑', '😐', '😶', '😦', '😯', '🙄', '\U0001f92b', '🤥', '😰', '😨', '😱', '😳', '\U0001f92f', '😭', '😤', '😠', '\U0001f92c', '😩', '😫'])
+                else:
+                    r += '⬛'
+            r += '\n'
+        return r
 
-make_lst(live_grid, height, width)
+    def __len__(self):
+        return self.width * self.height
 
-while True:
-    change_grid = copy.deepcopy(live_grid)
+    def check_alive(self, i, j):
+        if i < 0 or i >= self.width:
+            return False
+        elif j < 0 or j >= self.height:
+            return False
+        return self.grid[j][i]
 
-    counts(change_grid,height, width)
+    def count_alive_around_cell(self, i, j):
+        n_alive = 0
+        for m in range(-1, 2):
+            for n in range(-1, 2):
+                if m == 0 and n == 0:
+                    continue
+                if self.check_alive(i + n, j + m):
+                    n_alive += 1
+        return n_alive
 
-    live_grid = change_state(change_grid, height, width)
+    def next_state(self):
+        new_grid = Grid(self.width, self.height)
+        for j in range(self.height):
+            for i in range(self.width):
 
-    print_out(live_grid, height, width)
+                old_value = self.grid[j][i]
+                n_alive = self.count_alive_around_cell(i, j)
 
-    time.sleep(.4)
+                new_value = False
+                # apply the rules to find the new value
+
+                if old_value:
+                    if n_alive < 2:
+                        new_value = False
+                    elif n_alive in [2, 3]:
+                        new_value = True
+                    elif n_alive > 3:
+                        new_value = False
+                elif n_alive == 3:
+                    new_value = True
+                else:
+                    new_value = False
+
+                new_grid.grid[j][i] = new_value
+
+        return new_grid
+
+# Height can be no less than 6
+
+
+b = Board(50, 50)
+
+
+def run():
+    import time
+
+    grid = Grid(b.width, b.height)
+    for i in range((b.width * b.height)//3):
+        print(grid)
+        time.sleep(.05)
+        grid = grid.next_state()
+
+# print(__name__)
+# exit()
+if __name__ == '__main__':
+    run()
