@@ -22,12 +22,16 @@ class Bee(Entity):
 
 class Pollution(Entity):
     def __init__(self, location_i, location_j):
-        super().__init__(location_i, location_j, '⬛')
+        super().__init__(location_i, location_j, '')
+        f = random.choice([(1, '🐻'), (2, '🛢'), (3, '🏭')])
+        # self.character = random.choice(['🌼', '🌸', '🌺'])
+        self.character = f[1]
+        self.health = f[0]
 
 class Flower(Entity):
     def __init__(self, location_i, location_j):
         super().__init__(location_i, location_j, '')
-        f = random.choice([(2, '🌼'), (1, '🌸')])
+        f = random.choice([(1, '🌼'), (2, '🌸'), (3, '🌸')])
         # self.character = random.choice(['🌼', '🌸', '🌺'])
         self.character = f[1]
         self.health = f[0]
@@ -166,22 +170,18 @@ flower_count = 12
 health = 3
 flower_awareness_range = 4
 
-# set player start position, random
-bi, bj = bd_l.random_location()
-bee = Bee(bi, bj)
 
-# make entity list (bee, pollutions, flowers and scent), make pollution list, make flowers list
-entities = [bee]
+bi, bj = bd_l.random_location()
+bee = Bee(bi, bj)           # set player start position, random
+
+entities = [bee]            # make entity lists (bee, pollutions and flowers)
 pollutions = []
 flowers = []
-flower_scent = []
 
 # add pollutions to entity list and to pollution list
 for i in range(pollution_count):
     pi, pj = bd_l.random_location()
     pollution = Pollution(pi, pj)
-    # TESTING: print(pollution)
-
     entities.append(pollution)
     pollutions.append(pollution)
 
@@ -189,23 +189,21 @@ for i in range(pollution_count):
 for i in range(flower_count):
     fi, fj = bd_l.random_location()
     flower = Flower(fi, fj)
-
     entities.append(flower)
     flowers.append(flower)
 
-# THE GAME LOOP
-while True:
-    # print all entities
-    bd_l.print(entities)
-    time.sleep(.7)
 
-    # define flower location
-    vect_flowers = []
-    for flower in flowers:
-        if flower is bee.last_flower:
+while True:                                 # THE GAME LOOP
+    bd_l.print(entities)                    # print all entities to the board
+    time.sleep(1)                           # delay
+
+    vect_flowers = []                       # define flower vectors
+    for flower in flowers:                  # iterate through all placed flowers
+        if flower is bee.last_flower \
+                or flower is bee.last_flower2:  # prevent revisit
             continue
-        vect_flower = [flower.location_i - bee.location_i, flower.location_j - bee.location_j, flower]
-        vect_flowers.append(vect_flower)
+        vect_flower = [ flower.location_i - bee.location_i , flower.location_j - bee.location_j , flower ]
+        vect_flowers.append ( vect_flower )
         # print(f'vect_flowers {flower} = {type(vect_flowers)}')
 
     # calc axis of bee movement toward flower
@@ -256,6 +254,7 @@ while True:
             health += entity_touch.health
             print(f'Yum! (health = {health})')
             # TEST print(type(entity_touch))
+            bee.last_flower2 = bee.last_flower
             bee.last_flower = entity_touch
 
     if health <= 1:

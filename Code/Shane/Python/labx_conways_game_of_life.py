@@ -49,7 +49,7 @@ class Grid:
         for j in range(self.height):
             for i in range(self.width):
                 if self.grid[j][i]:
-                    r += random.choice(['😇', '\U0001f92c', '😂', '🤣', '😊', '😇', '👿', '😸', '☠', '👽', '😻', '🤖', '🤠', '😵', '😲', '😑', '😐', '😶', '😦', '😯', '🙄', '\U0001f92b', '🤥', '😰', '😨', '😱', '😳', '\U0001f92f', '😭', '😤', '😠', '\U0001f92c', '😩', '😫'])
+                     r += random.choice(['😇', '\U0001f92c', '😂', '🤣', '😊', '😇', '👿', '😸', '☠', '👽', '😻', '🤖', '🤠', '😵', '😲', '😑', '😐', '😶', '😦', '😯', '🙄', '\U0001f92b', '🤥', '😰', '😨', '😱', '😳', '\U0001f92f', '😭', '😤', '😠', '\U0001f92c', '😩', '😫'])
                 else:
                     r += '⬛'
             r += '\n'
@@ -103,7 +103,7 @@ class Grid:
         return new_grid
 
 # Height can be no less than 6
-b = Board(20, 20)
+b = Board(50, 50)
 
 
 # def name_of_life(name):
@@ -114,14 +114,13 @@ b = Board(20, 20)
 #     alpha_dict = dict(zip(letters,))
 
 
-
 def run():
     import time
 
     grid = Grid(b.width, b.height)
     for i in range((b.width * b.height)//3):
         print(grid)
-        time.sleep(.1)
+        time.sleep(.05)
         grid = grid.next_state()
 
 
