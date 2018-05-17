@@ -35,8 +35,8 @@ class Flower(Entity):
 # class BoardHigh:
 #     def __init__(self, width, height):
 #         # define high-level board
-#         self.width = 20
-#         self.height = 10
+#         self.width = board_width
+#         self.height = board_height
 #
 #         # populates high-level board with entities and blanks
 #
@@ -68,8 +68,8 @@ class Flower(Entity):
 class BoardLow:
     def __init__(self, width, height):
         # define low-level map
-        self.width = 20
-        self.height = 10
+        self.width = board_width
+        self.height = board_height
 
         # build entities - enemies and flowers
 
@@ -96,7 +96,9 @@ class BoardLow:
                 else:
                     # If no entities match, print blank (random leaves).
                     # print(random.choice(['⬛️']), end='')
-                    print(random.choice(['🌿️', '🌱', '🍀']), end='')
+                    # print(random.choice(['🌿️', '🌱', '🍀']), end='')
+                    print(random.choice(['⬜️']), end='')
+
             print()
 
 
@@ -109,18 +111,18 @@ def collision(bee, entities):
                 return entity
     return None
 
-# def check_boundries():
-#     for entity in entities:
-#         if random.randint(0, 1) == 0:
-#             if entity.location_i > b.height - 1:
-#                 entity.location_i -= b.height
-#             elif entity.location_i < 0:
-#                 entity.location_i += b.height
-#         else:
-#             if entity.location_j > b.width - 1:
-#                 entity.location_j -= b.width
-#             elif entity.location_j < 0:
-#                 entity.location_j += b.width
+def check_boundries():
+    for entity in entities:
+        if random.randint(0, 1) == 0:
+            if entity.location_i > b.height - 1:
+                entity.location_i -= b.height
+            elif entity.location_i < 0:
+                entity.location_i += b.height
+        else:
+            if entity.location_j > b.width - 1:
+                entity.location_j -= b.width
+            elif entity.location_j < 0:
+                entity.location_j += b.width
 
 def move_bee_randomly(bee):
     # manual control
@@ -152,8 +154,11 @@ def move_bee_randomly(bee):
 
 
 # set parameters
-bd_l = BoardLow(20, 10)
-# bd_h = BoardHigh(20, 10)
+board_width = 30
+board_height = 15
+
+bd_l = BoardLow(board_width, board_height)
+# bd_h = BoardHigh(board_width, board_height)
 
 move_mult = 1
 pollution_count = 4
