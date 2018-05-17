@@ -232,12 +232,12 @@ class Enemy(Drawable):
             if not prized and random.randrange(10) < 1:             # random chance to get a prize
                 xvel = random.randrange(50, 60) * random_dir()
                 yvel = random.randrange(30, 40)
-                prizes.append(Prize(self.xpos - max(x - w/2, 0), self.ypos, 20, xvel, yvel))
+                prizes.append(Prize(self.xpos, self.ypos, 20, xvel, yvel))
                 prized = True
             else:                                                   # otherwise you get snowballs (ie ammo)
                 xvel = random.randrange(20, 60) * random_dir()
                 yvel = random.randrange(30, 40)
-                snow_balls.append(SnowBall(self.xpos - max(x - w/2, 0), self.ypos, 8, xvel, yvel))
+                snow_balls.append(SnowBall(self.xpos - max(x - w / 2, 0), self.ypos, 8, xvel, yvel))
 
 
 class Prize(Drawable):
@@ -279,6 +279,7 @@ class Prize(Drawable):
                 self.tri.draw(win)
         elif self.life == 0:
             self.tri.undraw()
+            return 'dead'
         self.life -= 1
         
     def check_pick(self, ball0):
@@ -324,6 +325,7 @@ class SnowBall(Drawable):
                 self.cir.draw(win)
         elif self.life == 0:
             self.cir.undraw()
+            return 'dead'
         self.life -= 1
 
 
@@ -391,20 +393,23 @@ def main():
             tim.change_dir(ck)
         tim.update(ck, l_ct)
         if tim.state == 'crouched':              # if crouched, grab items within reach
-            sleeper.sleep(10)
             for p in prizes:
-                print(p)
                 if p.check_pick(tim.balls[0].xpos):
-                    print('hi')
                     prizes.remove(p)
                     # weapons.append(SnowGun(tim.balls[0].xpos, ))
+            tim.state = ''
 
         for e in enemies:
             e.update(tim.balls)
         for s in snow_balls:
-            s.update()
+            r = s.update()
+            if r == 'dead':
+                snow_balls.remove(s)
         for p in prizes:
-            p.update()
+            r = p.update()
+            if r == 'dead':
+                prizes.remove(p)
+
 
         if l_ct % 100 == 0 and len(enemies) < 6:
             enemies.append(Enemy(tim.balls[0].xpos + 500, 20, 40, -random.randrange(100, 200), tim.balls[0].cir.getCenter().getX() + 500))
