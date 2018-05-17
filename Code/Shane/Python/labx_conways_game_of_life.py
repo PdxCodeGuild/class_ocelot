@@ -25,7 +25,6 @@ class Board:
             print()
 
 
-
 class Grid:
     def __init__(self, width, height):
         self.width = width
@@ -103,15 +102,9 @@ class Grid:
         return new_grid
 
 # Height can be no less than 6
+
+
 b = Board(50, 50)
-
-
-# def name_of_life(name):
-#
-#     letters = list(name)
-#     print(letters)
-#     lst = list(range(1,5))
-#     alpha_dict = dict(zip(letters,))
 
 
 def run():
@@ -123,9 +116,7 @@ def run():
         time.sleep(.05)
         grid = grid.next_state()
 
-
+# print(__name__)
+# exit()
 if __name__ == '__main__':
     run()
-
-
-
