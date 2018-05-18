@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+
+
+  # webfont for Oswald
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Oswald">
+<style>
+  body {
+    font-family: 'Oswald', serif;
+    font-size: 48px;
+  }
+
+
+.flexContainer {
+    display: flex;
+}
+.flexItem {
+    flex: 1;
+}
+.flexColumn {
+    flex-direction: column;
+}
+.fullHeight {
+    height: 100vh;
+}
+.whiteBackground {
+    background: white;
+}
+.blueBackground {
+    background: lightskyblue;
+}
+.main{
+    order: 2;
+    padding: 20px;
+    border-left: 1px solid #777777;
+    border-right: 1px solid #777777;
+}
+.sidebar {
+    width: 20%;
+    background: white;
+    padding: 20px;
+}
+.sidebarLeft{
+    order: 1;
+}
+.sidebarRight{
+    order: 3;
+}
+
+</style>
+</head>
+<body>
+<div>Making the Web Beautiful!</div>
+  <div class="flexContainer flexColumn fullHeight whiteBackground">
+      <nav class="flexContainer blueBackground">
+          <ul class="nav flexItem flexStart">
+              <li><a href="#">Company Name</a></li>
+          </ul>
+          <ul class="nav flexContainer flexEnd">
+              <li><a href="#">Home</a></li>
+              <li><a href="#">Products</a></li>
+              <li><a href="#">About</a></li>
+              <li><a href="#">Careers</a></li>
+              <li><a href="#">Contact</a></li>
+          </ul>
+      </nav>
+      <div class="flexContainer flexItem">
+          <main class="flexItem whiteBackground main">
+              <p>Put Content Here</p>
+                  <a href="index.html" class="homeButton">Return Home</a>
+              </div>
+          </main>
+          <aside class="sidebar sidebarLeft">
+              <h2>Left Sidebar</h2>
+              <p>Put your content here</p>
+          </aside>
+          <aside class="sidebar sidebarRight">
+              <h2>Right Sidebar</h2>
+              <p>Put your content here</p>
+          </aside>
+      </div>
+      <footer class="flexContainer flexCenter blueBackground whiteText height50">&copy; Jennifer Bland</footer>
+</div>
+</body>
+</html>
