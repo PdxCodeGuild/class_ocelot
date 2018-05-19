@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Bungee+Outline|Lato:900|Orbitron" rel="stylesheet">
+
+    <!--font-family: 'Bungee Outline', cursive;-->
+
+    <!--font-family: 'Orbitron', sans-serif;-->
+
+    <!--font-family: 'Lato', sans-serif;-->
+
+
+<style>
+    .fullscreen-bg {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        overflow: hidden;
+        z-index: -100;
+}
+
+    .fullscreen-bg__video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+}
+    .parallax {
+        /*!* The image used *!*/
+
+
+        /*!* Set a specific height *!*/
+        min-height: 38em;
+
+        /* Create the parallax scrolling effect */
+        background-attachment: fixed;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+    /*http://www.loicnottet.com/wp-content/themes/sonymusic/build/img/videos/intro.mp4*/
+
+    #myVideo {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        min-width: 100%;
+        min-height: 100%;
+        z-index:-10;
+    }
+</style>
+</head>
+<body>
+    <header>
+        This is the header
+    </header>
+    <nav>
+        This is the nav [link1] This is the nav This is the na This is the nav
+    </nav>
+<div class="fullscreen-bg; parallax">
+    <video loop muted autoplay poster="img/videoframe.jpg" class="fullscreen-bg__video" id ="myVideo">
+        <source src= "http://www.loicnottet.com/wp-content/themes/sonymusic/build/img/videos/intro.mp4";>
+    </video>
+</div>
+<div style="height:1000px;background-color:black;font-size:36px; width: 100%; padding-left: 0; margin-left: 0;">
+Scroll Up and Down this page to see the parallax scrolling effect.
+This div is just here to enable scrolling.
+Tip: Try to remove the background-attachment property to remove the scrolling effect.
+</div>
+
+</body>
+</html>
