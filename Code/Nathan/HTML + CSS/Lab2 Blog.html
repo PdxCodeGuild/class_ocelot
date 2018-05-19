@@ -13,8 +13,9 @@
         }
         h1{
             font-size: 30px;
-            margin: 25px;
-            border: 3px solid grey;
+            margin: 15px;
+            /*border: 3px solid grey;*/
+
         }
         header{
             text-align: center;
@@ -26,9 +27,11 @@
         nav{
             background-color: lightcoral;
             padding: 10px;
+            border-radius: 4px;
+            border: solid black;
         }
-        nav a: hover{
-            color: teal;
+        nav a:hover{
+            color: mediumaquamarine;
         }
         aside{
             padding: 10px;
@@ -36,10 +39,11 @@
         }
         aside>div{
             padding: 20px;
-            background-color: white;
+            background: url("https://www.sciencedaily.com/images/2016/08/160824144029_1_900x600.jpg");
             padding: 10px;
             margin: 10px;
             border-radius: 4px;
+            border: solid black;
         }
         section {
             padding: 10px;
@@ -47,9 +51,10 @@
         }
         article {
             padding: 20px;
-            background-color: white;
+            background: url("https://www.sciencedaily.com/images/2016/08/160824144029_1_900x600.jpg");
             margin: 10px;
             border-radius: 4px;
+            border: solid black
         }
         footer {
             text-align: center;
@@ -93,6 +98,23 @@
         .box:active {
                 transform:translateY(2px);
             }
+        .backdrop {
+                background: url("https://i.ytimg.com/vi/lD7k6MRsTz8/maxresdefault.jpg");
+                background-size: contain;
+                object-fit: fill;
+                margin-bottom: 5px;
+                margin-top: 5px;
+                border-radius: 4px;
+                /*border: solid black;*/
+        }
+        .content {
+                position: relative;
+                top: 30%;
+                padding: 20px 15px;
+                margin: 10px auto;
+                background: rgba(100, 150, 100, 0.5);
+                backdrop-filter: hue-rotate(180deg);
+        }
         #maindiv {
             display:flex;
             flex-direction:row;
@@ -101,7 +123,11 @@
 </head>
 <body>
     <header>
-        <h1>AquaBlogua</h1>
+        <div class="backdrop">
+            <div class="content">
+            <h1>AquaBlogua</h1>
+            </div>
+        </div>
     </header>
     <nav>
         <a href="https://aquariuminfo.org/aquascaping.html"class="box">Example Scape 1</a>
