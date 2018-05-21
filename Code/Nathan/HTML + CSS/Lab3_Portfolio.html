@@ -46,9 +46,22 @@
         th{
             text-align: left;
         }
+        aside{
+            padding: 10px;
+            width: 25%
+        }
+        aside>table{
+
+        }
+        img{
+            float: right;
+        }
         #maindiv {
             display: flex;
             flex-direction: row;
+        }
+        .float_right{
+            float: right;
         }
 
 
@@ -58,12 +71,15 @@
 <body>
     <header>
         <h1>Nathan Kinney</h1>
+        <h5>Email: NathanKeithKinney@gmail.com</h5>
+        <h5>Portland, OR.</h5>
     </header>
     <div id ="maindiv">
         <section>
             <article>
                 <h2> Intro</h2>
                 <hr>
+                <img src="https://media.licdn.com/dms/image/C4D03AQHdpoLJgb0HUQ/profile-displayphoto-shrink_200_200/0?e=1528729200&v=beta&t=o4KRIhLqMMaAqyph-2cQYuXVbbF7-EWIxAIoOAxLaP8">
                 <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</p>
                 <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</p>
                 <h2>Expertise</h2>
@@ -74,16 +90,24 @@
                         <th>Java Script</th>
                     </tr>
                     <tr>
-                        <td>Python 3.6</td>
+                        <td>Object-oriented Python</td>
                         <td>Object-oriented JavaScript</td>
                     </tr>
                     <tr>
-                        <td>Object-oriented Python</td>
+                        <td>Python 3.6</td>
                         <td>jQuery</td>
                     </tr>
-
                 </table>
-                </ul>
+                <table>
+                    <div class="float_right">
+                    <tr>
+                        <th>Education</th>
+                        <th>Achievement</th>
+                    </tr>
+                        <td>PDX Code Guild</td>
+                        <td>Lewis & Clark College</td>
+                    </div>
+                </table>
             </article>
 
         </section>
