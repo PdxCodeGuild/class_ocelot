@@ -13,12 +13,21 @@
 
     <!--font-family: 'Lato', sans-serif;-->
 
-
 <style>
     body{
         background: black;
         margin: 0;
         padding: 0;
+    }
+    header{
+        color: antiquewhite;
+    }
+    nav{
+	    display: inline-block;
+	    text-align: center;
+    }
+    ul{
+        margin: 0;
     }
 
     .fullscreen-bg__video {
@@ -35,6 +44,37 @@
         background-repeat: no-repeat;
         background-size: cover;
     }
+
+
+    .downArrow{
+        bottom: 45%;
+        left: 50%;
+        text-align: center;
+    }
+    .bounce {
+        animation: bounce 3s infinite;
+        padding-bottom: 10em;
+    }
+    .nav_container{
+        /*position: fixed;*/
+        color: floralwhite:
+        /*margin-top: 4.5em;*/
+        /*margin-left: 4em;*/
+        /*margin-right: 4em;*/
+    }
+    .menu_container{
+        position: fixed;
+        display: flex;
+        justify-content: space-between;
+        margin-top: 4.5em;
+        width: 100%;
+        color: floralwhite;
+        margin-left: 4.5em;
+    }
+    #right_nav{
+        margin-right: 9em;
+    }
+
     #div_in_video{
         letter-spacing: 1em;
         color: white;
@@ -54,33 +94,6 @@
         z-index:-10;
     }
 
-    header{
-        color: antiquewhite;
-    }
-    nav{
-	    display: inline-block;
-	    text-align: center;
-    }
-
-    .nav_container{
-        color: floralwhite;
-        position: fixed;
-        margin-top: 4.5em;
-        left: 0;
-        right: 0;
-        height: 0;
-        text-align: center;
-    }
-
-    .downArrow{
-        bottom: 45%;
-        left: 50%;
-        text-align: center;
-    }
-    .bounce {
-        animation: bounce 3s infinite;
-        padding-bottom: 10em;
-    }
     @keyframes bounce {
       0%, 100% {
         transform: translateY(0);
@@ -100,17 +113,37 @@
 </head>
 <body id="body">
 
-    <div class="parallax">
-        <div class = "nav_container">
-            <nav>
-                <div id="menu">This is the nav [link1] This is the nav This is the na This is the nav</div>
+
+            <nav class="menu_container">
+                <div id="left_nav">
+                    <a href="http://localhost:63342/class_ocelot/Code/Shane/HTML_+_CSS/lab01_bio.html?_ijt=nkjlqu408f0qeto0ck97e9f4mc" target="_blank">Shane Cheek</a>
+                </div>
+            <div id="middle_nav">
+                    <ul>
+                        <a href="http://localhost:63342/class_ocelot/Code/Shane/HTML_+_CSS/music.html?_ijt=v7vgrqh0fkdvbbn0pab5udi1ef" target="_blank">Music</a>
+                        <a href="http://localhost:63342/class_ocelot/Code/Shane/HTML_+_CSS/music.html?_ijt=v7vgrqh0fkdvbbn0pab5udi1ef" target="_blank">News</a>
+                        <a href="http://localhost:63342/class_ocelot/Code/Shane/HTML_+_CSS/music.html?_ijt=v7vgrqh0fkdvbbn0pab5udi1ef" target="_blank">Bio</a>
+                        <a href="http://localhost:63342/class_ocelot/Code/Shane/HTML_+_CSS/music.html?_ijt=v7vgrqh0fkdvbbn0pab5udi1ef" target="_blank">Photo</a>
+                        <a href="http://localhost:63342/class_ocelot/Code/Shane/HTML_+_CSS/music.html?_ijt=v7vgrqh0fkdvbbn0pab5udi1ef" target="_blank">Tournee</a>
+                        <a href="http://localhost:63342/class_ocelot/Code/Shane/HTML_+_CSS/music.html?_ijt=v7vgrqh0fkdvbbn0pab5udi1ef" target="_blank">Shop</a>
+                    </ul>
+            </div>
+            <div id="right_nav">
+                    <ul>
+                        <a href="http://www.facebook.com" id="icon1" target="_blank"><img src="http://icons.iconarchive.com/icons/graphics-vibe/neon-glow-social/24/youtube-icon.png"></a>
+                        <a href="http://www.facebook.com" id="icon2" target="_blank"><img src="http://icons.iconarchive.com/icons/graphics-vibe/neon-glow-social/24/facebook-icon.png"></a>
+                        <a href="http://www.twitter.com" id="icon3" target="_blank"><img src="http://icons.iconarchive.com/icons/graphics-vibe/neon-glow-social/24/twitter-icon.png"></a>
+                        <a href="http://instagram.com" id="icon4" target="_blank"><img src="http://icons.iconarchive.com/icons/graphics-vibe/neon-glow-social/24/pinterest-icon.png"></a>
+                    </ul>
+                </div>
             </nav>
-        </div>
+
+        <div class="parallax">
         <video loop muted autoplay class="fullscreen-bg__video" id ="myVideo">
             <source src= "http://www.loicnottet.com/wp-content/themes/sonymusic/build/img/videos/intro.mp4";>
         </video>
 
-    </div>
+        </div>
 
     <div id="div_in_video">
         SHANEOCRACY
