@@ -54,14 +54,15 @@
         h2{
             display: inline;
         }
-        #maindiv {
+        #table_container {
             display: flex;
             flex-direction: row;
-            width: auto;
         }
-        #flex_container{
-            display: flex
-
+        #table_contanier table{
+            width: 40em;
+        }
+        #table_container > div{
+            margin: 40px;
         }
     </style>
 </head>
@@ -82,9 +83,9 @@
                 <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</p>
                 <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</p>
                 <hr>
-            <div>
-                <h2 style="float: left; width:50%" >Technical</h2>
-                <table style=float:left;>
+            <div id="table_container">
+                <h2>Technical</h2>
+                <table>
                     <tr>
                         <th>Python</th>
                         <th>Java Script</th>
@@ -99,8 +100,8 @@
                     </tr>
                 </table>
             </div>
-            <div>
-                <h2 style="width:50%">Academic</h2>
+            <div id="table_container">
+                <h2>Academic</h2>
                 <table>
                     <tr>
                         <th>Education</th>
@@ -117,9 +118,7 @@
                 </table>
              </div>
             </article>
-
         </section>
-
     </div>
 
 </body>
