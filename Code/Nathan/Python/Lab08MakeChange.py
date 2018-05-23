@@ -1,5 +1,5 @@
 name = input('Hello, let\'s start with your name? \n')
-value = float(input('What is the dollar amount, ie 1.36, that you would like to use the least amount of coins for?> \n'))
+value = float(input())
 
 value = value*100
 value_1 = int(value)
