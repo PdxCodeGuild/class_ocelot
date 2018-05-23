@@ -1,0 +1,263 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="https://rawgit.com/necolas/normalize.css/master/normalize.css"/>
+        <style>
+            @import url('https://fonts.googleapis.com/css?family=Open+Sans');
+
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                background-color: #0b2621;
+                color: #f5f6f5;
+                font-family: "Open Sans Light";
+            }
+
+            #rightmain {
+                position: fixed;
+                background-color: #ef8e30;
+                left: 50%;
+                top: 0;
+                width: 50%;
+                height: 100%;
+                padding: 20px;
+            }
+
+            #leftmain {
+                width: 50%;
+                padding: 20px;
+            }
+
+            .mapouter {
+                overflow: hidden;
+                width: 100%;
+                height: 300px;
+            }
+
+            #mascot {
+                width: 40px;
+                position: fixed;
+                left: 50%;
+                z-index: 1;
+                transform: translateX(-50%);
+                top: 100px;
+            }
+
+            nav {
+                background-color: #ef8e30;
+                font-family: "Open Sans";
+                position: fixed;
+                left: 50%;
+                transform: translateX(-100%);
+                top: 24px;
+                padding: 5px;
+                border-radius: 4px 0 0 4px;
+            }
+
+            nav > a {
+                margin: 10px;
+            }
+
+            a {
+                color: #f5f6f5;
+                text-decoration: none;
+            }
+
+            a:hover {
+                color: #f3ea86;
+            }
+
+            h1 {
+                margin-top: 0;
+            }
+
+            #order_form {
+                border: 1px solid white;
+                border-radius: 4px;
+                padding: 10px;
+            }
+
+            #outermodal {
+                position: fixed;
+                background-color: rgba(0, 0, 0, 0.8);
+                width: 100%;
+                height: 100%;
+                z-index: 10;
+            }
+
+            #modalimage {
+                background-image: url("ocelatte_logo.png");
+                background-size: contain; /* <------ */
+                background-repeat: no-repeat;
+                background-position: center center;
+                width: 100%;
+                height: 100%;
+                z-index: 11;
+            }
+
+            #innermodal {
+                /*background-color:#f5f6f5;*/
+                color: #f5f6f5;
+                font-size: 80px;
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                padding: 40px;
+                white-space: nowrap;
+            }
+            select > option {
+                font-family: "Open Sans Light";
+            }
+            #order_form td {
+                padding:4px;
+            }
+        </style>
+        <script>
+            window.onload = function () {
+                let ocelot_img = document.querySelector('#mascot');
+                let modal = document.querySelector('#outermodal');
+                let asap_cb = document.querySelector('#asap_cb');
+                let pickup_time_span = document.querySelector('#pickup_time_span');
+                ocelot_img.onclick = function () {
+                    modal.style.display = '';
+                };
+                modal.onclick = function () {
+                    modal.style.display = 'none';
+                };
+                asap_cb.oninput = function() {
+                    if (pickup_time_span.style.display === '') {
+                        pickup_time_span.style.display = 'none'
+                    } else {
+                        pickup_time_span.style.display = ''
+                    }
+                }
+
+
+
+            }
+        </script>
+
+    </head>
+    <body>
+        <div id="outermodal" style="display:none">
+            <div id="modalimage">
+                <div id="innermodal">
+                    Your order is ready!
+                </div>
+            </div>
+        </div>
+        <img id="mascot" src="ocelot.png"/>
+        <div id="leftmain">
+            <h1>Ocelatte</h1>
+            <nav>
+                <a href="#">Membership</a>
+                <a href="#">FAQ</a>
+                <a href="#">Order Online</a>
+                <a href="#">Our Story</a>
+            </nav>
+            <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu mauris a massa lobortis feugiat vitae a urna.
+                Phasellus mauris ipsum, fringilla ac scelerisque in, posuere quis sem. Fusce pharetra ipsum nisi, sollicitudin
+                finibus orci sagittis eu. Maecenas tempor nulla in sagittis sagittis. Maecenas vel tristique sapien. Nam
+                aliquet, lectus sit amet ornare viverra, libero massa dapibus augue, quis porttitor turpis est a velit. Morbi ut
+                est vel purus facilisis hendrerit id at libero. Cras id congue sapien. Aenean commodo dui blandit magna lacinia
+                cursus. Donec sit amet lacus sem. Proin aliquet sapien urna.
+            </p>
+            <p>
+                Integer in egestas ligula, in venenatis justo. Mauris at enim lobortis, accumsan velit eu, varius erat. Etiam in
+                nibh id tellus elementum posuere sed ut magna. Nam rutrum, metus eget tincidunt tempus, eros nisi sagittis nunc,
+                nec ultrices orci arcu sit amet nunc. Sed in mauris a nulla bibendum accumsan ac pretium ligula. Pellentesque
+                sagittis libero est, elementum molestie nibh egestas eget. In gravida augue quis fringilla suscipit. Quisque sit
+                amet massa interdum, laoreet ipsum feugiat, congue urna. Aenean ac nisi enim. Duis faucibus lobortis nulla vel
+                rhoncus. Fusce porttitor, magna in mattis lacinia, ex orci elementum nisi, a accumsan lectus urna pellentesque
+                est. Pellentesque quis nibh vestibulum, tincidunt tellus dignissim, venenatis quam. Cras ultricies, risus vitae
+                rhoncus pharetra, velit arcu vulputate mauris, non egestas nunc diam nec tellus. Curabitur dui ex, efficitur a
+                arcu ut, euismod euismod mi. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean luctus venenatis
+                blandit.
+            </p>
+            <div class="mapouter">
+                <h2>Mark Your Spot</h2>
+                <iframe width="100%" height="300" id="gmap_canvas"
+                        src="https://maps.google.com/maps?q=45.508591, -122.649452&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                        frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+            </div>
+            <p>
+                Ut rutrum sem vel est cursus congue. Ut volutpat odio nec lorem interdum, non aliquet dolor ullamcorper.
+                Phasellus aliquet congue dolor vitae pretium. Praesent ac fringilla risus. Cras eget turpis ante. Donec in
+                turpis aliquet tortor consequat euismod. Nulla ac tortor nisi. Nunc convallis ante et sapien ornare lacinia.
+                Proin dignissim risus elementum, varius metus id, euismod massa. Donec interdum, nisl id dignissim interdum,
+                justo libero efficitur nunc, eget luctus nunc massa sed nunc. Vestibulum convallis sapien eget ligula dapibus
+                lacinia. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ut vehicula lectus, nec vulputate
+                quam.
+            </p>
+            <p>
+                Nam sagittis rhoncus dolor, vel condimentum purus suscipit condimentum. Donec iaculis tempus tristique. Aliquam
+                ac nibh gravida, blandit risus ac, ornare velit. Sed finibus nulla odio, non lobortis ex imperdiet eu. Etiam
+                sollicitudin felis felis, et semper eros vulputate quis. Vivamus vulputate fermentum enim, non bibendum leo
+                congue at. Quisque pharetra aliquam augue, ut tincidunt nisi lacinia et. Nam enim turpis, placerat sed
+                ullamcorper quis, lobortis quis sem. Cras feugiat commodo volutpat. Cras dignissim ut odio eu rhoncus.
+            </p>
+            <p>
+                In molestie est eleifend, semper ligula sed, efficitur nisi. Aliquam eu euismod nibh. Nullam fringilla
+                pellentesque imperdiet. Morbi vel sagittis ipsum, vel bibendum nulla. Quisque dolor risus, vehicula sed
+                vestibulum non, ornare vitae purus. Fusce porta condimentum semper. Aenean posuere, elit et vulputate finibus,
+                orci sapien pretium nibh, vel commodo justo ipsum id tortor. Maecenas suscipit, libero ac mollis euismod, arcu
+                risus viverra leo, quis vulputate mauris libero faucibus metus. Morbi aliquet maximus purus, at auctor neque
+                pulvinar vitae. Nam convallis sem ac pulvinar mollis. Sed massa ligula, porta ut lobortis vel, pellentesque ut
+                ex. Aenean ac ligula vitae libero tincidunt sodales.
+            </p>
+        </div>
+        <div id="rightmain">
+            <div>
+                <h2>Order Form</h2>
+                <div id="order_form">
+                    <table>
+                        <tr>
+                            <td>Name</td>
+                            <td><input type="text"/></td>
+                        </tr>
+                        <tr>
+                            <td>Drink</td>
+                            <td>
+                                <select>
+                                    <option>Ocelatte</option>
+                                    <option>Catpucino</option>
+                                    <option>Mocha</option>
+                                    <option>Americano</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Options</td>
+                            <td>
+                                <input type="checkbox"/> Cow Milk
+                                <input type="checkbox"/> Ocelot Milk
+                                <input type="checkbox"/> Coconut Milk
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Instructions</td>
+                            <td><textarea rows="8" cols="40"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td>Pickup Time</td>
+                            <td>
+                                <input type="checkbox" id="asap_cb"/>ASAP
+                                <span id="pickup_time_span">
+                                    <input type="text" size="2" maxlength="2"/>:<input type="text" size="2" maxlength="2"/>
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                    <div style="text-align:center">
+                        <button >Order</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
