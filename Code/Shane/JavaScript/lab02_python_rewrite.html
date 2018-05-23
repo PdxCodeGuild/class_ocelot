@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Grading Lab</title>
+
+    <script>
+        function grading_v1(num) {
+            let score = num
+
+            while (score > 100 || score < 0){
+            score = prompt("What's your score please?\n")}
+
+            if (score >=90){
+                return('A')}
+
+            else if (score >79){
+                return('B')}
+
+            else if (score >69){
+                return('C')}
+
+            else if (score >59){
+                return('D')}
+
+            else{
+                return('F')}
+        }
+
+        let num = prompt('Enter num 1-100 for grade:\n:')
+
+        console.log(grading_v1(num))
+
+
+
+    </script>
+
+</head>
+<body>
+
+
+
+
+</body>
+</html>
