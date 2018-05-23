@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Roman Numeral Converter</title>
+        <script>
+            let numerals = [['M', 1000], ['D', 500], ['C', 100], ['L', 50], ['X', 10], ['V', 5], ['I', 1]];
+            function to_roman_numerals(num) {
+                let rom = '';
+                let t = 0;
+                for (let i = 0; i < numerals.length; i++) {
+                    t = Math.floor(num / numerals[i][1]);
+                    if (t > 0) {
+                        num -= t * numerals[i][1];
+                        for (let k = 0; k < t; k++)
+                            rom += numerals[i][0]
+                    }
+                    for (let j = i + 1; j < numerals.length; j++) {
+                        if (j === i + 1 && numerals[i][1] === numerals[j][1] * 2) {
+                            continue
+                        }
+                        if (num >= (numerals[i][1] - numerals[j][1])) {
+                            rom += numerals[j][0] + numerals[i][0];
+                            num -= numerals[i][1] - numerals[j][1];
+                            break
+                        }
+                    }
+                }
+                return rom
+            }
+            let input = prompt('Enter a number to convert to Roman Numerals');
+            console.log(to_roman_numerals(input));
+        </script>
+    </head>
+<body>
+
+</body>
+</html>
