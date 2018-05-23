@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Change Calculator</title>
+    <script>
+
+        function random_owed() {
+            let random_index = Math.floor(Math.random()*arr.length)
+            return arr[random_index]
+        }
+
+        let pennies = Math.floor(Math.random() * (2000 - 500) + 500);
+        let payment = prompt(`You owe $${(pennies / 100).toFixed(2)}, how much are you paying?`)
+        pennies = payment * 100 - pennies;
+
+        if (pennies < 0) {
+            console.log('You\'ve underpaid, no change for you.')
+        } else {
+            let p_str = '';
+
+            let dollars = Math.floor(pennies / 100);
+            if (dollars > 0){p_str += dollars + ' dollars, '};
+            pennies -= dollars * 100;
+
+            let halfers = Math.floor(pennies / 50);
+            if (halfers > 0){p_str += halfers + ' half dollars, '};
+            pennies -= halfers * 50;
+
+            let quarters = Math.floor(pennies / 25);
+            if (quarters > 0){p_str += quarters + ' quarters, '};
+            pennies -= quarters * 25;
+
+            let dimes = Math.floor(pennies / 10);
+            if (dimes > 0){p_str += dimes + ' dimes, '};
+            pennies -= dimes * 10;
+
+            let nickles = Math.floor(pennies / 5);
+            if (nickles > 0){p_str += nickles + ' nickles, '};
+            pennies -= nickles * 5;
+
+            let wooden_nickles = Math.floor(pennies / 3);
+            if (wooden_nickles > 0){p_str += wooden_nickles + ' wooden nickles, '};
+            pennies -= wooden_nickles * 3;
+
+            let super_pennies = Math.floor(pennies / 2);
+            if (super_pennies > 0){p_str += super_pennies + ' super pennies, '};
+            pennies -= super_pennies * 2;
+
+            console.log(`Your change is ${p_str}`)
+        }
+    </script>
+</head>
+<body>
+    <div id="main_div">
+        <h2 id="owed"></h2>
+        <div id="input">
+            <h3>You owe</h3>
+        </div>
+    </div>
+</body>
+</html>
