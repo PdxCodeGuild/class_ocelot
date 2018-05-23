@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Make Change</title>
+    <script>
+
+        let currency_given = prompt('What is the dollar amount, ie 1.36, that you would like to use the least amount of coins for?> ');
+
+        currency_given = currency_given*100;
+        console.log(currency_given);
+
+
+
+        let quarters_needed = currency_given / 25;
+        let rounded_quarters = Math.floor(quarters_needed);
+        let dimes_needed = (currency_given - (rounded_quarters*25))/10;
+        let rounded_dimes = Math.floor(dimes_needed)
+        let nickels_needed = (currency_given - (rounded_quarters*25)-(rounded_dimes*10))/5;
+        let rounded_nickels = Math.floor(nickels_needed)
+        let pennies_needed = (currency_given -(rounded_quarters*25)- (rounded_dimes*10)-(rounded_nickels*5))
+        let rounded_pennies = Math.floor(pennies_needed);
+
+        console.log(`The best combination of coins would be ${rounded_quarters} Quarters, ${rounded_dimes} Dimes, ${rounded_nickels} Nickels and ${rounded_pennies} Pennies .`)
+    </script>
+</head>
+<body>
+
+</body>
+</html>
