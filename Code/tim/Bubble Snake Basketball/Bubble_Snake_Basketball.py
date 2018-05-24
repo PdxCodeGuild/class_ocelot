@@ -62,7 +62,7 @@ class Bouncy:
                     a[3] += 1
         yvel1 = self.yvel0 - 140 * time
         self.ypos += time * (self.yvel0 + yvel1) / 2.0
-        self.yvel0 = yvel1 * .99
+        self.yvel0 = yvel1
         self.xpos += time * self.xvel
         if self.xpos > w:
             self.reset_left()
