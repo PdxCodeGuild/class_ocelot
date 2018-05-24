@@ -22,7 +22,6 @@
                 top: 0;
                 width: 50%;
                 height: 100%;
-                background-size: contain;
                 background-repeat: no-repeat;
 
             }
@@ -32,12 +31,21 @@
                 height:70%;
                 width: 70%;
             }
+
             #lemony_answer_bt{
                 background: url("https://www.wikihow.com/images/thumb/5/5a/Draw-Count-Olaf-from-a-Series-of-Unfortunate-Events-Step-8.jpg/aid1891393-v4-728px-Draw-Count-Olaf-from-a-Series-of-Unfortunate-Events-Step-8.jpg");
                 border-radius: 50%;
                 width: 70%;
                 height: 70%;
-                object-fit: fill
+                /*object-fit: fill*/
+            }
+            #tree{
+                /*width: 40px;*/
+                position: fixed;
+                left: 50%;
+                z-index: 1;
+                transform: translateX(-50%);
+                top: -50px
             }
             button {
                 color: rgba(0,0,0,0.6);
@@ -45,16 +53,30 @@
                 text-decoration: underline overline wavy black;
                 font-size: 24px;
                 color: black;
-                text-shadow: 2px 8px 6px rgba(0,0,0,0.2), 0 -5px 35px rgba(255,255,255,0.3);
+                /*text-shadow: 2px 8px 6px rgba(0,0,0,0.2), 0 -5px 35px rgba(255,255,255,0.3);*/
                 display: block;
                 height: 25%;
                 margin-left: auto;
                 margin-right: auto;
                 width: 50%;
-
             }
+            .box {
+                -webkit-transition: all 0.2s;
+                line-height: 35px;
+                font-weight: bold;
+                color: black;
+                padding: 4px;
+                cursor: pointer;
+            }
+        .box:hover {
+                color: mediumaquamarine;
+            }
+        .box:active {
+            transform: translateY(2px);
+        }
         </style>
             <script>
+                alert('You have entered a cross-road, you can take the pleasant naive answer to a question or you can go down the path of a honest and blunt answer');
                 window.onload = function() {
 
                     function random_element(array){
@@ -89,11 +111,16 @@
             </script>
 </head>
 <body>
-    <div id = "right_main">
-        <button id ="lemony_answer_bt">Lemony Answer</button>
-    </div>
-    <div id="left_main">
-        <button id="nice_answer_bt">Nice Answer</button>
+    <div>
+        <span id = "right_main">
+            <button id ="lemony_answer_bt" class="box"><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>Lemony Answer</button>
+        </span>
+        <span id="left_main">
+            <button id="nice_answer_bt" class="box"><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>Nice Answer</button>
+        </span>
+        <span>
+            <img id="tree" src="branch_02.png" height="1100" width="600"/>
+        </span>
     </div>
 </body>
 </html>
