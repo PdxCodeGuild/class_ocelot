@@ -164,7 +164,7 @@
         <span class="side_buttons top_button" id='Right_Option_Button_1'><button
                 class="digital_button" id="check_balance_bt">Balance</button></span>
         <span class="side_buttons middle_button" id='Right_Option_Button_2'><button
-                class="digital_button"id="interest">Interest</button></span>
+                class="digital_button"id="interest_btn">Interest</button></span>
         <span class="side_buttons bottom_button" id='Right_Option_Button_3'><button
                 class="digital_button" id="something_else">something else</button></span>
     </div>
@@ -222,7 +222,6 @@
     withdrawal.onclick = function() {
         input("Enter your withdrawal amount:\n", function (amount) {
             account.withdraw(amount)
-            print(`Withdrew: ${amount}\nYour new balance is: ${account.balance}`)
         })
     }
 
@@ -231,15 +230,35 @@
     deposit_btn.onclick = function() {
         input("Enter your deposit amount:\n", function (amount) {
             account.deposit(amount)
+            clear()
             print(`Deposited: ${amount}\nYour new balance is: ${account.balance}`)
         })
     }
 
+    let transactions = document.querySelector('#transactions')
+
+    transactions.onclick = function() {
+        clear()
+        print(account.transactions.join("\n") )
+    }
+
+
     let check_balance_bt = document.querySelector('#check_balance_bt')
 
     check_balance_bt.onclick = function() {
-            print(`Your balance is: ${account.balance}`)
-        }
+        clear()
+        account.checkbalance()
+        print(`Your balance is: ${account.balance}`)
+    }
+
+
+    let interest_btn = document.querySelector('#interest_btn')
+
+        interest_btn.onclick = function() {
+        clear()
+        account.check_interest()
+        print(`Your balance is: ${account.balance}`)
+    }
 
 
     var globalArray = [] //For checking that new Account instances are being created see the last 2 lines of the constructor
@@ -249,7 +268,7 @@
             this.interest = .001
             this.name = name
             this.id = random_number_gen()
-            this.transactions = []
+            this.transactions = ['Account Created '+ date()]
             this.transaction_count = 0
             this.pin = pin
             // The following lines is for checking the build
@@ -262,43 +281,49 @@
         checkbalance() {
             clear()
             this.transaction_count += 1
-            this.transactions[this.transaction_count] = ('Check Balance', this.balance, date())
+            this.transactions.push(`Check Balance, ${date()}`)
             return this.balance
         }
 
         deposit(amount) {
             clear()
+            amount=parseFloat(amount)
             this.balance += amount
             this.transaction_count += 1
-            this.transactions[this.transaction_count] = ('Deposit', amount, date())
+            this.transactions.push(`Deposit, $${amount}, ${date()}`)
             return this.balance
         }
 
         check_withdrawal(amount) {
-            return this.balance >= amount
+            if (this.balance >= amount){
+                return true}
+            else{
+                return false
+            }
+
         }
 
         withdraw(amount) {
             clear()
-            if (this.check_withdrawal(amount)) {
+            amount=parseFloat(amount)
+            if (this.check_withdrawal(amount) === true){
                 this.balance -= amount
                 this.transaction_count += 1
-                this.transactions[this.transaction_count] = ('Withdrawal', amount, date())
-                return this.balance
+                this.transactions.push(`Withdrawal, $${amount}, ${date()}`)
+                print(`Withdrew: ${amount}\nYour new balance is: ${account.balance}`)
             }
 
-            else {
+            else if (this.check_withdrawal(amount) === false){
                 this.transaction_count += 1
-                this.transactions[this.transaction_count] = ('Failed Withdrawal', this.balance - amount)
-                print(`Can't complete Transaction. Balance = ${this.balance}`)
+                this.transactions.push(`Failed Withdrawal, $${this.balance} - $${amount}`)
+                print(`Insufficient funds. Balance = ${this.balance}`)
             }
         }
 
         check_interest() {
             clear()
             this.transaction_count += 1
-            this.transactions[this.transaction_count] = ('Check Interest', this.interest)
-            let interest_2dec = (this.interest * this.balance).toFixed(2)
+            this.transactions.push(this.interest * this.balance).toFixed(2)
             return interest_2dec
         }
 
