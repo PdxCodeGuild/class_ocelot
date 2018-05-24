@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JS ATM DOM</title>
+     <link href="https://fonts.googleapis.com/css?family=Libre+Barcode+39|Press+Start+2P" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <!--font-family: 'Press Start 2P', cursive;-->
+
+    <!--font-family: 'Libre Barcode 39', cursive;-->
+
+
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+            background-color: black;
+        }
+
+        .pin_page {
+            text-align: center;
+        }
+
+        .pin_buttons {
+            background-color: black;
+            border-color: white;
+            color: white;
+            width: 100px;
+            height: 50px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 2em;
+            border-radius: 10px;
+        }
+
+        #main_screen {
+            background-color: yellowgreen;
+            margin: auto;
+            text-align: center;
+            color: lawngreen;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.5em;
+            padding: 20px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        .column {
+            float: left;
+            padding: 10px;
+            height: 400px;
+            text-align: center;
+        }
+
+        .left, .right {
+            width: 19%;
+        }
+
+        .middle {
+            width: 60%;
+        }
+
+        /* Clear floats after the columns */
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        #row{
+            width: 800px;
+            position: relative;
+            left: 50%;
+            transform: translateX(-50%);
+            margin: 0;
+
+        }
+
+        .digital_button{
+            background-color: black;
+            border-color: white;
+            color: white;
+            width: 130px;
+            height: 60px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 26px;
+            border-radius: 10px;
+        }
+
+        #main_screen_text{
+            text-align: center;
+            position: relative;
+
+            top: 30%;
+            transform: translateY(-50%);
+        }
+
+        .side_buttons {
+            position: relative;
+            transform: translateY(-50%);
+        }
+
+        .top_button{
+            top: 3%;
+        }
+
+        .middle_button{
+            top: 25.5%
+        }
+
+        .bottom_button{
+            top: 50%;
+        }
+
+        #new_account{
+            width: 200px;
+            font-size: 1.4em;
+        }
+
+
+    </style>
+</head>
+<body>
+<div class="row" id="row">
+    <div class="column left" style="background-color:#aaa;">
+        <span class="side_buttons top_button" id='left_Option_Button_1'><button class="digital_button">1</button></span>
+        <span class="side_buttons middle_button" id='left_Option_Button_2'><button class="digital_button">2</button></span>
+        <span class="side_buttons bottom_button" id='left_Option_Button_3'><button class="digital_button" >3</button></span>
+
+    </div>
+    <div class="column middle" id="main_screen" style="background-color:rgb(50,57,39)">
+        <div id="main_screen_text">
+            <h2>Welcome</h2>
+            <p>Please enter your pin to and touch enter.</p>
+        </div>
+    </div>
+    <div class="column right" style="background-color:#ccc;">
+        <span class="side_buttons top_button" id='Right_Option_Button_1'><button class="digital_button" >1</button></span>
+        <span class="side_buttons middle_button" id='Right_Option_Button_2'><button class="digital_button" >1</button></span>
+        <span class="side_buttons bottom_button" id='Right_Option_Button_3'><button class="digital_button" >1</button></span>
+    </div>
+</div>
+
+
+<div class="pin_page">
+    <div>
+        <span id='btn_1'><button class="pin_buttons" id="1">1</button></span>
+        <span id='btn_2'><button class='pin_buttons' id="2">2</button></span>
+        <span id='btn_3'><button class='pin_buttons' id="3">3</button></span>
+    </div>
+    <div>
+        <span id='btn_4'><button class='pin_buttons' id="4">4</button></span>
+        <span id='btn_5'><button class='pin_buttons' id="5">5</button></span>
+        <span id='btn_6'><button class='pin_buttons' id="6">6</button></span>
+    </div>
+    <div>
+        <span id='btn_7'><button class='pin_buttons' id="7">7</button></span>
+        <span id='btn_8'><button class='pin_buttons' id="8">8</button></span>
+        <span id='btn_9'><button class='pin_buttons' id="9">9</button></span>
+    </div>
+    <div><span id='btn_clear'><button class='pin_buttons' id="clear">Clear</button></span>
+        <span id='btn_0'><button class='pin_buttons' id="0">0</button></span>
+        <span id='btn_back'><button class='pin_buttons' id="back_btn">Back</button></span>
+    </div>
+    <div>
+        <span id='btn_enter'><button class='pin_buttons' id="enter_btn">Enter</button></span>
+    </div>
+<div>
+    <button class='pin_buttons' id="new_account" onclick="create_account()">Create Account</button>
+</div>
+</div>
+
+
+<script>
+    function date() {
+        let today = new Date()
+        return today.getFullYear() + '/' + (today.getMonth()) + '/' + (today.getDate() + ' ' + (today.getMinutes() + ':' + (today.getSeconds())))
+    }
+
+    function random_number_gen() {
+        return '_' + Math.random().toString(36).substr(2, 9)
+
+    }
+
+    function create_account() {
+
+        let name = prompt("Please enter your name:")
+        let pin = prompt('Please enter a 4 digit pin.\n Don\'t forget it')
+        if (name == null || name == "" || pin == null || pin == "") {
+            alert('Simple instructions man! Simple instructions...')
+        }
+        else {
+            name = new Account(name,pin)
+            alert("Hello " + name.name + ". Welcome!")
+
+        }
+
+    }
+
+var globalArray = [] //For checking that new Account instances are being created see the last 2 lines of the constructor
+    class Account {
+        constructor(name, pin) {
+            this.balance = 0
+            this.interest = .001
+            this.name = name
+            this.id = random_number_gen()
+            this.transactions = []
+            this.transaction_count = 0
+            this.pin = pin
+            // The following lines is for checking the build
+            globalArray.push(this.name)
+            console.log(globalArray)
+        }
+
+
+        checkbalance() {
+            this.transaction_count += 1
+            this.transactions[this.transaction_count] = ('Check Balance', this.balance, date())
+            return this.balance
+        }
+
+        deposit(amount) {
+            this.balance += amount
+            this.transaction_count += 1
+            this.transactions[this.transaction_count] = ('Deposit', amount, date())
+            return this.balance
+        }
+
+        check_withdrawal(amount) {
+            return this.balance >= amount
+        }
+
+        withdraw(amount) {
+            if (this.check_withdrawal(amount)) {
+                this.balance -= amount
+                this.transaction_count += 1
+                this.transactions[this.transaction_count] = ('Withdrawal', amount, date())
+                return this.balance
+            }
+
+            else {
+                this.transaction_count += 1
+                this.transactions[this.transaction_count] = ('Failed Withdrawal', this.balance - amount)
+                return `Can't complete Transaction. Balance = ${this.balance}`
+            }
+        }
+
+        check_interest() {
+            this.transaction_count += 1
+            this.transactions[this.transaction_count] = ('Check Interest', this.interest)
+            let interest_2dec = (this.interest * this.balance).toFixed(2)
+            return interest_2dec
+        }
+    }
+
+
+    let shane = new Account('Shane', 1234)
+    console.log(shane.id)
+
+</script>
+</body>
+</html>

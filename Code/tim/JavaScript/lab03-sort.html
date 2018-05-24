@@ -5,7 +5,7 @@
     <title>Smart Sort</title>
     <script>
         function random_list(n) {
-            let lst = [];
+            let lst = []
             for (let i = 0; i < n; i++) {
                 lst.push(Math.floor(Math.random() * 100))
             }
@@ -27,10 +27,9 @@
             return y / lst.length
         }
 
-        let lst = random_list(20);
-        let i = 0, r1 = 0, r2 = 0;
-        let b_acc = 0, t_acc = 0;
-        let b_lst = lst.slice();
+        let i = 0, r1 = 0, r2 = 0
+        let b_acc = 0, t_acc = 0
+        let b_lst = random_list(20)
         let t_lst = []
         while (! is_sorted(b_lst)) {
             t_lst = b_lst.slice()

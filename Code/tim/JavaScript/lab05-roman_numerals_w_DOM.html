@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Roman Numeral COnverter</title>
+        <style>
+            @import url('https://fonts.googleapis.com/css?family=Cinzel');
+            #numerals {
+                font-family: 'Cinzel', serif;
+                font-size: 40pt;
+            }
+        </style>
+        <script>
+            window.onload = function() {
+                let convert_val = document.querySelector('#convert_val')
+                let convert_btn = document.querySelector('#convert_btn')
+                let numerals = document.querySelector('#numerals')
+
+                let numeral_list = [['M', 1000], ['D', 500], ['C', 100], ['L', 50], ['X', 10], ['V', 5], ['I', 1]]
+
+                function to_roman_numerals(num) {
+                    let rom = ''
+                    let t = 0
+                    for (let i = 0; i < numeral_list.length; i++) {
+                        t = Math.floor(num / numeral_list[i][1])
+                        if (t > 0) {
+                            num -= t * numeral_list[i][1]
+                            for (let k = 0; k < t; k++)
+                                rom += numeral_list[i][0]
+                        }
+                        for (let j = i + 1; j < numeral_list.length; j++) {
+                            if (j === i + 1 && numeral_list[i][1] === numeral_list[j][1] * 2) {
+                                continue
+                            }
+                            if (num >= (numeral_list[i][1] - numeral_list[j][1])) {
+                                rom += numeral_list[j][0] + numeral_list[i][0]
+                                num -= numeral_list[i][1] - numeral_list[j][1]
+                                break
+                            }
+                        }
+                    }
+                    return rom
+                }
+
+                convert_btn.onclick = function() {
+                    numerals.innerText = to_roman_numerals(convert_val.value)
+                }
+            }
+        </script>
+</head>
+<body>
+    <h1 id="owed">Numeralus Convertus Maximus</h1>
+    <div id="input">
+        <h3>What number do you want to convert?</h3>
+        <input id="convert_val" type="text">
+        <button id="convert_btn">Convert</button>
+    </div>
+    <br>
+    <div id="numerals"></div>
+</body>
+</html>

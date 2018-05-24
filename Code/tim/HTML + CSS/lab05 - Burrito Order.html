@@ -1,0 +1,158 @@
+<html>
+<head>
+    <title>Burrito Palace</title>
+    <style>
+        #maindiv {
+            padding-left: 25px; }
+        nav {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            padding: 5px;
+            justify-items: center;
+            background-color: darkgreen; }
+        nav a {
+            color: #a6ca8a;
+            font-size: 2em; }
+        .container {
+            display: block;
+            position: relative;
+            padding-left: 50px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            font-size: 18px;
+            user-select: none; }
+        .container input {
+            position: absolute;
+            opacity: 0;  /* disappear regular check/radio */
+            cursor: pointer; }
+        .radio {
+            border-radius: 50%;
+            background: white }
+        .radio:after {
+            content: "";
+            position: absolute;
+            display: none; }
+        .check:after {
+            content: "";
+            position: absolute;
+            display: none; }
+        .container input:checked ~ .radio {
+            background-color: #2196F3; }
+        .container input:checked ~ .check {
+            background-color: #2196F3; }
+        .container input:checked ~ .radio:after {
+            display: block; }  /* Reappear regular check/radio */
+        .container input:checked ~ .check:after {
+            display: block; }  /* Reappear regular check/radio */
+        .container .radio:after {
+            top: 9px;
+            left: 9px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: white; }
+        .container .check:after {
+            left: 9px;
+            top: 5px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 3px 3px 0;
+            transform: rotate(45deg); }
+        .ck_rad {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 25px;
+            width: 25px;
+            margin-left: 10px;
+            background-color: #eee; }
+        .container:hover input ~ .ck_rad {
+            background-color: #ccc; }
+        .container input:checked ~ .ck_rad {
+            background-color: darkgreen; }
+    </style>
+</head>
+<body>
+    <h1>Burrito Palace</h1>
+    <nav>
+        <a href="#">Order</a>
+        <a href="#">Hours/Location</a>
+        <a href="#">Our Story</a>
+    </nav>
+    <form id="maindiv">
+        <h2>Burrito Order Builder</h2>
+        <h3>Tortilla</h3>
+            <label class="container">White
+                <input type="radio" name="tortilla" required>
+                <span class="radio ck_rad"></span></label>
+            <label class="container">Wheat
+                <input type="radio" name="tortilla" required>
+                <span class="radio ck_rad"></span></label>
+            <label class="container">Spinach
+                <input type="radio" name="tortilla" required>
+                <span class="radio ck_rad"></span></label>
+            <label class="container">Corn
+                <input type="radio" name="tortilla" required>
+                <span class="radio ck_rad"></span></label>
+        <h3>Rice</h3>
+            <label class="container">White
+                <input type="radio" name="rice" required>
+                <span class="radio ck_rad"></span></label>
+            <label class="container">Brown
+                <input type="radio" name="rice" required>
+                <span class="radio ck_rad"></span></label>
+        <h3>Beans</h3>
+            <label class="container">Black
+                <input type="radio" name="beans" required>
+                <span class="radio ck_rad"></span></label>
+            <label class="container">Pinto
+                <input type="radio" name="beans" required>
+                <span class="radio ck_rad"></span></label>
+        <h3>Protein</h3>
+            <label class="container">Pollo
+                <input type="radio" name="protein" required>
+                <span class="radio ck_rad"></span></label>
+            <label class="container">Carne Asada
+                <input type="radio" name="protein" required>
+                <span class="radio ck_rad"></span></label>
+            <label class="container">Carnitas
+                <input type="radio" name="protein" required>
+                <span class="radio ck_rad"></span></label>
+            <label class="container">Pastor
+                <input type="radio" name="protein" required>
+                <span class="radio ck_rad"></span></label>
+        <h3>Additional Ingredients</h3>
+            <label class="container">Shredded Cheese
+                <input type="checkbox" name="add-on" required>
+                <span class="check ck_rad"></span></label>
+            <label class="container">Sour Cream
+                <input type="checkbox" name="add-on" required>
+                <span class="check ck_rad"></span></label>
+            <label class="container">Guacamole
+                <input type="checkbox" name="add-on" required>
+                <span class="check ck_rad"></span></label>
+    </form>
+    <form>
+        <h3>Personal Info</h3>
+        <table>
+            <tr>
+                <td>Username</td>
+                <td><label><input class="info_label" type="text" name="username" pattern=".{6,}" required></label></td>
+            </tr>
+            <tr>
+                <td>Password</td>
+                <td><label><input class="info_label" type="text" name="password" pattern=".{6,}" required></label></td>
+            </tr>
+            <tr>
+                <td>First Name</td>
+                <td><label><input class="info_label" type="text" name="first_name" pattern=".{1,}" required></label></td>
+            </tr>
+            <tr>
+                <td>Name (First and Last)</td>
+                <td><label><input class="info_label" type="text" name="last_name" pattern="[A-Za-z]{3,}+ [A-Za-z]{3,}+" required></label></td>
+            </tr>
+        </table>
+    </form>
+</body>
+</html>
