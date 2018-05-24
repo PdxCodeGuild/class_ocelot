@@ -1,61 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <meta charset="UTF-8">
     <title>Roman Numeral COnverter</title>
-        <style>
-            @import url('https://fonts.googleapis.com/css?family=Cinzel');
-            #numerals {
-                font-family: 'Cinzel', serif;
-                font-size: 40pt;
-            }
-        </style>
-        <script>
-            window.onload = function() {
-                let convert_val = document.querySelector('#convert_val')
-                let convert_btn = document.querySelector('#convert_btn')
-                let numerals = document.querySelector('#numerals')
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Cinzel');
+        * {
+            font-family: 'Cinzel', serif;
+        }
 
-                let numeral_list = [['M', 1000], ['D', 500], ['C', 100], ['L', 50], ['X', 10], ['V', 5], ['I', 1]]
+        #outer_div {
+            text-align: center;
+        }
 
-                function to_roman_numerals(num) {
-                    let rom = ''
-                    let t = 0
-                    for (let i = 0; i < numeral_list.length; i++) {
-                        t = Math.floor(num / numeral_list[i][1])
-                        if (t > 0) {
+        #numerals, h1 {
+            font-size: 40pt;
+            color: #6492b0;
+        }
+
+        h2 {
+            font-size: 28pt;
+        }
+
+        #convert_val {
+            font-size: 35pt;
+            width: 400px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        #convert_btn {
+            font-size: 35pt;
+            width: auto;
+            padding: 10px;
+            text-align: center;
+            background-color: #a6ca8a;
+        }
+
+        #input {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #input_line {
+            margin: 10px;
+        }
+
+        #explanation {
+            font-size: 18pt;
+        }
+
+    </style>
+    <script>
+        window.onload = function() {
+            let convert_val = document.querySelector('#convert_val')
+            let convert_btn = document.querySelector('#convert_btn')
+            let numerals = document.querySelector('#numerals')
+            let explanation = document.querySelector('#explanation')
+
+            let numeral_list =
+                [['ↈ', 100000], ['ↇ', 50000], ['ↂ', 10000],
+                    ['ↁ', 5000], ['M', 1000], ['D', 500], ['C', 100],
+                    ['L', 50], ['X', 10], ['V', 5], ['I', 1]]
+
+            function to_roman_numerals(num) {
+                explanation.innerText = ''
+                let rom = ''
+                let t = 0
+                for (let i = 0; i < numeral_list.length; i++) {
+                    t = Math.floor(num / numeral_list[i][1])
+                    if (t > 0) {
+                        let div = document.createElement('div')
+                        if (t === 1) {
+                            div.innerText = '(1) ' + numeral_list[i][0] + ' = ' + numeral_list[i][1]
+                            explanation.appendChild(div)
                             num -= t * numeral_list[i][1]
-                            for (let k = 0; k < t; k++)
-                                rom += numeral_list[i][0]
+                        } else {
+                            div.innerText = '(' + t + ') ' + numeral_list[i][0] + '\'s = ' + (t * numeral_list[i][1])
+                            explanation.appendChild(div)
+                            num -= t * numeral_list[i][1]
                         }
-                        for (let j = i + 1; j < numeral_list.length; j++) {
-                            if (j === i + 1 && numeral_list[i][1] === numeral_list[j][1] * 2) {
-                                continue
-                            }
+
+                        for (let k = 0; k < t; k++)
+                            rom += numeral_list[i][0]
+                    }
+                    for (let j = i + 1; j < numeral_list.length; j++) {
+                        if (! (j === i + 1 && numeral_list[i][1] === numeral_list[j][1] * 2)) {
                             if (num >= (numeral_list[i][1] - numeral_list[j][1])) {
+                                let div = document.createElement('div')
+                                div.innerText = '(1) ' + numeral_list[j][0] + numeral_list[i][0] + ' = ' + (numeral_list[i][1] - numeral_list[j][1])
+                                explanation.appendChild(div)
                                 rom += numeral_list[j][0] + numeral_list[i][0]
                                 num -= numeral_list[i][1] - numeral_list[j][1]
                                 break
                             }
                         }
                     }
-                    return rom
                 }
+                numerals.innerText =  rom
+            }
 
-                convert_btn.onclick = function() {
-                    numerals.innerText = to_roman_numerals(convert_val.value)
+            convert_btn.onclick = function() {
+                to_roman_numerals(convert_val.value)
+            }
+
+            convert_val.onkeydown = function(evt) {
+                if (evt.keyCode === 13) {
+                    to_roman_numerals(this.value)
                 }
             }
-        </script>
+        }
+    </script>
 </head>
 <body>
-    <h1 id="owed">Numeralus Convertus Maximus</h1>
-    <div id="input">
-        <h3>What number do you want to convert?</h3>
-        <input id="convert_val" type="text">
-        <button id="convert_btn">Convert</button>
+    <div id="outer_div">
+        <h1 id="owed">Numeralus Convertus Maximus</h1>
+        <div id="input">
+            <h2>What number do you want to convert?</h2>
+            <span id="input_line">
+                <input id="convert_val" type="text">
+                <button id="convert_btn">Convert</button>
+            </span>
+            <h4>(Keep it under 500,000, Romans didn't count that high)</h4>
+        </div>
+        <div id="results">
+            <h1 id="numerals"></h1>
+            <div id="explanation"></div>
+        </div>
     </div>
-    <br>
-    <div id="numerals"></div>
 </body>
 </html>
