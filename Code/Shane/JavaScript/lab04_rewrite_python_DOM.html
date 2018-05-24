@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>JS ATM DOM</title>
-     <link href="https://fonts.googleapis.com/css?family=Libre+Barcode+39|Press+Start+2P" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Libre+Barcode+39|Press+Start+2P" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
     <!--font-family: 'Press Start 2P', cursive;-->
 
     <!--font-family: 'Libre Barcode 39', cursive;-->
-
 
     <style>
         body {
@@ -71,7 +70,7 @@
             clear: both;
         }
 
-        #row{
+        #row {
             width: 800px;
             position: relative;
             left: 50%;
@@ -80,7 +79,7 @@
 
         }
 
-        .digital_button{
+        .digital_button {
             background-color: black;
             border-color: white;
             color: white;
@@ -93,7 +92,7 @@
             border-radius: 10px;
         }
 
-        #main_screen_text{
+        #main_screen_text {
             text-align: center;
             position: relative;
 
@@ -106,19 +105,19 @@
             transform: translateY(-50%);
         }
 
-        .top_button{
+        .top_button {
             top: 3%;
         }
 
-        .middle_button{
+        .middle_button {
             top: 25.5%
         }
 
-        .bottom_button{
+        .bottom_button {
             top: 50%;
         }
 
-        #new_account{
+        #new_account {
             width: 200px;
             font-size: 1.4em;
         }
@@ -130,20 +129,25 @@
 <div class="row" id="row">
     <div class="column left" style="background-color:#aaa;">
         <span class="side_buttons top_button" id='left_Option_Button_1'><button class="digital_button">1</button></span>
-        <span class="side_buttons middle_button" id='left_Option_Button_2'><button class="digital_button">2</button></span>
-        <span class="side_buttons bottom_button" id='left_Option_Button_3'><button class="digital_button" >3</button></span>
+        <span class="side_buttons middle_button" id='left_Option_Button_2'><button
+                class="digital_button">2</button></span>
+        <span class="side_buttons bottom_button" id='left_Option_Button_3'><button
+                class="digital_button">3</button></span>
 
     </div>
     <div class="column middle" id="main_screen" style="background-color:rgb(50,57,39)">
-        <div id="main_screen_text">
-            <h2>Welcome</h2>
-            <p>Please enter your pin to and touch enter.</p>
+        <div id="terminal_container">
+            <!--<h2>Welcome</h2>-->
+            <!--<p>Please enter your pin to and touch enter.</p>-->
         </div>
     </div>
     <div class="column right" style="background-color:#ccc;">
-        <span class="side_buttons top_button" id='Right_Option_Button_1'><button class="digital_button" >1</button></span>
-        <span class="side_buttons middle_button" id='Right_Option_Button_2'><button class="digital_button" >1</button></span>
-        <span class="side_buttons bottom_button" id='Right_Option_Button_3'><button class="digital_button" >1</button></span>
+        <span class="side_buttons top_button" id='Right_Option_Button_1'><button
+                class="digital_button">1</button></span>
+        <span class="side_buttons middle_button" id='Right_Option_Button_2'><button
+                class="digital_button">1</button></span>
+        <span class="side_buttons bottom_button" id='Right_Option_Button_3'><button
+                class="digital_button">1</button></span>
     </div>
 </div>
 
@@ -171,9 +175,9 @@
     <div>
         <span id='btn_enter'><button class='pin_buttons' id="enter_btn">Enter</button></span>
     </div>
-<div>
-    <button class='pin_buttons' id="new_account" onclick="create_account()">Create Account</button>
-</div>
+    <div>
+        <button class='pin_buttons' id="new_account" onclick="create_account()">Create Account</button>
+    </div>
 </div>
 
 
@@ -196,14 +200,14 @@
             alert('Simple instructions man! Simple instructions...')
         }
         else {
-            name = new Account(name,pin)
+            name = new Account(name, pin)
             alert("Hello " + name.name + ". Welcome!")
 
         }
 
     }
 
-var globalArray = [] //For checking that new Account instances are being created see the last 2 lines of the constructor
+    var globalArray = [] //For checking that new Account instances are being created see the last 2 lines of the constructor
     class Account {
         constructor(name, pin) {
             this.balance = 0
@@ -260,9 +264,52 @@ var globalArray = [] //For checking that new Account instances are being created
     }
 
 
+    let terminal_container = document.querySelector('#terminal_container')
+
+    function print(str) {
+        let div = document.createElement('div')
+        div.innerText = str
+        terminal_container.appendChild(div)
+    }
+
+    function input(str, f) {
+
+        let div = document.createElement('div')
+        div.innerText = str;
+
+        let input_element = document.createElement('input')
+        input_element.setAttribute('type', 'text')
+        input_element.onkeydown = function (evt) {
+            if (evt.keyCode === 13) {
+                let div2 = document.createElement('div')
+                div2.innerText = input_element.value
+                terminal_container.replaceChild(div2, input_element)
+                f(input_element.value)
+            }
+        }
+        terminal_container.appendChild(div)
+        terminal_container.appendChild(input_element)
+        input_element.focus()
+    }
+
+    function clear() {
+        terminal_container.innerHTML = ''
+    }
+
+
+    input('what is your name? ', function (name) {
+        clear()
+        input('what is your age?', function (age) {
+            clear()
+            print('hello, ' + name + ', age ' + age)
+        })
+    })
+
+
     let shane = new Account('Shane', 1234)
     console.log(shane.id)
 
 </script>
 </body>
 </html>
+
