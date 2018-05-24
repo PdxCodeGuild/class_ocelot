@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Semi-Smart Sort</title>
+    <script>
+        window.onload = function() {
+            let start = document.querySelector('#start')
+            let progress = document.querySelector('#progress')
+
+
+            function random_list(n) {
+                let lst = []
+                for (let i = 0; i < n; i++) {
+                    lst.push(Math.floor(Math.random() * 100))
+                }
+                return lst
+            }
+
+            function is_sorted(lst) {
+                for (let i = 0; i < lst.length; i++) {
+                    if (lst[i - 1] > lst[i]) {return false}
+                }
+                return true
+            }
+
+            function accuracy(lst) {
+                let y = 0
+                for (let i = 0; i < lst.length; i++) {
+                    if (lst[i - 1] <= lst[i]) {y += 1}
+                }
+                return y / lst.length
+            }
+
+            function sort(i, b_acc, b_lst) {
+                let t_lst = b_lst.slice()
+                let r1 = Math.floor(Math.random() * t_lst.length)
+                let r2 = Math.floor(Math.random() * t_lst.length)
+                t_lst[r1] = b_lst[r2]
+                t_lst[r2] = b_lst[r1]
+                let t_acc = accuracy(t_lst)
+                if (t_acc >= b_acc) {
+                    if (t_acc > b_acc) {
+                        progress.innerText = `Your sort is ${Math.round(t_acc * 100)}% accurate`
+                    }
+                    b_acc = t_acc
+                    b_lst = t_lst.slice()
+                }
+                i += 1
+                if (b_acc < .999){
+                    window.requestAnimationFrame(sort(i, b_acc, b_lst))
+                }
+                progress.innerText = `All sorted.  That took ${i} tries.`
+            }
+
+            start.onclick = function() {
+                let i = 0
+                let b_acc = 0
+                let b_lst = random_list(16)
+                window.requestAnimationFrame(sort(i, b_acc, b_lst))
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Semi-Smart Kinda Sort... baby, baby!</h1>
+    <button id="start">Start</button>
+    <br><br>
+    <h3 id="progress">Your sort is 0% accurate</h3>
+</body>
+</html>
