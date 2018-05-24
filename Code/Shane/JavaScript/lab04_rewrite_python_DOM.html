@@ -17,6 +17,25 @@
             background-color: black;
         }
 
+        textarea {
+          width:100%;
+          height: 150px;
+          color:lawngreen;
+          background-color:darkgreen;
+          border:none;
+        }
+
+
+        input {
+              width: 100%;
+              color:lawngreen;
+              background-color:rgb(50,57,39);
+              border:none;
+              font-family: 'Press Start 2P';
+              font-size: 1.2em;
+        }
+
+
         .pin_page {
             text-align: center;
         }
@@ -35,13 +54,14 @@
         }
 
         #main_screen {
-            background-color: yellowgreen;
+            background-color: darkgreen;
             margin: auto;
             text-align: center;
             color: lawngreen;
             font-family: 'Press Start 2P', cursive;
-            font-size: 1.5em;
+            font-size: 1.2em;
             padding: 20px;
+
         }
 
         * {
@@ -88,7 +108,7 @@
             text-align: center;
             text-decoration: none;
             display: inline-block;
-            font-size: 26px;
+            font-size: 1em;
             border-radius: 10px;
         }
 
@@ -128,26 +148,25 @@
 <body>
 <div class="row" id="row">
     <div class="column left" style="background-color:#aaa;">
-        <span class="side_buttons top_button" id='left_Option_Button_1'><button class="digital_button">1</button></span>
+        <span class="side_buttons top_button" id='left_Option_Button_1'><button class="digital_button" id="withdrawal">Withdrawal</button></span>
         <span class="side_buttons middle_button" id='left_Option_Button_2'><button
-                class="digital_button">2</button></span>
+                class="digital_button"id="deposit_btn">Deposit</button></span>
         <span class="side_buttons bottom_button" id='left_Option_Button_3'><button
-                class="digital_button">3</button></span>
+                class="digital_button" id="transactions">Transactions</button></span>
 
     </div>
     <div class="column middle" id="main_screen" style="background-color:rgb(50,57,39)">
         <div id="terminal_container">
-            <!--<h2>Welcome</h2>-->
-            <!--<p>Please enter your pin to and touch enter.</p>-->
+
         </div>
     </div>
     <div class="column right" style="background-color:#ccc;">
         <span class="side_buttons top_button" id='Right_Option_Button_1'><button
-                class="digital_button">1</button></span>
+                class="digital_button" id="check_balance_bt">Balance</button></span>
         <span class="side_buttons middle_button" id='Right_Option_Button_2'><button
-                class="digital_button">1</button></span>
+                class="digital_button"id="interest">Interest</button></span>
         <span class="side_buttons bottom_button" id='Right_Option_Button_3'><button
-                class="digital_button">1</button></span>
+                class="digital_button" id="something_else">something else</button></span>
     </div>
 </div>
 
@@ -176,7 +195,7 @@
         <span id='btn_enter'><button class='pin_buttons' id="enter_btn">Enter</button></span>
     </div>
     <div>
-        <button class='pin_buttons' id="new_account" onclick="create_account()">Create Account</button>
+        <button class="pin_buttons" id="new_account_bt">Create Account</button>
     </div>
 </div>
 
@@ -192,20 +211,36 @@
 
     }
 
-    function create_account() {
+    let new_account_bt = document.querySelector('#new_account_bt')
 
-        let name = prompt("Please enter your name:")
-        let pin = prompt('Please enter a 4 digit pin.\n Don\'t forget it')
-        if (name == null || name == "" || pin == null || pin == "") {
-            alert('Simple instructions man! Simple instructions...')
-        }
-        else {
-            name = new Account(name, pin)
-            alert("Hello " + name.name + ". Welcome!")
-
-        }
-
+    new_account_bt.onclick = function() {
+        create_account()
     }
+
+    let withdrawal = document.querySelector('#withdrawal')
+
+    withdrawal.onclick = function() {
+        input("Enter your withdrawal amount:\n", function (amount) {
+            account.withdraw(amount)
+            print(`Withdrew: ${amount}\nYour new balance is: ${account.balance}`)
+        })
+    }
+
+    let deposit_btn = document.querySelector('#deposit_btn')
+
+    deposit_btn.onclick = function() {
+        input("Enter your deposit amount:\n", function (amount) {
+            account.deposit(amount)
+            print(`Deposited: ${amount}\nYour new balance is: ${account.balance}`)
+        })
+    }
+
+    let check_balance_bt = document.querySelector('#check_balance_bt')
+
+    check_balance_bt.onclick = function() {
+            print(`Your balance is: ${account.balance}`)
+        }
+
 
     var globalArray = [] //For checking that new Account instances are being created see the last 2 lines of the constructor
     class Account {
@@ -220,16 +255,19 @@
             // The following lines is for checking the build
             globalArray.push(this.name)
             console.log(globalArray)
+            console.log(this.id)
+            console.log(this.pin)
         }
 
-
         checkbalance() {
+            clear()
             this.transaction_count += 1
             this.transactions[this.transaction_count] = ('Check Balance', this.balance, date())
             return this.balance
         }
 
         deposit(amount) {
+            clear()
             this.balance += amount
             this.transaction_count += 1
             this.transactions[this.transaction_count] = ('Deposit', amount, date())
@@ -241,6 +279,7 @@
         }
 
         withdraw(amount) {
+            clear()
             if (this.check_withdrawal(amount)) {
                 this.balance -= amount
                 this.transaction_count += 1
@@ -251,19 +290,26 @@
             else {
                 this.transaction_count += 1
                 this.transactions[this.transaction_count] = ('Failed Withdrawal', this.balance - amount)
-                return `Can't complete Transaction. Balance = ${this.balance}`
+                print(`Can't complete Transaction. Balance = ${this.balance}`)
             }
         }
 
         check_interest() {
+            clear()
             this.transaction_count += 1
             this.transactions[this.transaction_count] = ('Check Interest', this.interest)
             let interest_2dec = (this.interest * this.balance).toFixed(2)
             return interest_2dec
         }
+
+        check_transactions(){
+            clear()
+            return this.transactions
+        }
     }
 
 
+// Terminal
     let terminal_container = document.querySelector('#terminal_container')
 
     function print(str) {
@@ -297,17 +343,43 @@
     }
 
 
-    input('what is your name? ', function (name) {
+    //  Shane
+    // function create_account() {
+    //
+    //     let name = input("Please enter your name:")
+    //     let pin = input('Please enter a 4 digit pin.\n Don\'t forget it')
+    //     if (name == null || name == "" || pin == null || pin == "") {
+    //         alert('Simple instructions man! Simple instructions...')
+    //     }
+    //     else {
+    //         name = new Account(name, pin)
+    //         alert("Hello " + name.name + ". Welcome!")
+    //     }
+    // }
+
+    // Matthew's code base
+    let account = null
+    function create_account() {
         clear()
-        input('what is your age?', function (age) {
+        input('Please enter your name:', function (name) {
             clear()
-            print('hello, ' + name + ', age ' + age)
+            input('Please enter a 4 digit pin.\n Don\'t forget it', function (pin) {
+                if (name == null || name == "" || pin == null || pin == "") {
+                    print('\nSimple instructions man!\nSimple instructions...')
+                } else {
+                    account = new Account(name, pin)
+                    clear()
+                    print('Welcome, ' + account.name + '\n Your pin is: ' + pin + '\nYour ID# is: ' + account.id)
+                }
+            })
         })
-    })
+    }
 
 
-    let shane = new Account('Shane', 1234)
-    console.log(shane.id)
+
+    // Terminal
+    //let shane = new Account('Shane', 1234)
+    //console.log(shane.id)
 
 </script>
 </body>
