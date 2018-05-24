@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>JS ATM DOM</title>
      <link href="https://fonts.googleapis.com/css?family=Libre+Barcode+39|Press+Start+2P" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
     <!--font-family: 'Press Start 2P', cursive;-->
 
@@ -21,7 +22,7 @@
             text-align: center;
         }
 
-        .number_button {
+        .pin_buttons {
             background-color: black;
             border-color: white;
             color: white;
@@ -30,7 +31,7 @@
             text-align: center;
             text-decoration: none;
             display: inline-block;
-            font-size: 16px;
+            font-size: 2em;
             border-radius: 10px;
         }
 
@@ -44,11 +45,9 @@
             padding: 20px;
         }
 
-
         * {
             box-sizing: border-box;
         }
-
 
         .column {
             float: left;
@@ -59,10 +58,6 @@
 
         .left, .right {
             width: 19%;
-            font-size: 1em;
-            /*font-family: 'Libre Barcode 39', cursive;*/
-            white-space: nowrap
-
         }
 
         .middle {
@@ -81,6 +76,7 @@
             position: relative;
             left: 50%;
             transform: translateX(-50%);
+            margin: 0;
 
         }
 
@@ -88,57 +84,96 @@
             background-color: black;
             border-color: white;
             color: white;
-            width: 100px;
-            height: 50px;
+            width: 130px;
+            height: 60px;
             text-align: center;
             text-decoration: none;
             display: inline-block;
-            font-size: 16px;
+            font-size: 26px;
             border-radius: 10px;
         }
+
+        #main_screen_text{
+            text-align: center;
+            position: relative;
+
+            top: 30%;
+            transform: translateY(-50%);
+        }
+
+        .side_buttons {
+            position: relative;
+            transform: translateY(-50%);
+        }
+
+        .top_button{
+            top: 3%;
+        }
+
+        .middle_button{
+            top: 25.5%
+        }
+
+        .bottom_button{
+            top: 50%;
+        }
+
+        #new_account{
+            width: 200px;
+            font-size: 1.4em;
+        }
+
 
     </style>
 </head>
 <body>
 <div class="row" id="row">
     <div class="column left" style="background-color:#aaa;">
-        <h2>Welcome</h2>
-        <p>Some text..</p>
+        <span class="side_buttons top_button" id='left_Option_Button_1'><button class="digital_button">1</button></span>
+        <span class="side_buttons middle_button" id='left_Option_Button_2'><button class="digital_button">2</button></span>
+        <span class="side_buttons bottom_button" id='left_Option_Button_3'><button class="digital_button" >3</button></span>
+
     </div>
     <div class="column middle" id="main_screen" style="background-color:rgb(50,57,39)">
-        <h2>Welcome</h2>
-        <p>Some text..</p>
+        <div id="main_screen_text">
+            <h2>Welcome</h2>
+            <p>Please enter your pin to and touch enter.</p>
+        </div>
     </div>
     <div class="column right" style="background-color:#ccc;">
-        <span id='Right_Option_Button_1'><button class="digital_button" id="1">1</button></span>
+        <span class="side_buttons top_button" id='Right_Option_Button_1'><button class="digital_button" >1</button></span>
+        <span class="side_buttons middle_button" id='Right_Option_Button_2'><button class="digital_button" >1</button></span>
+        <span class="side_buttons bottom_button" id='Right_Option_Button_3'><button class="digital_button" >1</button></span>
     </div>
 </div>
 
 
 <div class="pin_page">
     <div>
-        <span id='btn_1'><button class="number_button" id="1">1</button></span>
-        <span id='btn_2'><button class='number_button' id="2">2</button></span>
-        <span id='btn_3'><button class='number_button' id="3">3</button></span>
+        <span id='btn_1'><button class="pin_buttons" id="1">1</button></span>
+        <span id='btn_2'><button class='pin_buttons' id="2">2</button></span>
+        <span id='btn_3'><button class='pin_buttons' id="3">3</button></span>
     </div>
     <div>
-        <span id='btn_4'><button class='number_button' id="4">4</button></span>
-        <span id='btn_5'><button class='number_button' id="5">5</button></span>
-        <span id='btn_6'><button class='number_button' id="6">6</button></span>
+        <span id='btn_4'><button class='pin_buttons' id="4">4</button></span>
+        <span id='btn_5'><button class='pin_buttons' id="5">5</button></span>
+        <span id='btn_6'><button class='pin_buttons' id="6">6</button></span>
     </div>
     <div>
-        <span id='btn_7'><button class='number_button' id="7">7</button></span>
-        <span id='btn_8'><button class='number_button' id="8">8</button></span>
-        <span id='btn_9'><button class='number_button' id="9">9</button></span>
+        <span id='btn_7'><button class='pin_buttons' id="7">7</button></span>
+        <span id='btn_8'><button class='pin_buttons' id="8">8</button></span>
+        <span id='btn_9'><button class='pin_buttons' id="9">9</button></span>
     </div>
-    <div><span id='btn_clear'><button class='number_button' id="clear">Clear</button></span>
-        <span id='btn_0'><button class='number_button' id="0">0</button></span>
-        <span id='btn_back'><button class='number_button' id="1">Back</button></span>
+    <div><span id='btn_clear'><button class='pin_buttons' id="clear">Clear</button></span>
+        <span id='btn_0'><button class='pin_buttons' id="0">0</button></span>
+        <span id='btn_back'><button class='pin_buttons' id="back_btn">Back</button></span>
     </div>
     <div>
-        <span id='btn_enter'><button class='number_button' id="enter_bu">Enter</button></span>
+        <span id='btn_enter'><button class='pin_buttons' id="enter_btn">Enter</button></span>
     </div>
-
+<div>
+    <button class='pin_buttons' id="new_account" onclick="create_account()">Create Account</button>
+</div>
 </div>
 
 
@@ -153,7 +188,23 @@
 
     }
 
+    function create_account() {
 
+        let name = prompt("Please enter your name:")
+        let pin = prompt('Please enter a 4 digit pin.\n Don\'t forget it')
+        if (name == null || name == "" || pin == null || pin == "") {
+            alert('Simple instructions man! Simple instructions...')
+        }
+        else {
+            name = new Account(name,pin)
+            alert("Hello " + name.name + ". Welcome!")
+            for(i=0; i<Account.length; i++){
+
+            }
+        }
+
+    }
+var globalArray = []
     class Account {
         constructor(name, pin) {
             this.balance = 0
@@ -162,8 +213,9 @@
             this.id = random_number_gen()
             this.transactions = []
             this.transaction_count = 0
-            this.date_opened = date()
             this.pin = pin
+            globalArray.push(this.name)
+            console.log(globalArray)
         }
 
 
@@ -209,13 +261,7 @@
 
 
     let shane = new Account('Shane', 1234)
-    console.log(shane.deposit(1001))
-    console.log(shane.deposit(2001))
-    console.log(shane.withdraw(1000))
-    console.log(shane.checkbalance())
-    console.log(shane.check_interest())
-    console.log(shane.withdraw(10000000))
-    console.log(shane)
+    console.log(shane.id)
 
 </script>
 </body>
