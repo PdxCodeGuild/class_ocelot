@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+        <title>Magic 8 Ball of Lemony Snicket</title>
+        <style>
+            *{
+                box-sizing: border-box;
+            }
+            #right_main{
+                position:fixed;
+                background: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeZybFMlvbY2ONx6wpZNXZv7QE8N2NZYove4E-owz85UBBRJ5f");
+                left: 50%;
+                top:0;
+                width: 50%;
+                height: 100%;
+            }
+            #left_main{
+                position:fixed;
+                background: url("https://i.pinimg.com/originals/f9/03/59/f90359ddd0dd47dd2b9fda32fdb72505.jpg");
+                left:0;
+                top: 0;
+                width: 50%;
+                height: 100%;
+                background-size: contain;
+                background-repeat: no-repeat;
+
+            }
+            #nice_answer_bt{
+                background: url("http://www.theintentionalconsultant.com/wp-content/uploads/2013/03/eagle.jpg");
+                border-radius: 50%;
+                height:70%;
+                width: 70%;
+            }
+            #lemony_answer_bt{
+                background: url("https://www.wikihow.com/images/thumb/5/5a/Draw-Count-Olaf-from-a-Series-of-Unfortunate-Events-Step-8.jpg/aid1891393-v4-728px-Draw-Count-Olaf-from-a-Series-of-Unfortunate-Events-Step-8.jpg");
+                border-radius: 50%;
+                width: 70%;
+                height: 70%;
+                object-fit: fill
+            }
+            button {
+                color: rgba(0,0,0,0.6);
+                font-family: Helvetica;
+                text-decoration: underline overline wavy black;
+                font-size: 24px;
+                color: black;
+                text-shadow: 2px 8px 6px rgba(0,0,0,0.2), 0 -5px 35px rgba(255,255,255,0.3);
+                display: block;
+                height: 25%;
+                margin-left: auto;
+                margin-right: auto;
+                width: 50%;
+
+            }
+        </style>
+            <script>
+                window.onload = function() {
+
+                    function random_element(array){
+                        let random_index = Math.floor(Math.random()*array.length);
+                        return array[random_index]
+                    }
+
+
+
+
+                    let nice_array = ['Today it\'s up to you to create the peacefulness you long for.',
+                        'If you refuse to accept anything but the best, you very often get it.',
+                        'A smile is your passport into the hearts of others.',
+                        'People are naturally attracted to you.',
+                        'Hidden in a valley beside an open stream- This will be the type of place where you will find your dream.'];
+
+                    let lemony_array = ['Fate is like a strange, unpopular restaurant, filled with odd waiters who bring you things you never asked for and don\'t always like.',
+                                  'It is one of life\'s bitterest truths that bedtime so often arrives just when things are really getting interesting.',
+                                  'If you are allergic to a thing, it is best not to put that thing in your mouth, particularly if the thing is cats',
+                                  'If writers wrote as carelessly as some people talk, then adhasdh asdglaseuyt[bn[ pasdlgkhasdfasdf.'];
+
+
+                    let nice_answer_bt = document.querySelector('#nice_answer_bt'); //query selector search for id in DOM
+                    nice_answer_bt.onclick = function(){   //specifies when the function begins
+                        alert(random_element(nice_array)) // presentation of information using the function passing in an array
+                    };
+                    let lemony_answer_bt = document.querySelector('#lemony_answer_bt'); //query selector search for id in DOM
+                    lemony_answer_bt.onclick = function(){ //specifies when the function begins
+                        alert(random_element(lemony_array)) // presentation of information using the function passing in an array
+                    }
+                }
+            </script>
+</head>
+<body>
+    <div id = "right_main">
+        <button id ="lemony_answer_bt">Lemony Answer</button>
+    </div>
+    <div id="left_main">
+        <button id="nice_answer_bt">Nice Answer</button>
+    </div>
+</body>
+</html>
