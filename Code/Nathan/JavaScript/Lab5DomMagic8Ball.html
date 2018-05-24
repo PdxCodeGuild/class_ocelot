@@ -53,13 +53,27 @@
                 text-decoration: underline overline wavy black;
                 font-size: 24px;
                 color: black;
-                text-shadow: 2px 8px 6px rgba(0,0,0,0.2), 0 -5px 35px rgba(255,255,255,0.3);
+                /*text-shadow: 2px 8px 6px rgba(0,0,0,0.2), 0 -5px 35px rgba(255,255,255,0.3);*/
                 display: block;
                 height: 25%;
                 margin-left: auto;
                 margin-right: auto;
                 width: 50%;
             }
+            .box {
+                -webkit-transition: all 0.2s;
+                line-height: 35px;
+                font-weight: bold;
+                color: black;
+                padding: 4px;
+                cursor: pointer;
+            }
+        .box:hover {
+                color: mediumaquamarine;
+            }
+        .box:active {
+            transform: translateY(2px);
+        }
         </style>
             <script>
                 alert('You have entered a cross-road, you can take the pleasant naive answer to a question or you can go down the path of a honest and blunt answer');
@@ -99,10 +113,10 @@
 <body>
     <div>
         <span id = "right_main">
-            <button id ="lemony_answer_bt">Lemony Answer</button>
+            <button id ="lemony_answer_bt" class="box"><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>Lemony Answer</button>
         </span>
         <span id="left_main">
-            <button id="nice_answer_bt">Nice Answer</button>
+            <button id="nice_answer_bt" class="box"><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>Nice Answer</button>
         </span>
         <span>
             <img id="tree" src="branch_02.png" height="1100" width="600"/>
