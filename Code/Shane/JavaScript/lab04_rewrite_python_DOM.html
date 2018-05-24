@@ -198,13 +198,12 @@
         else {
             name = new Account(name,pin)
             alert("Hello " + name.name + ". Welcome!")
-            for(i=0; i<Account.length; i++){
 
-            }
         }
 
     }
-var globalArray = []
+
+var globalArray = [] //For checking that new Account instances are being created see the last 2 lines of the constructor
     class Account {
         constructor(name, pin) {
             this.balance = 0
@@ -214,6 +213,7 @@ var globalArray = []
             this.transactions = []
             this.transaction_count = 0
             this.pin = pin
+            // The following lines is for checking the build
             globalArray.push(this.name)
             console.log(globalArray)
         }
