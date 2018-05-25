@@ -3,6 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>To-Do in JS</title>
+<style>
+    .class{
+        position: relative;
+    }
+</style>
+
 
 </head>
 <body id="body">
@@ -39,21 +45,35 @@
     top_div.appendChild(accept_btn)
 
     let bottom_div = document.createElement('div')
+    bottom_div.style.display = 'flex'
+    bottom_div.style.flexDirection = 'row'
     bottom_div.style.height = '100%'
     bottom_div.style.width = '100%'
     container.appendChild(bottom_div)
+
+    let left_div = document.createElement('div')
+    // left_div.style.position = 'relative'
+    // left_div.style.left = '0'
+    left_div.style.width = '50%'
+    bottom_div.appendChild(left_div)
+
+    let right_div = document.createElement('div')
+    // left_div.style.position = 'relative'
+    // left_div.style.right = '100%'
+    right_div.style.width = '50%'
+    bottom_div.appendChild(right_div)
 
     let to_do_list = document.createElement('ul')
     to_do_list.style.listStyleImage = 'url(https://media.giphy.com/media/mHwtkXN4fwAdq/giphy.gif)'
     to_do_list.style.fontSize = '30px'
     to_do_list.style.backgroundColor = 'lightyellow'
-    bottom_div.appendChild(to_do_list)
+    left_div.appendChild(to_do_list)
 
     let completed = document.createElement('ul')
     completed.style.listStyleImage = 'url(https://media.giphy.com/media/yzVlntFaL1GNi/giphy.gif)'
     completed.style.fontSize = '30px'
     completed.style.backgroundColor = 'lightgreen'
-    bottom_div.appendChild(completed)
+    right_div.appendChild(completed)
 
     function clear(){
         text_field.value = ''
@@ -80,21 +100,21 @@
             this.remove()
         }
         li.onclick = function (){
+            completed_add(li.innerText)
             this.remove()
-            completed_add()
         }
 
     }
 
 
 
-    function completed_add(){
+    function completed_add(item){
         let ul = completed
         let li = document.createElement("li")
         let children = ul.children.length + 1
         li.setAttribute('id', 'to_do'+children)
         console.log(li)
-        li.appendChild(document.createTextNode(text_field.value))
+        li.appendChild(document.createTextNode(item))
         ul.appendChild(li)
         li.ondblclick = function () {
             this.remove()
