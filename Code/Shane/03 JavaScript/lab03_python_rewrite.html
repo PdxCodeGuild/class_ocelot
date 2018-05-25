@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JS ATM DOM</title>
+     <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+<style>
+    .pin_page{
+        text-align: center;
+
+    }
+    .number_button{
+        background-color: black;
+        border-color: white;
+        color: white;
+        width: 100px;
+        height: 50px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        text-align: center;
+        border-radius: 10px;
+    }
+
+    #main_screen{
+        background-color: #222222;
+        margin: auto;
+        height: 400px;
+        width: 50%;
+        text-align: center;
+        color: lawngreen;
+        font-family: 'Press Start 2P', cursive;
+        font-size: 1.5em;
+        text-align: center;
+        padding: 20px;
+    }
+
+    #main_screen_text{
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+</style>
+</head>
+<body>
+    <div id="main_screen">
+        <div id="main_screen_text"> Welcome Press Enter on the keypad to start.
+        </div>
+
+
+
+    </div>
+<div class="pin_page">
+    <div>
+        <span id='btn_1'><button class="number_button" id="1">1</button></span>
+        <span id='btn_2'><button class='number_button' id="2">2</button></span>
+    <span id='btn_3'><button  class='number_button' id="3">3</button></span>
+    </div>
+    <div>
+        <span id='btn_4'><button  class='number_button' id="4">4</button></span>
+    <span id='btn_5'><button  class='number_button' id="5">5</button></span>
+    <span id='btn_6'><button  class='number_button' id="6">6</button></span>
+    </div>
+    <div>
+        <span id='btn_7'><button  class='number_button' id="7">7</button></span>
+    <span id='btn_8'><button  class='number_button' id="8">8</button></span>
+    <span id='btn_9'><button  class='number_button' id="9">9</button></span>
+    </div>
+    <div><span id='btn_clear'><button  class='number_button' id="clear">Clear</button></span>
+    <span id='btn_0'><button  class='number_button' id="0">0</button></span>
+    <span id='btn_back'><button  class='number_button' id="1">Back</button></span>
+    </div>
+    <div>
+        <span id='btn_enter'><button  class='number_button' id="enter_bu">Enter</button></span>
+    </div>
+
+</div>
+
+
+<script>
+        function date() {
+            let today = new Date()
+            return today.getFullYear() + '/' + (today.getMonth()) +'/'+ (today.getDate()+' '+(today.getMinutes()+':'+(today.getSeconds())))
+        }
+
+        function random_number_gen(){
+            return '_' + Math.random().toString(36).substr(2, 9)
+
+        }
+
+
+        class Account {
+            constructor(name, pin) {
+                this.balance = 0
+                this.interest = .001
+                this.name = name
+                this.id = random_number_gen()
+                this.transactions = []
+                this.transaction_count = 0
+                this.date_opened = date()
+                this.pin = pin
+            }
+
+
+            checkbalance() {
+                this.transaction_count += 1
+                this.transactions[this.transaction_count] = ('Check Balance', this.balance, date())
+                return this.balance
+            }
+
+            deposit(amount) {
+                this.balance += amount
+                this.transaction_count += 1
+                this.transactions[this.transaction_count] = ('Deposit', amount, date())
+                return this.balance
+            }
+
+            check_withdrawal(amount) {
+                return this.balance >= amount
+            }
+
+            withdraw(amount) {
+                if (this.check_withdrawal(amount)){
+                    this.balance -= amount
+                    this.transaction_count += 1
+                    this.transactions[this.transaction_count] = ('Withdrawal', amount, date())
+                    return this.balance
+                }
+
+                else {
+                    this.transaction_count+=1
+                    this.transactions[this.transaction_count] = ('Failed Withdrawal', this.balance - amount)
+                    return `Can't complete Transaction. Balance = ${this.balance}`
+                }
+            }
+            check_interest(){
+                this.transaction_count += 1
+                this.transactions[this.transaction_count] = ('Check Interest', this.interest)
+                let interest_2dec = (this.interest * this.balance).toFixed(2)
+                return interest_2dec
+                }
+        }
+
+
+        let shane = new Account('Shane', 1234)
+        console.log(shane.deposit(1001))
+        console.log(shane.deposit(2001))
+        console.log(shane.withdraw(1000))
+        console.log(shane.checkbalance())
+        console.log(shane.check_interest())
+        console.log(shane.withdraw(10000000))
+        console.log(shane)
+
+    </script>
+</body>
+</html>

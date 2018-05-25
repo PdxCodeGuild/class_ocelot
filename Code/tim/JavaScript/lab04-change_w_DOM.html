@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Change Calculator</title>
+    <style>
+        td {
+            padding: 4px 20px 4px 10px
+        }
+    </style>
+    <script>
+        window.onload = function() {
+            let dollars_amt = document.querySelector('#dollars_amt')
+            let halfers_amt = document.querySelector('#halfers_amt')
+            let quarters_amt = document.querySelector('#quarters_amt')
+            let dimes_amt = document.querySelector('#dimes_amt')
+            let nickles_amt = document.querySelector('#nickles_amt')
+            let wooden_nickles_amt = document.querySelector('#wooden_nickles_amt')
+            let super_pennies_amt = document.querySelector('#super_pennies_amt')
+            let pennies_amt = document.querySelector('#pennies_amt')
+            let owed = document.querySelector('#owed')
+            let payment = document.querySelector('#payment')
+            let submit = document.querySelector('#submit')
+            let again = document.querySelector('#again')
+
+            function random_owed() {
+                return Math.floor(Math.random() * (2000 - 500) + 500) / 100
+            }
+
+            let currently_owed = random_owed()
+            owed.innerText = `You owe $${currently_owed.toFixed(2)}`
+
+            let all_amts = [dollars_amt, halfers_amt, quarters_amt, dimes_amt,
+                            nickles_amt, wooden_nickles_amt, super_pennies_amt,
+                            pennies_amt]
+            again.onclick = function(){
+                currently_owed = random_owed()
+                owed.innerText = `You owe $${currently_owed.toFixed(2)}`
+                payment.value = ''
+                for (i = 0; i < all_amts.length; i++) {
+                    all_amts[i].innerText = 0
+                }
+            }
+            submit.onclick = function(){
+                let pennies = Math.round((payment.value - currently_owed) * 100)
+                if (pennies < 0) {
+                    alert('you\'ve underpaid, no change for you')
+                } else {
+                    let dollars = Math.floor(pennies / 100)
+                    if (dollars > 0){
+                        dollars_amt.innerText = dollars
+                        pennies -= dollars * 100
+                    }
+                    let halfers = Math.floor(pennies / 50)
+                    if (halfers > 0){
+                        halfers_amt.innerText = halfers
+                        pennies -= halfers * 50
+                    }
+                    let quarters = Math.floor(pennies / 25)
+                    if (quarters > 0){
+                        quarters_amt.innerText = quarters
+                        pennies -= quarters * 25
+                    }
+                    let dimes = Math.floor(pennies / 10)
+                    if (dimes > 0){
+                        dimes_amt.innerText = dimes
+                        pennies -= dimes * 10
+                    }
+                    let nickles = Math.floor(pennies / 5)
+                    if (nickles > 0){
+                        nickles_amt.innerText = nickles
+                        pennies -= nickles * 5
+                    }
+                    let wooden_nickles = Math.floor(pennies / 3)
+                    if (wooden_nickles > 0){
+                        wooden_nickles_amt.innerText = wooden_nickles
+                        pennies -= wooden_nickles * 3
+                    }
+                    let super_pennies = Math.floor(pennies / 3)
+                    if (super_pennies > 0){
+                        super_pennies_amt.innerText = super_pennies
+                        pennies -= super_pennies * 2
+                    }
+                    pennies_amt.innerText = Math.round(pennies)
+                }
+            }
+        }
+
+    </script>
+</head>
+<body>
+    <h1 id="owed">You owe</h1>
+    <div id="input">
+        <h3>What are you paying?</h3>
+        <input id="payment" type="text">
+        <button id="submit">Submit</button>
+    </div>
+    <br>
+    <div>
+        <table id="change_table">
+            <tr>
+                <td>Dollars</td>
+                <td id="dollars_amt">0</td>
+            </tr>
+            <tr>
+                <td>Halfer Dollars</td>
+                <td id="halfers_amt">0</td>
+            </tr>
+            <tr>
+                <td>Quarters</td>
+                <td id="quarters_amt">0</td>
+            </tr>
+            <tr>
+                <td>Dimes</td>
+                <td id="dimes_amt">0</td>
+            </tr>
+            <tr>
+                <td>Nickels</td>
+                <td id="nickles_amt">0</td>
+            </tr>
+            <tr>
+                <td>Wooden Nickles</td>
+                <td id="wooden_nickles_amt">0</td>
+            </tr>
+            <tr>
+                <td>Super Pennies</td>
+                <td id="super_pennies_amt">0</td>
+            </tr>
+            <tr>
+                <td>Pennies</td>
+                <td id="pennies_amt">0</td>
+            </tr>
+        </table>
+    </div>
+    <br>
+    <button id="again">Again, again!</button>
+</body>
+</html>

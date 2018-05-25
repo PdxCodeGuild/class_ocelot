@@ -30,7 +30,6 @@ def accuracy(lst):
             y += 1
     return y / len(lst)
 
-
 lst = random_list(18)
 
 i = 0
