@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rock • Paper • Scissors • Ocelot</title>
+
+
+    <style>
+        /*GLOBAL STYLE ADJUSTMENTS*/
+        @import url('https://fonts.googleapis.com/css?family=Open+Sans');
+
+        * {
+            box-sizing: border-box;
+        }
+
+        #main_container {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 75%;
+            border: 1px solid darkgreen;
+            border-radius: 5px;
+            display: grid;
+            grid-template-columns: 1fr 4fr;
+        }
+
+
+        body {
+            font-family: "Open Sans";
+            background-color: white;
+            position: center;
+            border: 1px solid darkgreen;
+            /*width: 75%;*/
+
+            /*margin: auto;*/
+        }
+
+        .centered-wrapper {
+            position: relative;
+            text-align: center;
+            font-family: "Open Sans";
+            background-color: white;
+            margin: auto;
+            border: 1px solid darkgreen;
+            border-radius: 5px;
+        }
+
+        .centered-wrapper:before {
+            content: "";
+            position: relative;
+            display: inline-block;
+            margin: auto;
+            border: 1px solid lightseagreen;
+            border-radius: 5px;
+            width: 0;
+            height: 100%;
+            vertical-align: middle;
+        }
+
+        .centered-content {
+            display: inline-block;
+            vertical-align: middle;
+            border: 1px solid lawngreen;
+            border-radius: 5px;
+        }
+
+
+        #title_border {
+            margin: auto;
+            border: 1px solid darkgray;
+            border-radius: 5px;
+            width: 75%;
+            padding: 10px;
+        }
+
+        .flex_container_column {
+            display: flex;
+            flex-direction: column;
+            border: 1px solid darkorange;
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+            margin: auto;
+            /*flex: centered;*/
+            /*margin: 20px;*/
+            /*flex-grow: 1;*/
+
+        }
+
+        .flex_container_row {
+            display: flex;
+            flex-direction: row;
+            border: 1px solid orangered;
+            border-radius: 5px;
+            padding: 10px;
+            justify-content: space-around;
+            width: 75%;
+
+        }
+
+
+        /*SPECIFIC STYLE TWEAKS*/
+        #icons_bt, #hands_bt, #images_bt {
+            /*padding: 1em;*/
+            font-size:60px;
+        }
+
+        #rock_img, #paper_img, #scissors_img, #ocelot_img {
+            font-size:60px;
+        }
+
+        #hands_bt {
+            transform: rotate(270deg);
+        }
+
+        /*#images_bt {*/
+            /*: 200px;*/
+            /*transform: translateY(12px)*/
+        /*}*/
+
+        /*TEXT STYLES*/
+        h1 {
+            font-family: 'Open Sans', sans-serif;
+            font-weight: bold;
+            font-size: 1.6em;
+            color: darkgray;
+            letter-spacing: .8em;
+            text-indent: .8em;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        h2 {
+            font-family: 'Open Sans', sans-serif;
+            font-size: 2em;
+            color: black;
+            padding: 20px;
+
+            /*letter-spacing: 1.4em;*/
+        }
+
+        .grid-columns {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            border: 1px yellow;
+
+        }
+        .grid-columns > * {
+            border: 1px solid tomato;
+        }
+
+    </style>
+    <script>
+        window.onload = function () {
+
+
+            function generate_buttons(name) {
+                let active_img_list = null
+                if (name === 'icons') {
+                    active_img_list = ['🗿', '📜', '✂', '🙀']
+                } else if (name === 'hands') {
+                    active_img_list = ['👊', '✋', '✌️', '✊']
+                } else if (name === 'images') {
+                    let rps_imgs_pics1_urls = ["rps_images/rock-icon-gray.png", "rps_images/paper-icon-gray.png", "rps_images/scissors-icon-gray.png", "rps_images/ocelot-icon-gray.png"]
+                    // Create list of picture images
+                    active_img_list = []
+                    for (let i = 0; i < rps_imgs_pics1_urls.length; ++i) {
+                        active_img_list.push('<img src="' + rps_imgs_pics1_urls[i] + '" height="100">');
+                    }
+                }
+
+                document.getElementById('rock_img').innerHTML = active_img_list[0];
+                document.getElementById('paper_img').innerHTML = active_img_list[1];
+                document.getElementById('scissors_img').innerHTML = active_img_list[2];
+                document.getElementById('ocelot_img').innerHTML = active_img_list[3];
+
+            }
+
+            generate_buttons('images');
+
+            let bt_names = ['icons', 'hands', 'images']
+            for (let i = 0; i < bt_names.length; ++i) {
+                let bt = document.querySelector('#' + bt_names[i] + '_bt');
+                bt.onclick = function () {
+                    generate_buttons(bt_names[i])
+                }
+            }
+
+        }
+
+
+        </script>
+</head>
+<body class="centered-wrapper">
+    <div class="centered-content">
+        <div id="title_border">
+            <h1>Rock • Paper • Scissors • Ocelot</h1>
+        </div>
+
+        <div id="main_container">
+
+            <!--user select 1 of 3 icon styles to apply to current rps icon set-->
+            <div>
+                <div id="icons_bt"> 🗿</div>
+                <div id="hands_bt"> 👊</div>
+                <div id="images_bt"><img src="rps_images/rock-icon-gray.png" height="50"/></div>
+            </div>
+
+            <!--displays all icons of selected set-->
+
+            <div class="grid-columns">
+                <p id="rock_img"></p>
+                <p id="paper_img"></p>
+                <p id="scissors_img"></p>
+                <p id="ocelot_img"></p>
+
+            </div>
+        </div>
+</div>
+
+
+<!--</body>-->
+
+<!--<div id="rps_display_border">-->
+    <!--<div id="computer_choice" class="choices">-->
+        <!--<div>Computer</div>-->
+        <!--<div id="computer_rock_bt">👊</div>-->
+        <!--<div id="computer_paper_bt">✋</div>-->
+        <!--<div id="computer_scissors_bt">✌️</div>-->
+    <!--</div>-->
+    <!--<div id="result">-->
+        <!--<div id="result_header">0 RESULT 0</div>-->
+        <!--<div id="result_output"></div>-->
+        <!--<button id="reset_bt" style="opacity:0">Reset</button>-->
+    <!--</div>-->
+    <!--<div id="human_choice" class="choices">-->
+        <!--<div>Human</div>-->
+        <!--<div id="human_rock_bt">👊</div>-->
+        <!--<div id="human_paper_bt">✋</div>-->
+        <!--<div id="human_scissors_bt">✌️</div>-->
+    <!--</div>-->
+<!--</div>-->
+<!--</body>-->
+
+</body>
+</html>
