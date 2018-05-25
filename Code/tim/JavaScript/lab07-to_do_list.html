@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>To Do List</title>
+    <style>
+        * {
+            margin: 10px
+        }
+        #outer_container {
+            font-size: 28pt;
+            text-align: center;
+        }
+        #input {
+            font-size: 20pt;
+            width: 15em;
+            text-align: center;
+        }
+        #add_btn {
+            
+            font-size: 20pt;
+        }
+        #to_do_list {
+            display: inline-grid;
+            grid-template-columns: 70% auto auto;
+        }
+        /*.to_do_group {*/
+            /*display: inline-grid;*/
+            /*grid-template-columns: 70% auto auto;*/
+        /*}*/
+
+        /*.to_do_group > * {*/
+            /*!*display: inline-grid;*!*/
+            /*!*grid-template-columns: 70% auto auto;*!*/
+            /*margin: auto auto;*/
+        /*}*/
+        .ck {
+            height: 2em;
+            /*margin: 0 20px 0 0;*/
+        }
+        .del {
+            height: 2em;
+        }
+        /*.to_do_item {*/
+            /*margin: 0 80px 0 0;*/
+        /*}*/
+        #list_container {
+            display: flex;
+            flex-direction: row;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 1px solid black;
+
+        }
+        #list_container > * {
+            width: 500px;
+        }
+        ul {
+            list-style-type: none;
+            -webkit-padding-start: 0px;
+        }
+    </style>
+    <script>
+        window.onload = function () {
+            let to_do_list = document.querySelector('#to_do_list')
+            let done_list = document.querySelector('#done_list')
+            let add_btn = document.querySelector('#add_btn')
+            let input = document.querySelector('#input')
+
+            function add_to_do(to_do) {
+                // let li = document.createElement('li')
+                //     li.className = 'to_do_group'
+                let div = document.createElement('div')
+                div.className = 'to_do_item'
+                div.innerText = to_do
+                let check_mark = document.createElement('img')
+                    check_mark.src = 'http://www.clker.com/cliparts/2/k/n/l/C/Q/transparent-green-checkmark-hi.png'
+                    check_mark.className = 'ck'
+                    check_mark.onclick = function () {
+                        let li = document.createElement('li');
+                        li.innerText = to_do;
+                        done_list.appendChild(li);
+                        to_do_list.removeChild(this.parentElement)
+                    }
+                let delete_mark = document.createElement('img')
+                    delete_mark.src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Red_x.svg/2000px-Red_x.svg.png'
+                    delete_mark.className = 'del'
+                    delete_mark.onclick = function () {
+                        to_do_list.removeChild(this.parentElement)
+                    }
+                // li.appendChild(div)
+                // li.appendChild(check_mark)
+                // li.appendChild(delete_mark)
+                to_do_list.appendChild(div)
+                to_do_list.appendChild(check_mark)
+                to_do_list.appendChild(delete_mark)
+            }
+
+            add_btn.onclick = function () {
+                if(input.value.length > 0){
+                    add_to_do(input.value)
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="outer_container">
+        <div id="what_to_do">What do you have to do?</div>
+        <input type="text" id="input">
+        <button id="add_btn">Add</button>
+        <div id="list_container">
+            <div id="list_container_left">
+                <h3>To Do</h3>
+                <ul id="to_do_list"></ul>
+            </div>
+            <div id="list_container_right">
+                <h3>Done</h3>
+                <ul id="done_list"></ul>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
