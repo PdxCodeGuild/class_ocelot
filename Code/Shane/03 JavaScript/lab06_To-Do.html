@@ -3,28 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title>To-Do in JS</title>
-<style>
-    .class{
-        position: relative;
-    }
-</style>
 
 
 </head>
-<body id="body">
-    <div id="container"></div>
+<body>
 <script>
-    let body = document.getElementById('body')
-    body.style.backgroundColor = 'black'
-    let container = document.getElementById('container')
+
+    document.body.style.backgroundColor = 'black'
+    let container = document.createElement('div')
+    container.style.color = 'white'
+    document.body.appendChild(container)
     container.innerText = 'Add a thing to do here in the text field.\nDouble-click to remove.\n Single click to complete.'
     container.style.fontSize = '40px'
     container.style.textAlign = 'center'
-    container.style.backgroundColor = 'lightgray'
+
 
 
     let top_div = document.createElement('div')
-    top_div.style.backgroundColor = 'lightgrey'
+
     container.appendChild(top_div)
 
     let text_field = document.createElement('input')
@@ -34,11 +30,12 @@
     top_div.appendChild(text_field)
 
     let accept_btn = document.createElement('button')
-    accept_btn.style.backgroundColor = 'black'
+    accept_btn.style.backgroundColor = 'white'
     accept_btn.style.border = '1px dotted white'
     accept_btn.innerText = 'Add'
-    accept_btn.style.fontSize = '20px'
-    accept_btn.style.color = 'white'
+    accept_btn.style.margin = '10px'
+    accept_btn.style.fontSize = '30px'
+    accept_btn.style.color = 'black'
     accept_btn.style.cursor = 'help'
 
 
@@ -66,13 +63,12 @@
     let to_do_list = document.createElement('ul')
     to_do_list.style.listStyleImage = 'url(https://media.giphy.com/media/mHwtkXN4fwAdq/giphy.gif)'
     to_do_list.style.fontSize = '30px'
-    to_do_list.style.backgroundColor = 'lightyellow'
+
     left_div.appendChild(to_do_list)
 
     let completed = document.createElement('ul')
     completed.style.listStyleImage = 'url(https://media.giphy.com/media/yzVlntFaL1GNi/giphy.gif)'
     completed.style.fontSize = '30px'
-    completed.style.backgroundColor = 'lightgreen'
     right_div.appendChild(completed)
 
     function clear(){
@@ -99,7 +95,7 @@
         li.ondblclick = function () {
             this.remove()
         }
-        li.onclick = function (){
+        li.ondblclick = function (){
             completed_add(li.innerText)
             this.remove()
         }
@@ -116,7 +112,7 @@
         console.log(li)
         li.appendChild(document.createTextNode(item))
         ul.appendChild(li)
-        li.ondblclick = function () {
+        li.onclick = function () {
             this.remove()
         }
     }
