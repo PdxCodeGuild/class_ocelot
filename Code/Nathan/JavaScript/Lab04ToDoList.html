@@ -7,6 +7,32 @@
             #FullSheet{
                 font-family: Helvetica;
                 text-align: center;
+                height: 100%;
+                width: 100%;
+            }
+            #divleft{
+                background-color: black;
+                position:fixed;
+                left:0;
+                top: 0;
+                width: 25%;
+                height: 100%;
+                z-index: 1;
+            }
+            #divright{
+                background-color: black;
+                position:fixed;
+                right:0;
+                top: 0;
+                width: 25%;
+                height: 100%;
+                z-index: 1;
+            }
+            /*#divmiddle*/
+            ul{
+                background: url('http://www.wordmstemplates.com/wp-content/uploads/2015/08/lined-paper-template-3265.jpg');
+                background-position: center;
+                background-repeat: no-repeat;
             }
         </style>
 
@@ -19,9 +45,14 @@
             <hr>
             <input id="input" type="text"> </input>
             <button id="add_button">Add Task</button>
-            <div id="clear_all_button">Clear Sheet</div>
+            <button id="clear_all_button">Clear Sheet</button>
+
             <ul id="todo_list"></ul>
             <ul id="finished_list"></ul>
+
+            <div id= 'divleft'></div>
+            <div id = 'divright'></div>
+            <!--<div id="divmiddle"></div>-->
         </div>
     <script>
 
@@ -38,8 +69,7 @@
             let input = document.querySelector('#input')
             let list = document.querySelector('#todo_list')
             let finished_list = document.querySelector('#finished_list')
-            // let clear_all_button = document.querySelector('#clear_all_button')
-
+            let clear = document.querySelector('#clear_all_button')
             add_button.onclick = function () {
                 let text = input.value;
                 if (text === ''){
@@ -67,12 +97,22 @@
                 button_remove.onclick = function() {
                     list.removeChild(this.parentElement);
                 };
+                // let clear_all_button = document.createElement('button');
+                // clear_all_button = function() {
+                //     list.removeChild(li)
+
 
                 li.appendChild(list_break);
                 li.appendChild(submit);
                 li.appendChild(button_remove);
-                list.appendChild(li)
+                list.appendChild(li);
+                // list.removeChild(clear_all_button)
             }
+
+
+
+
+
         </script>
     </body>
 </html>
