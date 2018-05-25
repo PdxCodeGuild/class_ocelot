@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>To-Do List</title>
+        <style>
+            #FullSheet{
+                font-family: Helvetica;
+                text-align: center;
+                height: 100%;
+                width: 100%;
+            }
+            #divleft{
+                background-color: black;
+                position:fixed;
+                left:0;
+                top: 0;
+                width: 25%;
+                height: 100%;
+                z-index: 1;
+            }
+            #divright{
+                background-color: black;
+                position:fixed;
+                right:0;
+                top: 0;
+                width: 25%;
+                height: 100%;
+                z-index: 1;
+            }
+            /*#divmiddle*/
+            ul{
+                background: url('http://www.wordmstemplates.com/wp-content/uploads/2015/08/lined-paper-template-3265.jpg');
+                background-position: center;
+                background-repeat: no-repeat;
+            }
+        </style>
+
+
+
+    </head>
+    <body>
+        <div id="FullSheet">
+            <h1>To-Do List</h1>
+            <hr>
+            <input id="input" type="text"> </input>
+            <button id="add_button">Add Task</button>
+            <button id="clear_all_button">Clear Sheet</button>
+
+            <ul id="todo_list"></ul>
+            <ul id="finished_list"></ul>
+
+            <div id= 'divleft'></div>
+            <div id = 'divright'></div>
+            <!--<div id="divmiddle"></div>-->
+        </div>
+    <script>
+
+            // - input text field
+            // -submission button
+            //     -move item to li
+            // -remove item from list
+            //      -task completed
+            // -clear all list
+            // classlist.add
+            // classlist.remove
+
+            let add_button = document.querySelector('#add_button')
+            let input = document.querySelector('#input')
+            let list = document.querySelector('#todo_list')
+            let finished_list = document.querySelector('#finished_list')
+            let clear = document.querySelector('#clear_all_button')
+            add_button.onclick = function () {
+                let text = input.value;
+                if (text === ''){
+                    return
+                }
+
+
+                input.value = '';
+                let li = document.createElement('li');
+                li.classList.add('to-do');
+                let list_break = document.createElement('task');
+                list_break.innerHTML = text;
+
+
+                let submit = document.createElement('button');
+                submit.innerHTML = '&#x2713;';
+                submit.onclick = function(){
+                    list.removeChild(this.parent_element);
+                    let li = document.createElement('li');
+                    li.innerText = text;
+                    finished_list.appendChild(li)
+                };
+                let button_remove = document.createElement('button');
+                button_remove.innerHTML = '&#x2715;'
+                button_remove.onclick = function() {
+                    list.removeChild(this.parentElement);
+                };
+                // let clear_all_button = document.createElement('button');
+                // clear_all_button = function() {
+                //     list.removeChild(li)
+
+
+                li.appendChild(list_break);
+                li.appendChild(submit);
+                li.appendChild(button_remove);
+                list.appendChild(li);
+                // list.removeChild(clear_all_button)
+            }
+
+
+
+
+
+        </script>
+    </body>
+</html>

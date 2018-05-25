@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+    <!-- BLACKJACK GAME OUTLINES
+    -
+     define a card (a random value 2-A)
+     define suits
+     define a deck (1 of each card value - 1 of each suite)
+     define # of decks used
+     define a player
+    +define a hand -> array spreading
+     define a bankroll
+     define a dealer
+    +define player actions
+     define a bet
+     define winning
+     define losing--->
+    <!--// With Hi-Lo, the most common card counting system, the card values are as follows:-->
+        <!--//-->
+        <!--// 2-6 = +1-->
+        <!--// 7-9 = 0-->
+        <!--// 10-Ace= -1-->
+        <!--// As each card is dealt, you will either add 1, subtract 1, or do nothing based on each card’s value.-->
+<head>
+    <meta charset="UTF-8">
+    <title>CardCounter</title>
+    <script>
+        // player_count = prompt('')
+        'use strict';
+       // let CardSuit = ['Heart', 'Spade', 'Club', 'Clover'];
+       // let FullDeck = [];
+       // let CardAssignment = ['A',2,3,4,5,6,7,8,9,10,'J','Q','K'];
+       //
+       // CardSuit.forEach(function(suit) {
+       //     CardAssignment.forEach(function(assignment, i){
+       //         let value = i+1;
+       //         if (i > 9){
+       //             value = 10
+       //         }
+       //         FullDeck.push({
+       //             value: value,
+       //             suit: suit,
+       //             assignment: assignment,
+       //         });
+       //     })
+       // });
+       //
+       //  function shuffle(array){
+       //      var i = array.length;
+       //      while(i){
+       //         var x = Math.floor(Math.random()*i--);
+       //         var temp = array[i];
+       //          array[i] = array[x];
+       //          array[x] = temp
+       //      }
+       //  }
+       //  shuffle(FullDeck);
+       //  console.log(FullDeck);
+       //
+       //  function deal_deck(deck,dealer_hand,player_hand){
+       //
+       //  }
+
+        class Card {
+            constructor(suit, name, value) {
+                this.suit = suit
+                this.name = name
+                this.value = value
+            }
+        }
+            // console.log(Card)
+        class Player {
+            constructor(name) {
+                this.name = name
+                this.hand = []
+            }
+        }
+            // console.log(Player)
+        class Deck {
+            constructor() {
+                this.SUITS = ['Heart', 'Spade', 'Club', 'Clover']
+                this.NAMES = [2,3,4,5,6,7,8,9,10,'A','J','Q','K']
+
+                this.cards = []
+
+                let self = this
+                this.SUITS.forEach(function(suit) {
+                    self.NAMES.forEach(function(name, i) {
+                        let value = i + 2
+                        if (i > 9) value = 10
+                        self.cards.push(new Card(suit, name, value))
+                    })
+                })
+            }
+
+            shuffle() {
+                var i = this.cards.length
+
+                while(i){
+                   var x = Math.floor(Math.random()*i--)
+                   var temp = this.cards[i]
+                    this.cards[i] = this.cards[x]
+                    this.cards[x] = temp
+                }
+            }
+        }
+
+        class Game {
+            constructor() {
+                this.players = []
+                this.deck = new Deck()
+                this.deck.shuffle()
+            }
+
+            addPlayer(name) {
+                this.players.push(new Player(name))
+            }
+        }
+
+        class BlackJack extends Game {
+          // game logic here
+
+        }
+
+        let game = new BlackJack()
+        game.addPlayer("You")
+        game.addPlayer("Dealer")
+        console.log(game.deck.cards)
+        console.log(game.players)
+
+
+    </script>
+</head>
+<body>
+
+</body>
+</html>
