@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>To-Do in JS</title>
+
+</head>
+<body id="body">
+    <div id="container"></div>
+<script>
+    let body = document.getElementById('body')
+    body.style.backgroundColor = 'black'
+    let container = document.getElementById('container')
+    container.innerText = 'Add a thing to do here in the text field.\nDouble-click to remove.\n Single click to complete.'
+    container.style.fontSize = '40px'
+    container.style.textAlign = 'center'
+    container.style.backgroundColor = 'lightgray'
+
+
+    let top_div = document.createElement('div')
+    top_div.style.backgroundColor = 'lightgrey'
+    container.appendChild(top_div)
+
+    let text_field = document.createElement('input')
+    text_field.setAttribute('type', 'text')
+    text_field.style.fontSize = '30px'
+    text_field.style.border = '1px dotted white'
+    top_div.appendChild(text_field)
+
+    let accept_btn = document.createElement('button')
+    accept_btn.style.backgroundColor = 'black'
+    accept_btn.style.border = '1px dotted white'
+    accept_btn.innerText = 'Add'
+    accept_btn.style.fontSize = '20px'
+    accept_btn.style.color = 'white'
+    accept_btn.style.cursor = 'help'
+
+
+    top_div.appendChild(accept_btn)
+
+    let bottom_div = document.createElement('div')
+    bottom_div.style.height = '100%'
+    bottom_div.style.width = '100%'
+    container.appendChild(bottom_div)
+
+    let to_do_list = document.createElement('ul')
+    to_do_list.style.listStyleImage = 'url(https://media.giphy.com/media/mHwtkXN4fwAdq/giphy.gif)'
+    to_do_list.style.fontSize = '30px'
+    to_do_list.style.backgroundColor = 'lightyellow'
+    bottom_div.appendChild(to_do_list)
+
+    let completed = document.createElement('ul')
+    completed.style.listStyleImage = 'url(https://media.giphy.com/media/yzVlntFaL1GNi/giphy.gif)'
+    completed.style.fontSize = '30px'
+    completed.style.backgroundColor = 'lightgreen'
+    bottom_div.appendChild(completed)
+
+    function clear(){
+        text_field.value = ''
+    }
+
+    text_field.addEventListener('keydown', function(event) {
+        if (event.which === 13){
+            to_do_add()
+            clear()
+        }
+    })
+
+    accept_btn.onclick = to_do_add
+
+    function to_do_add() {
+        let ul = to_do_list
+        let li = document.createElement("li")
+        let children = ul.children.length + 1
+        li.setAttribute('id', 'to_do'+children)
+        console.log(li)
+        li.appendChild(document.createTextNode(text_field.value))
+        ul.appendChild(li)
+        li.ondblclick = function () {
+            this.remove()
+        }
+        li.onclick = function (){
+            this.remove()
+            completed_add()
+        }
+
+    }
+
+
+
+    function completed_add(){
+        let ul = completed
+        let li = document.createElement("li")
+        let children = ul.children.length + 1
+        li.setAttribute('id', 'to_do'+children)
+        console.log(li)
+        li.appendChild(document.createTextNode(text_field.value))
+        ul.appendChild(li)
+        li.ondblclick = function () {
+            this.remove()
+        }
+    }
+
+
+</script>
+
+</body>
+</html>
