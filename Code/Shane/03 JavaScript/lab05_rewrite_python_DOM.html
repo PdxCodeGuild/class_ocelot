@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MadLib</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+
+<style>
+    body{
+        margin: 0;
+        padding: 0;
+    }
+    #right_span{
+        position: absolute;
+        right:0;
+        width: 50%;
+        height: 100%;
+        background-color: #111111;
+    }
+
+    #left_span{
+        position: absolute;
+        left: 0;
+        width: 50%;
+        height: 100%;
+        background-color: #222222;
+    }
+
+    #bottom_div{
+        text-align: center;
+        font-size: 3em;
+    }
+</style>
+
+</head>
+<body>
+
+<div class="container">
+  <h2>Mablib</h2>
+  <form>
+    <div class="form-group">
+      <label >Enter nouns seperated by spaces:</label>
+      <input  id="nouns_text_field" type="text" class="form-control">
+    </div>
+    <div class="form-group">
+      <label>Enter verbs seperated by spaces:</label>
+      <input  id="verbs_text_field" type="text" class="form-control">
+    </div>
+  </form>
+
+<button id="submit_btn" type="button" class="btn btn-primary">Submit</button>
+
+    <div id="bottom_div">
+
+    </div>
+<!--<div id="wrapper">-->
+    <!--<div id="left_span">-->
+
+    <!--</div>-->
+    <!--<div id="right_span">-->
+
+    <!--</div>-->
+<!--</div>-->
+
+
+
+
+<script>
+    var submit_btn = document.querySelector('#submit_btn')
+
+    submit_btn.onclick = function () {
+        let verbs = document.querySelector('#verbs_text_field').value.split(" ")
+        let nouns = document.querySelector('#nouns_text_field').value.split(" ")
+        console.log('verbs = ' + verbs)
+        console.log('nouns = ' + nouns)
+        let bottom_div = document.querySelector('#bottom_div')
+        bottom_div.innerText = randomness(nouns, verbs)
+
+    }
+
+    function clear(){
+        document.querySelector('#verbs_text_field').value= ''
+        document.querySelector('#nouns_text_field').value= ''
+    }
+
+    function randomness(nouns, verbs){
+        let sentences = [(`${nouns[Math.floor(Math.random() * nouns.length)]} you have to ${verbs[Math.floor(Math.random() * nouns.length)]} before you ${verbs[Math.floor(Math.random() * nouns.length)]}.`),(`${nouns[Math.floor(Math.random() * nouns.length)]} can't ${verbs[Math.floor(Math.random() * nouns.length)]} the Truth!`),(`Here's ${verbs[Math.floor(Math.random() * nouns.length)]}'n at you ${nouns[Math.floor(Math.random() * nouns.length)]}...`), (`${nouns[Math.floor(Math.random() * nouns.length)]} may ${verbs[Math.floor(Math.random() * nouns.length)]} our lives, but they'll never ${verbs[Math.floor(Math.random() * nouns.length)]} our freedom!`)]
+        let sentence = sentences[Math.floor(Math.random() * sentences.length)]
+        return sentence
+    }
+
+</script>
+
+</body>
+</html>
