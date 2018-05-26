@@ -17,7 +17,6 @@
     container.style.margin = '222px'
 
     let top_div = document.createElement('div')
-
     container.appendChild(top_div)
 
     let text_field = document.createElement('input')
@@ -34,8 +33,23 @@
     accept_btn.style.fontSize = '30px'
     accept_btn.style.color = 'black'
     accept_btn.style.cursor = 'help'
-
     top_div.appendChild(accept_btn)
+
+    let mid_container = document.createElement('div')
+    mid_container.style.display = 'flex'
+    mid_container.style.flexDirection = 'row'
+    container.appendChild(mid_container)
+
+    let mid_div_left = document.createElement('div')
+    mid_div_left.innerText = 'To-Do'
+    mid_div_left.style.width = '50%'
+    mid_container.appendChild(mid_div_left)
+    
+    let mid_div_right = document.createElement('div')
+    mid_div_right.style.width = '50%'
+    mid_div_right.innerText = 'Complete'
+    mid_container.appendChild(mid_div_right)
+
 
     let bottom_div = document.createElement('div')
     bottom_div.style.display = 'flex'
@@ -47,14 +61,15 @@
     let left_div = document.createElement('div')
     left_div.style.fontSize = '20px'
     left_div.style.color = 'white'
-    left_div.innerText = "Left click to Complete\nRight click to remove"
+    left_div.innerText = "Left-click to complete\nRight-click to remove"
     left_div.style.width = '50%'
     bottom_div.appendChild(left_div)
+
 
     let right_div = document.createElement('div')
     right_div.style.fontSize = '20px'
     right_div.style.color = 'white'
-    right_div.innerText = "Right click to remove\nRight click to move\nback to unfinished"
+    right_div.innerText = 'Right-click to remove\nLeft-click to move back to to-do'
     right_div.style.width = '50%'
     bottom_div.appendChild(right_div)
 
@@ -114,10 +129,10 @@
         console.log(li)
         li.appendChild(document.createTextNode(item))
         ul.appendChild(li)
-        li.onclick = function () {
+        li.oncontextmenu = function () {
             this.remove()
         }
-        li.oncontextmenu = function() {
+        li.onclick = function() {
             to_do_add(li.innerText)
             this.remove()
         }
