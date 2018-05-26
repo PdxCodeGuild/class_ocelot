@@ -8,6 +8,7 @@
 <script>
 
     document.body.style.backgroundColor = 'black'
+
     let container = document.createElement('div')
     container.style.color = 'white'
     document.body.appendChild(container)
@@ -50,7 +51,6 @@
     mid_div_right.innerText = 'Complete'
     mid_container.appendChild(mid_div_right)
 
-
     let bottom_div = document.createElement('div')
     bottom_div.style.display = 'flex'
     bottom_div.style.flexDirection = 'row'
@@ -65,7 +65,6 @@
     left_div.style.width = '50%'
     bottom_div.appendChild(left_div)
 
-
     let right_div = document.createElement('div')
     right_div.style.fontSize = '20px'
     right_div.style.color = 'white'
@@ -76,7 +75,6 @@
     let to_do_list = document.createElement('ul')
     to_do_list.style.listStyleImage = 'url(https://media.giphy.com/media/mHwtkXN4fwAdq/giphy.gif)'
     to_do_list.style.fontSize = '30px'
-
     left_div.appendChild(to_do_list)
 
     let completed = document.createElement('ul')
@@ -99,7 +97,8 @@
     accept_btn.onclick = function(){
         if (text_field.value){
             to_do_add(text_field.value)
-            clear()}
+            clear()
+        }
         text_field.focus()
     }
 
@@ -114,11 +113,11 @@
         li.oncontextmenu = function () {
             this.remove()
         }
+
         li.onclick = function (){
             completed_add(li.innerText)
             this.remove()
         }
-
     }
 
     function completed_add(item){
