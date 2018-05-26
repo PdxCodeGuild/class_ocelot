@@ -3,8 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>To-Do in JS</title>
-
-
 </head>
 <body>
 <script>
@@ -13,11 +11,10 @@
     let container = document.createElement('div')
     container.style.color = 'white'
     document.body.appendChild(container)
-    container.innerText = 'Add a thing to do here in the text field.\nDouble-click to remove.\n Single click to complete.'
+    container.innerText = 'Add a thing to do here in the text field.'
     container.style.fontSize = '40px'
     container.style.textAlign = 'center'
-
-
+    container.style.margin = '222px'
 
     let top_div = document.createElement('div')
 
@@ -38,7 +35,6 @@
     accept_btn.style.color = 'black'
     accept_btn.style.cursor = 'help'
 
-
     top_div.appendChild(accept_btn)
 
     let bottom_div = document.createElement('div')
@@ -49,14 +45,16 @@
     container.appendChild(bottom_div)
 
     let left_div = document.createElement('div')
-    // left_div.style.position = 'relative'
-    // left_div.style.left = '0'
+    left_div.style.fontSize = '20px'
+    left_div.style.color = 'white'
+    left_div.innerText = "Left click to Complete\nRight click to remove"
     left_div.style.width = '50%'
     bottom_div.appendChild(left_div)
 
     let right_div = document.createElement('div')
-    // left_div.style.position = 'relative'
-    // left_div.style.right = '100%'
+    right_div.style.fontSize = '20px'
+    right_div.style.color = 'white'
+    right_div.innerText = "Right click to remove\nRight click to move\nback to unfinished"
     right_div.style.width = '50%'
     bottom_div.appendChild(right_div)
 
@@ -76,33 +74,37 @@
     }
 
     text_field.addEventListener('keydown', function(event) {
-        if (event.which === 13){
-            to_do_add()
-            clear()
+        if (text_field.value){
+            if (event.which === 13){
+                to_do_add(text_field.value)
+                clear()}
         }
     })
 
-    accept_btn.onclick = to_do_add
+    accept_btn.onclick = function(){
+        if (text_field.value){
+            to_do_add(text_field.value)
+            clear()}
+        text_field.focus()
+    }
 
-    function to_do_add() {
+    function to_do_add(item) {
         let ul = to_do_list
         let li = document.createElement("li")
         let children = ul.children.length + 1
         li.setAttribute('id', 'to_do'+children)
         console.log(li)
-        li.appendChild(document.createTextNode(text_field.value))
+        li.appendChild(document.createTextNode(item))
         ul.appendChild(li)
-        li.ondblclick = function () {
+        li.oncontextmenu = function () {
             this.remove()
         }
-        li.ondblclick = function (){
+        li.onclick = function (){
             completed_add(li.innerText)
             this.remove()
         }
 
     }
-
-
 
     function completed_add(item){
         let ul = completed
@@ -115,10 +117,12 @@
         li.onclick = function () {
             this.remove()
         }
+        li.oncontextmenu = function() {
+            to_do_add(li.innerText)
+            this.remove()
+        }
     }
 
-
 </script>
-
 </body>
 </html>
