@@ -1,8 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>To-Do in JS</title>
 </head>
 <body>
 <script>
@@ -12,7 +8,7 @@
     let container = document.createElement('div')
     container.style.color = 'white'
     document.body.appendChild(container)
-    container.innerText = 'Add a thing to do here in the text field.'
+    container.innerText = 'Add a thing to do here in the text field.\nPress enter or hit the button.'
     container.style.fontSize = '40px'
     container.style.textAlign = 'center'
     container.style.margin = '222px'
@@ -45,7 +41,7 @@
     mid_div_left.innerText = 'To-Do'
     mid_div_left.style.width = '50%'
     mid_container.appendChild(mid_div_left)
-    
+
     let mid_div_right = document.createElement('div')
     mid_div_right.style.width = '50%'
     mid_div_right.innerText = 'Complete'
