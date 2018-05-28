@@ -32,7 +32,11 @@
                 return y / lst.length
             }
 
-            function sort(i, b_acc, b_lst) {
+            let i = 0
+            let b_acc = 0
+            let b_lst = random_list(8)
+
+            function sort() {
                 let t_lst = b_lst.slice()
                 let r1 = Math.floor(Math.random() * t_lst.length)
                 let r2 = Math.floor(Math.random() * t_lst.length)
@@ -47,17 +51,16 @@
                     b_lst = t_lst.slice()
                 }
                 i += 1
-                if (b_acc < .999){
-                    window.requestAnimationFrame(sort(i, b_acc, b_lst))
+
+                if (! is_sorted(b_lst)){
+                    window.requestAnimationFrame(sort)
+                } else {
+                    progress.innerText = `All sorted.  That took ${i} tries.`
                 }
-                progress.innerText = `All sorted.  That took ${i} tries.`
             }
 
             start.onclick = function() {
-                let i = 0
-                let b_acc = 0
-                let b_lst = random_list(16)
-                window.requestAnimationFrame(sort(i, b_acc, b_lst))
+                window.requestAnimationFrame(sort)
             }
         }
     </script>
