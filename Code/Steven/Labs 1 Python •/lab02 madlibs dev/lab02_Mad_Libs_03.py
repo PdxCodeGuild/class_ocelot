@@ -3,56 +3,54 @@ import re, time
 nouns_list = []
 plural_nouns_list = []
 
-# Defaults
-fruit_d = 'banana'
-noun1_d = 'table'
-noun2_d = 'woodchipper'
-plural_noun1_d = 'garbanzos'
-plural_noun2_d = 'hushpuppies'
-silly_word_d = 'Jackalope'
+# Default values, entered if user hits 'Enter' without any data. '.title' capatalizes the word(s).
+fruit_d = 'banana'.title()
+noun1_d = 'table'.title()
+noun2_d = 'woodchipper'.title()
+plural_noun1_d = 'garbanzos'.title()
+plural_noun2_d = 'hushpuppies'.title()
+silly_word_d = 'jackalope'.title()
 
 # Madlibs word inputs
-fruit = input('Enter a fruit: ')                                # INPUT 1
+fruit = input('Enter a fruit: ').title()                        # INPUT 1 (+ Capitalize)
 if fruit == '':                                                 # If input is none ('enter')
     fruit = fruit_d                                             # then set default.
-
-fruit = fruit.title()                                           # Capitalize
 print(fruit,'\n')                                               # Print
 
-
-nouns = input('Enter two nouns, separated by spaces: ')         # INPUT 2 & 3
+nouns = input('Enter two nouns, separated by spaces: ').title() # INPUT 2 & 3 (+ Capitalize)
 regex_string = r"^(\w+ \w+)"                                    # Define regex matching 'word word'
+
 if re.search ( regex_string , nouns ) == True:                  # If input is in that form
 # TODO What is best way to make this a list?
-    print(type(nouns))
     print(nouns, nouns.split ( ' ' ))
-
     nouns = nouns.split ( ' ' )                                 ## split to 2 separate words.
+    print('REGEX MATCH') # TESTER
+    print(type(nouns))
 
 else:
-    print(type(nouns))
+    # print(type(nouns)) # TESTER
     nouns = noun1_d + ' ' + noun2_d                             # then set word1 & word2 default...
 
-
-nouns = nouns.title()                                           # Capitalize
 print(f'{nouns}\n')                                             # Print
 
-plural_nouns = input('Enter two plural nouns, separated by spaces: ')   # INPUT 4 & 5
+plural_nouns = input('Enter two plural nouns, separated by spaces: ').title()   # INPUT 4 & 5 (+ Capitalize)
 regex_string = r"^(\w+ \w+)"                                    # Define regex matching 'word word'
+
 if re.search ( regex_string , plural_nouns ) == True:           # If input is in that form
-    plural_nouns = plural_nouns.split ( ' ' )                   ## split to 2 separate words.
+    print('GOOD')
+    exit()
+    # plural_nouns_list =
+    # plural_nouns = plural_nouns_list.split ( ' ' )                   ## split to 2 separate words.
 # TODO What is best way to make this a list?
 else:
-    plural_nouns = plural_noun1_d + ' ' + plural_noun2_d            # then set word1 & word2 default...
+    plural_nouns = plural_noun1_d + ' ' + plural_noun2_d        # then set word1 & word2 default...
 
 
-plural_nouns = plural_nouns.title()                             # Capitalize
 print(f'{plural_nouns}\n')                                      # Print
 
-silly_word = input('Enter a silly word: ')                      # INPUT 6
+silly_word = input('Enter a silly word: ').title()              # INPUT 6 (+ Capitalize)
 if silly_word == '':                                            # If input is none ('enter')
     silly_word = silly_word_d                                   # then set default.
-silly_word = silly_word.title()                                 # Capitalize
 print(f'{silly_word}\n')                                        # Print
 
 time.sleep(2)
