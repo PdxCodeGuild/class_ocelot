@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Clock</title>
+</head>
+<body>
+
+<script>
+
+    let container = document.createElement('H2')
+    document.body.appendChild(container)
+
+
+    setInterval(function() {
+
+        let date = new Date()
+
+        let full_date = `${date.getFullYear()}/${date.getMonth()}/${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}:${date.getMilliseconds()}`
+        container.innerHTML = full_date
+    }, 1)
+
+
+
+</script>
+</body>
+</html>
