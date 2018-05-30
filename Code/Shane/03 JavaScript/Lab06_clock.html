@@ -1,25 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>Clock</title>
+    <title>Clocks and Clocks and Clocks</title>
+
+
+
 </head>
 <body>
 
 <script>
 
-    let container = document.createElement('H2')
-    document.body.appendChild(container)
+        // Couldn't get this to work
+// class element {
+//     constructor(inside_div_name){
+//         this.inside_div_name = inside_div_name;
+//         this.document.createElement('div')
+//         this.className = 'cssFontSizeAndColor'
+//         this.innerText = 'Current Time'
+//         this.style.width = '50%'
+//     }
+// }
+
+// style class in the head
+    var style = document.createElement('style')
+    style.type = 'text/css'
+    style.innerHTML = '.cssFontSizeAndColor{letter-spacing: 4px; text-align: left; font-size: 3em; color: darkgrey; background-color: black; width: 50%}'
+    document.head.appendChild(style)
+
+// body
+    document.body.style.padding = '0'
+    document.body.style.margin = '30px'
+    document.body.style.backgroundColor = 'black'
+
+// date and title div container
+    let title_and_date_container = document.createElement('div')
+    document.body.appendChild(title_and_date_container)
+    title_and_date_container.style.display = 'flex'
+
+// date title div
+    let date_title_container = document.createElement('div')
+    title_and_date_container.appendChild(date_title_container)
+    date_title_container.style.width = '50%'
+    date_title_container.innerText = 'Current Date'
+    date_title_container.className = 'cssFontSizeAndColor'
+
+// date div
+    let date_container = document.createElement('div')
+    title_and_date_container.appendChild(date_container)
+    date_container.style.width = '50%'
+    date_container.className = 'cssFontSizeAndColor'
+
+// time and title div container
+    let title_and_clock_container = document.createElement('div')
+    document.body.appendChild(title_and_clock_container)
+    title_and_clock_container.style.display = 'flex'
+
+// time title div
+    let clock_title_container = document.createElement('div')
+    title_and_clock_container.appendChild(clock_title_container)
+    clock_title_container.style.width = '50%'
+    clock_title_container.innerText = 'Current Time'
+    clock_title_container.className = 'cssFontSizeAndColor'
+
+// tim div
+    let clock_container = document.createElement('div')
+    title_and_clock_container.appendChild(clock_container)
+    clock_container.style.width = '50%'
+    clock_container.className = 'cssFontSizeAndColor'
+
+
 
 
     setInterval(function() {
 
         let date = new Date()
 
-        let full_date = `${date.getFullYear()}/${date.getMonth()}/${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}:${date.getMilliseconds()}`
-        container.innerHTML = full_date
-    }, 1)
+        let full_date = `${date.getMonth()}/${date.getDay()}/${date.getFullYear()}`
 
+        let full_clock = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}:${date.getMilliseconds()}`
+        clock_container.innerHTML = full_clock
+        date_container.innerHTML = full_date
+    }, 1)
 
 
 </script>
