@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Clock</title>
+    <style>
+        body {
+            font-family: 'Courier New', sans-serif;
+            text-align: center;
+        }
+        #clock_div {
+            font-size: 30px;
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="clock_div"></div>
+
+    <script>
+        var clock_button = document.getElementById('clock_button');
+        var clock_div = document.getElementById('clock_div');
+
+        function add0(v) {
+            return (v < 10)? '0'+v: v
+        }
+
+        function Full_Time_Display(){
+            var Now = new Date();
+            var M = add0(Now.getMonth()+1);
+            var D = add0(Now.getDate());
+            var Y = Now.getFullYear();
+            var H = add0(Now.getHours());
+            var Mins = add0(Now.getMinutes());
+            var S = add0(Now.getSeconds());
+            var Current_Time = `${M}:${D}:${Y}:${H}:${Mins}:${S}`;
+            clock_div.innerHTML = Current_Time
+        }
+
+
+        var Clock_Interval = setInterval(Full_Time_Display, 1000);
+
+    </script>
+</body>
+</html>

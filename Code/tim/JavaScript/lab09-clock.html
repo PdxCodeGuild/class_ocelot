@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Clock</title>
+    <style>
+        #cnv {
+            margin: auto;
+            display: block;
+            border: 1px solid black;
+        }
+        #timer_div {
+            text-align: center;
+            font-size: 3em;
+        }
+    </style>
+</head>
+<body>
+    <div id="timer_div">
+        <span>Time - </span>
+        <span id="timer">0:00</span>
+    </div>
+    <canvas id="cnv"></canvas>
+    <script>
+        //SETTING VARIABLES
+        let timer = document.querySelector('#timer')
+        let cnv = document.querySelector('#cnv')
+        cnv.height = 600
+        cnv.width = 1500
+        let cnv_rect = cnv.getBoundingClientRect()
+        let ctx = cnv.getContext('2d')
+        let x_pos = 200
+        let y_pos = 200
+        let radius = 100
+        let text_height = 23
+        let x_vel = 3
+        let y_vel = 3
+        let now, sec, sec_dx, sec_dy, min_dx, min_dy, hr_dx, hr_dy,
+            is_clicked, mouse_x, mouse_y, timer_start
+        //SET LISTENER
+        cnv.onmousedown = (e) => {
+            is_clicked = true
+        }
+        cnv.onmouseup = (e) => {
+            is_clicked = false
+            timer_start = null
+        }
+        cnv.onmousemove = (e) => {
+            if (is_clicked) {
+                mouse_x = e.clientX - cnv_rect.left
+                mouse_y = e.clientY - cnv_rect.top
+            }
+        }
+        //FORMATTING FOR LATER
+        function add0(n) {
+            return (n < 10) ? '0' + Math.floor(n) : Math.floor(n);
+        }
+        //THE CALLBACK LOOP
+        function drawClock(interval) {
+            ctx.clearRect(0, 0, cnv.width, cnv.height)
+            //BOUNCE (IF NECESSARY)
+            if (y_pos + y_vel >= cnv.height - radius || y_pos + y_vel - radius <= 0) {
+                y_vel *= -1
+            }
+            if (x_pos + x_vel >= cnv.width - radius || x_pos + x_vel - radius <= 0) {
+                x_vel *= -1
+            }
+            //NEW POSITIONS
+            x_pos += x_vel
+            y_pos += y_vel
+            //CIRCLE
+            ctx.beginPath()
+            ctx.arc(x_pos, y_pos, radius, 0, 2 * Math.PI, false)
+            ctx.strokeStyle = 'black'
+            ctx.stroke()
+            //NUMBERS
+            ctx.font = '2em Arial'
+            for (let i = 1; i < 13; i++) {
+                let rad = (i - 3) * Math.PI / 6
+                let dx = Math.cos(rad) * radius * 0.8 - ctx.measureText(i).width / 2
+                let dy = Math.sin(rad) * radius * 0.8 + text_height / 2
+                ctx.fillText(i, x_pos + dx, y_pos + dy)
+            }
+            //HANDS
+            let sm_hand_len = 50
+            let lg_hand_len = 80
+            let temp_now = new Date()
+            //CHANGE EVERY SECOND
+            if (temp_now.getSeconds() !== sec) {
+                now = new Date()
+                //HOUR
+                let hr = now.getHours() % 12
+                let hr_rad = (hr - 3) * Math.PI / 6
+                hr_dx = Math.cos(hr_rad) * sm_hand_len
+                hr_dy = Math.sin(hr_rad) * sm_hand_len
+                //MINUTE
+                let min = now.getMinutes()
+                let min_rad = (min / 5 - 3) * Math.PI / 6
+                min_dx = Math.cos(min_rad) * lg_hand_len
+                min_dy = Math.sin(min_rad) * lg_hand_len
+                //SECOND
+                sec = now.getSeconds()
+                let sec_rad = (sec / 5 - 3) * Math.PI / 6
+                sec_dx = Math.cos(sec_rad) * lg_hand_len
+                sec_dy = Math.sin(sec_rad) * lg_hand_len
+            }
+            //HOURS
+            ctx.beginPath()
+            ctx.moveTo(x_pos, y_pos)
+            ctx.lineTo(x_pos + hr_dx, y_pos + hr_dy)
+            ctx.stroke()
+            //MINUES
+            ctx.beginPath()
+            ctx.moveTo(x_pos, y_pos)
+            ctx.lineTo(x_pos + min_dx, y_pos + min_dy)
+            ctx.stroke()
+            //SECOND
+            ctx.beginPath()
+            ctx.moveTo(x_pos, y_pos)
+            ctx.lineTo(x_pos + sec_dx, y_pos + sec_dy)
+            ctx.strokeStyle = "blue"
+            ctx.stroke()
+            //CHECK CLICK
+            if (is_clicked) {
+                let in_x = Math.abs(x_pos - mouse_x) <= radius
+                let in_y = Math.abs(y_pos - mouse_y) <= radius
+                if (in_x && in_y) {
+                    //START TIMER IF CLICKED ON CLOCK
+                    if (!timer_start) {
+                        timer_start = temp_now
+                    }
+                    let t_sec = (temp_now - timer_start) / 1000
+                    timer.innerText = '0:' + add0(t_sec)
+                    //SPEED UP
+                    if (x_vel > 0) {
+                        x_vel += .005
+                    } else {
+                        x_vel -= .005
+                    }
+                    if (y_vel > 0) {
+                        y_vel += .005
+                    } else {
+                        y_vel -= .005
+                    }
+                // OTHERWISE, IF THE TIMER HAD STARTED AND YOU'RE OUT OF BOUNDS
+                } else if (timer_start) {
+                    let t_sec = (temp_now - timer_start) / 1000
+                    let final_score = '0:' + add0(t_sec)
+                    alert(`YOU LOSE\nyour time was ${final_score}`)
+                    is_clicked = false
+                    timer_start = null
+                    // ABSOLUTE VALUES TO MAINTAIN DIRECTION
+                    x_vel = Math.abs(x_vel) / x_vel * 3
+                    y_vel = Math.abs(y_vel) / y_vel * 3
+                }
+            }
+            //CALLBACK
+            window.requestAnimationFrame(drawClock)
+        }
+        window.requestAnimationFrame(drawClock)
+    </script>
+
+</body>
+</html>
