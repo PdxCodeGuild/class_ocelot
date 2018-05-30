@@ -7,6 +7,47 @@
     <body>
         <script src="pixi.min.js"></script>
         <script>
+            let loader = PIXI.loader
+            let resources = PIXI.loader.resources
+            let Sprite = PIXI.Sprite;
+            loader
+                .add("bonus", "imgs/bonus.png")
+                .add("bouncy", "imgs/bouncy.png")
+                .add("bubble", "imgs/bubble.png")
+                .add("dead_silo", "imgs/dead_silo.png")
+                .add("enemy", "imgs/enemy.png")
+                .add("jump_load", "imgs/jump_load.png")
+                .add("live_silo", "imgs/live_silo.png")
+                .add("minion", "imgs/minion.png")
+                .add("missile", "imgs/missile.png")
+                .add("target", "imgs/target.png")
+                .load(setup)
+
+            // GAME VARIABLES
+            let app = new PIXI.Application({width: 800, height: 500});
+            let w = 1500
+            let h = 600
+            let l_ct = 0
+            let f_ct = 0
+            let o_ct = 0
+            let b_ct = 0
+            let score = 0
+            let turn = 0
+            let ang = 55
+            let vel = 400
+            let freq = 2
+            let hei = 80
+            let time = .05
+            let b_balls = []
+            let f_balls = []
+            let silos = []
+            let missiles = []
+            let a_zone = []
+            let bonuses = []
+            let pick_up = []
+            let b_dir, hit, pick_bonus, bouncy, state
+            document.body.appendChild(app.view);
+
             class Bouncy {
                 constructor(ang, vel, hei, x_pos, y_pos, x_vel, y_vel) {
                     if (x_pos > 0) {
@@ -454,34 +495,6 @@
                     }
                 }
             }
-            
-            let loader = PIXI.loader,
-                resources = PIXI.loader.resources,
-                Sprite = PIXI.Sprite;
-
-            let type = "WebGL";
-            if (!PIXI.utils.isWebGLSupported()) {
-              type = "canvas";
-            }
-            PIXI.utils.sayHello(type);
-
-            let app = new PIXI.Application({width: 800, height: 500});
-            document.body.appendChild(app.view);
-
-            loader
-                .add("bonus", "imgs/bonus.png")
-                .add("bouncy", "imgs/bouncy.png")
-                .add("bubble", "imgs/bubble.png")
-                .add("dead_silo", "imgs/dead_silo.png")
-                .add("enemy", "imgs/enemy.png")
-                .add("jump_load", "imgs/jump_load.png")
-                .add("live_silo", "imgs/live_silo.png")
-                .add("minion", "imgs/minion.png")
-                .add("missile", "imgs/missile.png")
-                .add("target", "imgs/target.png")
-                .load(setup)
-
-            let bouncy, state
 
             function keyboard(keyCode) {
                 let key = {}
@@ -526,7 +539,6 @@
                 app.stage.addChild(bouncy)
 
                 let left = keyboard(37),
-
                     up = keyboard(38),
                     right = keyboard(39),
                     down = keyboard(40)
@@ -567,7 +579,6 @@
                         bouncy.vy = 0
                     }
                 }
-
                 state = play
                 app.ticker.add(delta => gameLoop(delta))
             }
