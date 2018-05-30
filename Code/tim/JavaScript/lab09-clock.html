@@ -25,8 +25,8 @@
         //SETTING VARIABLES
         let timer = document.querySelector('#timer')
         let cnv = document.querySelector('#cnv')
-            cnv.height = 600 //GROUPING CNV-SPECIFICS USING AN INDENT UNDER CREATION OF CNV VARIABLE
-            cnv.width = 1500
+        cnv.height = 600
+        cnv.width = 1500
         let cnv_rect = cnv.getBoundingClientRect()
         let ctx = cnv.getContext('2d')
         let x_pos = 200
@@ -89,37 +89,37 @@
             if (temp_now.getSeconds() !== sec) {
                 now = new Date()
                 //HOUR
-                let hr = now.getHours() % 12                    // INDENT LOGIC:    LET ASSIGN VARIABLE
-                let hr_rad = (hr - 3) * Math.PI / 6             //                  LET ASSIGN VARIABLE
-                    hr_dx = Math.cos(hr_rad) * sm_hand_len      //                  ... ASSIGN RELATED VARIABLE
-                    hr_dy = Math.sin(hr_rad) * sm_hand_len      //                  ... ASSIGN RELATED VARIABLE
+                let hr = now.getHours() % 12
+                let hr_rad = (hr - 3) * Math.PI / 6
+                hr_dx = Math.cos(hr_rad) * sm_hand_len
+                hr_dy = Math.sin(hr_rad) * sm_hand_len
                 //MINUTE
                 let min = now.getMinutes()
                 let min_rad = (min / 5 - 3) * Math.PI / 6
-                    min_dx = Math.cos(min_rad) * lg_hand_len
-                    min_dy = Math.sin(min_rad) * lg_hand_len
+                min_dx = Math.cos(min_rad) * lg_hand_len
+                min_dy = Math.sin(min_rad) * lg_hand_len
                 //SECOND
                 sec = now.getSeconds()
                 let sec_rad = (sec / 5 - 3) * Math.PI / 6
-                    sec_dx = Math.cos(sec_rad) * lg_hand_len
-                    sec_dy = Math.sin(sec_rad) * lg_hand_len
+                sec_dx = Math.cos(sec_rad) * lg_hand_len
+                sec_dy = Math.sin(sec_rad) * lg_hand_len
             }
             //HOURS
-            ctx.beginPath()                                 // INDENTS HELP ME VISUALLY SCAN, SORRY
-                ctx.moveTo(x_pos, y_pos)
-                ctx.lineTo(x_pos + hr_dx, y_pos + hr_dy)
-                ctx.stroke()
+            ctx.beginPath()
+            ctx.moveTo(x_pos, y_pos)
+            ctx.lineTo(x_pos + hr_dx, y_pos + hr_dy)
+            ctx.stroke()
             //MINUES
             ctx.beginPath()
-                ctx.moveTo(x_pos, y_pos)
-                ctx.lineTo(x_pos + min_dx, y_pos + min_dy)
-                ctx.stroke()
+            ctx.moveTo(x_pos, y_pos)
+            ctx.lineTo(x_pos + min_dx, y_pos + min_dy)
+            ctx.stroke()
             //SECOND
             ctx.beginPath()
-                ctx.moveTo(x_pos, y_pos)
-                ctx.lineTo(x_pos + sec_dx, y_pos + sec_dy)
-                ctx.strokeStyle = "blue"
-                ctx.stroke()
+            ctx.moveTo(x_pos, y_pos)
+            ctx.lineTo(x_pos + sec_dx, y_pos + sec_dy)
+            ctx.strokeStyle = "blue"
+            ctx.stroke()
             //CHECK CLICK
             if (is_clicked) {
                 let in_x = Math.abs(x_pos - mouse_x) <= radius
@@ -147,6 +147,7 @@
                     let t_sec = (temp_now - timer_start) / 1000
                     let final_score = '0:' + add0(t_sec)
                     alert(`YOU LOSE\nyour time was ${final_score}`)
+                    is_clicked = false
                     timer_start = null
                     // ABSOLUTE VALUES TO MAINTAIN DIRECTION
                     x_vel = Math.abs(x_vel) / x_vel * 3
