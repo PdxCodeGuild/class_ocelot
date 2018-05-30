@@ -89,6 +89,11 @@
     clock_container.style.width = '50%'
     clock_container.className = 'cssFontSizeAndColor'
 
+    let clock_container = document.createElement('div')
+    title_and_clock_container.appendChild(clock_container)
+    clock_container.style.width = '50%'
+    clock_container.className = 'cssFontSizeAndColor'
+
     var synth = new Tone.Synth().toMaster()
     var synth2 = new Tone.Synth().toMaster()
 
@@ -98,7 +103,7 @@
 
         let full_date = `${date.getMonth()+1}/${date.getDate()}/${date.getFullYear()}`
 
-        let full_clock = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}:${date.getMilliseconds   ()}`
+        let full_clock = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
         clock_container.innerHTML = full_clock
         date_container.innerHTML = full_date
         synth.triggerAttackRelease("C#"+(Math.random()/4*date.getSeconds()))
