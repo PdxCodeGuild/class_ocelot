@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!--<meta charset="UTF-8">-->
+        <!--<title>Auto-Redirect</title>-->
+        <style>
+            #counter{
+                 text-align:center;
+                 width:100%;
+                 font-size:500px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="counter"></div>
+        <script>
+            let counter = document.querySelector('#counter');
+            let c = 5;
+            setInterval(function(){
+                counter.innerText = c;
+                if (c === 0){
+                    let urls = ['https://www.twitch.tv',
+                                'http://wtffunfact.com',
+                                'https://www.google.com'];
+                    let i = Math.floor(Math.random()*urls.length)
+                    window.location = urls[i]
+                }
+                    c --;
+            }, 1000)
+
+        </script>
+    </body>
+</html>

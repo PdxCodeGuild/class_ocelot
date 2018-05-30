@@ -1,0 +1,83 @@
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <script>
+            let inputs = []
+
+            let matches = []
+
+            window.onload = function() {
+
+                let container = document.querySelector('#container')
+                let run_bt = document.querySelector('#run_bt')
+
+                let s = 'I went to [verb] the [noun], [verb]'
+
+
+                let re = /\[(\w+)\]/g
+
+                function build_inputs() {
+
+
+                    let m = null
+                        while (m = re.exec(s)) {
+
+
+                        let div = document.createElement('div')
+
+                        let span = document.createElement('span')
+                        span.innerText = m[1]
+                        div.appendChild(span)
+
+                        let input = document.createElement('input')
+                        input.setAttribute('type', 'text')
+                        inputs.push(input)
+                        div.appendChild(input)
+
+                        console.log(m)
+
+
+
+                        matches.push({
+                            match:m,
+                            input:input,
+                            0: 'hello'
+                        })
+
+
+                        container.appendChild(div)
+                    }
+                }
+
+                build_inputs()
+
+
+
+                run_bt.onclick = function() {
+                    let output = s
+                    // for (let i=0, m=null; m = re.exec(s); ++i) {
+                    //     alert(output)
+                    //     output = output.replace(m[0], inputs[i].value)
+                    // }
+                    for (let i=0; i<matches.length; ++i) {
+                        output = output.replace(matches[i].match[0], matches[i].input.value)
+                    }
+                    alert(output)
+                }
+
+            }
+        </script>
+        <style>
+            #container {
+                display:flex;
+                flex-direction:column;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="container"></div>
+        <button id="run_bt">run</button>
+    </body>
+</html>
+
+
