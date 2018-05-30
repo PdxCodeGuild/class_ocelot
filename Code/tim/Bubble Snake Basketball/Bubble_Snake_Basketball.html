@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+    </head>
+    <body>
+        <script src="pixi.min.js"></script>
+        <script>
+            class Bouncy {
+                constructor(ang, vel, hei, x_pos, y_pos, x_vel, y_vel) {
+                    if (x_pos > 0) {
+                        this.xpos = x_pos
+                        this.ypos = y_pos
+                        this.xvel = x_vel
+                        this.yvel0 = y_vel
+                    } else {
+                        this.xpos = 0
+                        this.ypos = hei
+                        let theta = ang * Math.PI / 180
+                        this.xvel = vel * Math.cos(theta)
+                        this.yvel0 = vel * Math.sin(theta)
+                    }
+                }
+                update(time, w, ang, vel, a_zone, b_dir, b_pos) {
+                    if (b_dir !== '' && b_pos === 0 && this.ypos + time * (this.yvel0 * 2 - 70 * time) / 2 <= 0) {
+                        set_action_zone(this.xpos + time * this.xvel, 0, b_dir, a_zone)
+                        b_dir = ''
+                    }
+                    for (let a=0; a<a_zone.length; a++) {
+                        if (a[0] + .5 > this.xpos > a[0] - .5 && a[1] + .5 > this.ypos > a[1] - .5 && b_pos === a[3]) {
+                            if (a[2] === 'up') {
+                                this.flutter(vel)
+                                a[3] += 1
+                            } else if (a[2] === 'down') {
+                                this.plunge()
+                                a[3] += 1
+                            }
+                        }
+                    }
+                    let yvel1 = this.yvel0 - 140 * time
+                    this.ypos += time * (this.yvel0 + yvel1) / 2
+                    this.yvel0 = yvel1
+                    this.xpos += time * this.xvel
+                    if (this.xpos > w) {
+                        this.reset_left()
+                    } else if (this.xpos <= 0) {
+                        this.reset_right(w)
+                    }
+                    if (this.ypos < 0) {
+                        this.bounce(ang, vel)
+                    }
+                    for (let a=0; a<a_zone.length; a++) {
+                        if (a[0] + .5 > this.xpos > a[0] - .5 && a[1] + .5 > this.ypos > a[1] - .5 && b_pos === a[3]) {
+                            if (a[2] === 'left') {
+                                this.xvel = -Math.abs(this.xvel)
+                                a[3] += 1
+                            } else if (a[2] === 'right') {
+                                this.xvel = Math.abs(this.xvel)
+                                a[3] += 1
+                            }
+                        }
+                    }
+                    return b_dir
+                }
+                plunge() {
+                    this.yvel0 = -400
+                }
+                bounce(ang, vel) {
+                    let theta = ang * Math.PI / 180
+                    let max_vel = vel * Math.sin(theta)
+                    this.yvel0 = Math.min(Math.abs(this.yvel0), max_vel)
+                    this.ypos = 0
+                    this.yvel0 *= .95
+                }
+                flutter(vel) {
+                    this.yvel0 = vel * .32
+                }
+                reset_left() {
+                    this.xpos = 0
+                }
+                reset_right(w) {
+                    this.xpos = w
+                }
+            }
+            
+            class Floater {
+                constructor(x, y, xv, yv) {
+                    this.xpos = x
+                    this.ypos = y
+                    this.xvel = xv
+                    this.yvel0 = yv
+                }
+                update(time, w) {
+                    this.xpos += time * this.xvel
+                    let yvel1 = this.yvel0 + 140 * time
+                    this.ypos += time * (this.yvel0 + yvel1) / 2.0
+                    this.yvel0 = yvel1
+                    this.xvel *= .95
+                    if (this.xpos > w) {
+                        this.reset_left()
+                    } else if (this.xpos < 0) {
+                        this.reset_right(w)
+                    }
+                    if (this.ypos < 0) {
+                        this.bounce()
+                    }
+                }
+                bounce() {
+                    this.yvel0 = abs(this.yvel0)
+                    this.ypos = 0.0
+                }
+                reset_left() {
+                    this.xpos = 0.0
+                }
+                reset_right(w) {
+                    this.xpos = w
+                }
+            }
+            
+            class Target {
+                construction( win, r, h, tar_wid, tar_max_vel, tar_acc) {
+                    this.center = r - tar_wid // 2
+                    this.ov = gr.Oval(gr.Point(r - tar_wid, h), gr.Point(r, h + 5))
+                    this.ov.setFill('green')
+                    this.ov.draw(win)
+                    this.max_vel = tar_max_vel
+                    this.acc = tar_acc
+                    this.xvel0 = 0.0
+                }
+                check_floater(x, tar_wid) {
+                    let half_wid = Math.floor(tar_wid / 2)
+                    if (this.center - half_wid - 1 <= x <= this.center + half_wid + 1) {
+                        return True
+                    }
+                    return False
+                }
+                new_target(r){
+                    this.ov.move(r, 0)
+                    this.center += r
+                    this.xvel0 = 0.0
+                }
+                move(time, x, w) {
+                    if (this.center >= x) {
+                        if (x - this.center < 500) {
+                            let xvel1 = min(this.xvel0 + this.acc, this.max_vel)
+                        } else {
+                            let xvel1 = this.xvel0
+                        }
+                        this.ov.move(time * (this.xvel0 + xvel1) / 2, 0)
+                        this.center += time * (this.xvel0 + xvel1) / 2
+                        this.xvel0 = xvel1
+                    } else {
+                        if (this.center - x < 500) {
+                            let xvel1 = Math.max(this.xvel0 - this.acc, -this.max_vel)
+                        } else {
+                            let xvel1 = this.xvel0
+                        }
+                        this.ov.move(time * (this.xvel0 + xvel1) / 2, 0)
+                        this.center += time * (this.xvel0 + xvel1) / 2
+                        this.xvel0 = xvel1
+                    }
+                    if (this.center > w) {
+                        return 'over'
+                    } else if (this.center < 0) {
+                        return 'under'
+                    }
+                }
+            }
+            
+            class Monster {
+                constructor(win, r, mon_wid, mon_max_vel, mon_acc) {
+                    this.xpos = r - mon_wid / 2
+                    this.ypos = mon_wid / 2
+                    this.yvel0 = 0
+                    this.xvel0 = 0
+                    this.sq = gr.Rectangle(gr.Point(r - mon_wid, 0), gr.Point(r, mon_wid))
+                    this.sq.setFill('red')
+                    this.sq.draw(win)
+                    this.max_vel = mon_max_vel
+                    this.acc = mon_acc
+                }
+                move(time, x, j_speed, mon_wid) {
+                    if (j_speed > 0) {
+                        let yvel1 = this.yvel0 + j_speed
+                    } else {
+                        let yvel1 = this.yvel0 - 180 * time
+                    }
+                    let move_y = (this.yvel0 + yvel1) / 2
+                    if (this.ypos + move_y <= mon_wid / 2) {
+                        move_y = mon_wid / 2 - this.ypos
+                        this.yvel0 = 0
+                    } else {
+                        this.yvel0 = yvel1
+                    }
+                    this.ypos += move_y
+                    if (this.xpos >= x) {
+                        xvel1 = Math.min(this.xvel0 - this.acc, this.max_vel)
+                        this.sq.move(time * (this.xvel0 + xvel1) / 2, move_y)
+                        this.xpos += time * (this.xvel0 + xvel1) / 2
+                        this.xvel0 = xvel1
+                    } else {
+                        xvel1 = Math.max(this.xvel0 + this.acc, -this.max_vel)
+                        this.sq.move(time * (this.xvel0 + xvel1) / 2, move_y)
+                        this.xpos += time * (this.xvel0 + xvel1) / 2
+                        this.xvel0 = xvel1
+                    }
+                }
+                check_hit(yvel, bx, by, mon_wid) {
+                    let in_x = this.xpos - mon_wid / 2 * 1.05 <= bx <= this.xpos + mon_wid / 2 * 1.05
+                    let in_y = this.ypos - mon_wid / 2 * 1.05 <= by <= this.ypos + mon_wid / 2 * 1.05
+                    if (in_x && in_y) {
+                        if (yvel <= -350 && this.yvel0 >= 0) {
+                            return 'pop'
+                        } else {
+                            return 'ouch'
+                        }
+                    }                            
+                }
+                new_target(r) {
+                    this.sq.move(r, 0)
+                    this.xpos += r
+                    this.xvel0 = 0.0
+                }
+                delete() {
+                    this.sq.undraw()
+                }
+            }
+            
+            class Minion {
+                constructor(win, x, min_wid, min_jump) {
+                    this.xpos = x + 100
+                    this.ypos = min_wid / 2
+                    this.yvel0 = 0
+                    this.xvel = 0
+                    this.tri = gr.Polygon(gr.Point(x + 100 - min_wid / 2, 0),
+                                          gr.Point(x + 100 + min_wid / 2, 0),
+                                          gr.Point(x + 100, min_wid))
+                    this.tri.setFill('red')
+                    this.tri.draw(win)
+                    this.jump = min_jump * 3
+                    this.wid = min_wid
+                }
+                update(time, min_wid) {
+                    let yvel1 = 0
+                    if (this.ypos > min_wid / 2 || this.yvel0 > 0) {
+                        yvel1 = this.yvel0 - 180 * time
+                    }
+                    let move_y = time * (this.yvel0 + yvel1) / 2
+                    if (this.ypos + move_y <= min_wid / 2 && this.yvel0 < 0) {
+                        move_y = min_wid / 2 - this.ypos
+                        this.yvel0 = 0
+                        this.xvel = 0
+                    } else {
+                        this.yvel0 = yvel1
+                    }
+                    this.xpos += time * this.xvel
+                    this.ypos += move_y
+                    this.tri.move(time * this.xvel, move_y)
+                }
+                shrink(t, min_wid, win){
+                    if (t > 1) {
+                        let off_x = min_wid * t / 2
+                        this.tri.undraw()
+                        this.tri = gr.Polygon(gr.Point(this.getX() - off_x, 0),
+                                              gr.Point(this.getX() + off_x, 0),
+                                              gr.Point(this.getX(), min_wid / t))
+                        this.tri.setFill('purple')
+                        this.tri.draw(win)
+                        this.wid = off_x * 2
+                        this.ypos = min_wid / t / 2
+                    }
+                }
+                hop(x, min_wid, win){
+                    this.tri.undraw()
+                    this.tri = gr.Polygon(gr.Point(this.getX() - min_wid / 2, 0),
+                                          gr.Point(this.getX() + min_wid / 2, 0),
+                                          gr.Point(this.getX(), min_wid))
+                    this.tri.setFill('red')
+                    this.tri.draw(win)
+                    let theta = 45 * Math.PI / 180
+                    if (this.xpos < x) {
+                        this.xvel = this.jump * Math.cos(theta) * (1 + random.randint(1, 151) / 100)
+                    } else {
+                        this.xvel = -this.jump * Math.cos(theta) * (1 + random.randint(1, 151) / 100)
+                    }
+                    this.yvel0 = this.jump * Math.sin(theta)
+                    this.wid = min_wid
+                    this.ypos = min_wid / 2
+                }
+                check_hit(bv, bx, by, min_wid) {
+                    let eps = this.wid / 2 * 1.02
+                    if (this.xpos - eps <= bx <= this.xpos + eps && this.ypos - eps * 2 <= by <= this.ypos * 2.02) {
+                        if (bv <= -350 || bv == 0) {
+                            if (this.wid > min_wid) {
+                                return 'bonus'
+                            } else {
+                                return 'pop'
+                            }
+
+                        } else {
+                            return 'ouch'
+                        }
+                    }
+                }
+                new_target(r, min_wid, win) {
+                    new_x = this.xpos + r
+                    this.tri.undraw()
+                    this.tri = gr.Polygon(gr.Point(new_x - min_wid / 2, 0),
+                                          gr.Point(new_x + min_wid / 2, 0),
+                                          gr.Point(new_x, min_wid))
+                    this.tri.setFill('red')
+                    this.tri.draw(win)
+                    this.xpos = new_x
+                    this.ypos = min_wid / 2
+                    this.wid = min_wid
+                    this.xvel0 = 0
+                }
+                delete() {
+                    this.tri.undraw()
+                }
+            }
+            
+            class Silo {
+                constructor(win, x, min_wid, s_shot, s_life, s_vel) {
+                    this.xpos = x
+                    this.tri = gr.Polygon(gr.Point(x - min_wid / 2, 0), gr.Point(x + min_wid / 2, 0), gr.Point(x, min_wid))
+                    this.tri.setFill('grey')
+                    this.tri.draw(win)
+                    this.shots = s_shot
+                    this.life = s_life
+                    this.wid = min_wid
+                    this.s_vel = s_vel
+                }
+                fire(win, bx, missiles, time) {
+                    if (this.xpos < bx) {
+                        let s_dir = -1
+                    } else {
+                        let s_dir = 1
+                    }
+                    let s_ang = 90
+                    let add_close = Math.floor(Math.abs(bx - this.xpos) / 100)
+                    for (let a=0; a < add_close; a++) {
+                        s_ang += Math.random * s_dir
+                    }
+                    for (let i=0; i < this.shots; i++) {
+                        missiles.append(Missile(win, this.xpos, this.wid / 2, s_ang + i * 4, this.s_vel, time))
+                    }
+                    this.life -= 1
+                    this.tri.setFill('black')
+                }
+                check_hit(bx, by) {
+                    x_eps = this.wid / 2 * 1.05
+                    if (this.x - x_eps <= bx <= this.x + x_eps && 0 <= by <= x_eps) {
+                        return 'pop'
+                    }
+                }
+                die() {
+                    this.tri.undraw()
+                }
+            }
+                
+            class Missile {
+                constructor(win, x, y, ang, vel, time) {
+                    this.xpos = x
+                    this.ypos = y
+                    let theta = ang * Math.PI / 180
+                    this.xvel = vel * Math.cos(theta)
+                    this.yvel = vel * Math.sin(theta)
+                    let x2 = x + this.xvel * time
+                    let y2 = y + this.yvel * time
+                    this.line = gr.Line(gr.Point(x, y), gr.Point(x2, y2))
+                    this.line.draw(win)
+                }
+                update(time, w, h) {
+                    this.ypos += time * this.yvel
+                    this.xpos += time * this.xvel
+                    this.line.move(time * this.xvel, time * this.yvel)
+                    if (this.xpos > w || this.xpos < 0 || this.ypos > h) {
+                        this.line.undraw()
+                        return 'off'
+                    }
+                }
+                check_hit(bx, by, time) {
+                    x_eps = Math.abs(time * this.xvel / 2) + 2
+                    y_eps = time * this.yvel / 2 + 2
+                    if (this.xpos - x_eps <= bx <= this.xpos + x_eps && this.ypos - y_eps <= by <= this.ypos + y_eps) {
+                        return 'ouch'
+                    }
+                }
+            }
+
+            class Bonus {
+                constructor(win, x) {
+                    this.xpos = x
+                    this.ypos = 1
+                    let theta = ang * Math.PI / 180
+                    this.xvel = 140 * Math.cos(theta) * random_dir()
+                    this.yvel0 = 140 * Math.sin(theta)
+                    this.cir = gr.Circle(gr.Point(x, 2.5), 5)
+                    this.cir.setFill('yellow')
+                    this.cir.draw(win)
+                    this.life = 200
+                }
+
+                update(win, time) {
+                    let yvel1 = 0
+                    if (this.ypos > 0) {
+                        yvel1 = this.yvel0 - 180 * time
+                    }
+                    let move_y = time * (this.yvel0 + yvel1) / 2
+                    if (this.ypos + move_y <= 2.5) {
+                        move_y = 2.5 - this.ypos
+                        this.yvel0 = 0
+                        this.xvel = 0
+                    } else {
+                        this.yvel0 = yvel1
+                    }
+                    this.xpos += time * this.xvel
+                    this.ypos += move_y
+                    this.cir.move(time * this.xvel, move_y)
+                    this.life -= 1
+                    if (80 <= this.life < 180) {
+                        if (this.life % 10 == 1) {
+                            this.cir.undraw()
+                        } else if (this.life % 10 == 0) {
+                            this.cir.draw(win)
+                        }
+                    } else if (20 <= this.life < 80) {
+                        if (this.life % 5 == 1) {
+                            this.cir.undraw()
+                        } else if (this.life % 5 == 0) {
+                            this.cir.draw(win)
+                        }
+                    } else if (0 < this.life < 10) {
+                        if (this.life % 2 == 1) {
+                            this.cir.undraw()
+                        } else {
+                            this.cir.draw(win)
+                        }
+                    } else if (this.life == 0) {
+                        this.cir.undraw()
+                    }
+                    return this.life
+                }
+
+                kill() {
+                    this.cir.undraw()
+                }
+
+                check_hit(bx, by) {
+                    if (by <= 10 && this.life < 175 && this.x - 10 <= bx <= this.x + 10) {
+                        return 'pick'
+                    }
+                }
+            }
+            
+            let loader = PIXI.loader,
+                resources = PIXI.loader.resources,
+                Sprite = PIXI.Sprite;
+
+            let type = "WebGL";
+            if (!PIXI.utils.isWebGLSupported()) {
+              type = "canvas";
+            }
+            PIXI.utils.sayHello(type);
+
+            let app = new PIXI.Application({width: 800, height: 500});
+            document.body.appendChild(app.view);
+
+            loader
+                .add("bonus", "imgs/bonus.png")
+                .add("bouncy", "imgs/bouncy.png")
+                .add("bubble", "imgs/bubble.png")
+                .add("dead_silo", "imgs/dead_silo.png")
+                .add("enemy", "imgs/enemy.png")
+                .add("jump_load", "imgs/jump_load.png")
+                .add("live_silo", "imgs/live_silo.png")
+                .add("minion", "imgs/minion.png")
+                .add("missile", "imgs/missile.png")
+                .add("target", "imgs/target.png")
+                .load(setup)
+
+            let bouncy, state
+
+            function keyboard(keyCode) {
+                let key = {}
+                key.code = keyCode
+                key.isDown = false
+                key.isUp = true
+                key.press = undefined
+                key.release = undefined
+                key.downHandler = event => {
+                    if (event.keyCode === key.code) {
+                        if (key.isUp && key.press) key.press()
+                        key.isDown = true
+                        key.isUp = false
+                    }
+                    event.preventDefault()
+                }
+                key.upHandler = event => {
+                    if (event.keyCode === key.code) {
+                    if (key.isDown && key.release) key.release()
+                        key.isDown = false
+                        key.isUp = true
+                    }
+                    event.preventDefault()
+                }
+                window.addEventListener(
+                    "keydown", key.downHandler.bind(key), false
+                )
+                window.addEventListener(
+                    "keyup", key.upHandler.bind(key), false
+                )
+                return key
+            }
+
+            function setup() {
+                bouncy = new Sprite(resources.bouncy.texture)
+                bouncy.scale.x = .5
+                bouncy.scale.y = .5
+                bouncy.anchor.set(.5, .5)
+                bouncy.y = 96
+                bouncy.vx = 0
+                bouncy.vy = 0
+                app.stage.addChild(bouncy)
+
+                let left = keyboard(37),
+
+                    up = keyboard(38),
+                    right = keyboard(39),
+                    down = keyboard(40)
+
+                left.press = () => {
+                    bouncy.vx = -5
+                    bouncy.vy = 0
+                }
+                left.release = () => {
+                    if (!right.isDown && bouncy.vy === 0) {
+                        bouncy.vx = 0
+                    }
+                }
+                up.press = () => {
+                    bouncy.vy = -5
+                    bouncy.vx = 0
+                }
+                up.release = () => {
+                    if (!down.isDown && bouncy.vx === 0) {
+                        bouncy.vy = 0
+                    }
+                }
+                right.press = () => {
+                    bouncy.vx = 5
+                    bouncy.vy = 0
+                }
+                right.release = () => {
+                    if (!left.isDown && bouncy.vy === 0) {
+                        bouncy.vx = 0
+                    }
+                }
+                down.press = () => {
+                    bouncy.vy = 5
+                    bouncy.vx = 0
+                }
+                down.release = () => {
+                    if (!up.isDown && bouncy.vx === 0) {
+                        bouncy.vy = 0
+                    }
+                }
+
+                state = play
+                app.ticker.add(delta => gameLoop(delta))
+            }
+            
+            function gameLoop(delta){
+                state(delta)
+            }
+
+            function play(delta) {
+                bouncy.x += bouncy.vx
+                bouncy.y += bouncy.vy
+            }
+        </script>
+    </body>
+</html>
