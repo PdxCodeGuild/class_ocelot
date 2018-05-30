@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Hacker Typer</title>
-
+<link rel="stylesheet" type="text/css"href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/monokai.min.css"></link>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
 
     <style>
         body {
@@ -15,11 +16,10 @@
 
             position: absolute;
             z-index: 9;
-            background-color: #f1f1f1;
             border: 1px solid #d3d3d3;
             text-align: left;
-            background-color: black;
-            color: darkgreen;
+            background-color: rgb(39,40,34);
+            /*color: darkgreen;*/
             border-style: solid;
             border-width: 10px;
             border-radius: 5px;
@@ -27,7 +27,7 @@
             height: 500px;
             font-size: 1.2em;
             overflow: -moz-scrollbars-vertical;
-            resize: both;
+            resize: horizontal;
         }
 
         #mydivheader {
@@ -52,14 +52,12 @@
     <!--Draggable DIV:-->
     <div id="terminal">
         <!--Include a header DIV with the same name as the draggable DIV, followed by "header":-->
-        <div id="mydivheader">Hacking the System Terminal</div>
-        <div id="p_in_terminal">
+        <div id="mydivheader">Hacking the System - Terminal</div>
             <pre>
-            <code id="code_insert">
+            <code id="code_insert" class="cpp">
 
             </code>
             </pre>
-        </div>
     </div>
 
 
@@ -69,7 +67,7 @@
 
     //Not Me
     //Make the DIV element draggagle:
-    let mydivheader = document.getElementById('mydivheader')
+
     let terminal = document.getElementById("terminal")
     dragElement(terminal);
 
@@ -144,7 +142,9 @@
         code_insert.innerText += code.slice(hold_spot, hold_spot + slice_size)
         hold_spot += slice_size
         terminal.scrollTo(0, terminal.scrollHeight);
+        hljs.highlightBlock(code_insert);
     }
+
 
 
 </script>
