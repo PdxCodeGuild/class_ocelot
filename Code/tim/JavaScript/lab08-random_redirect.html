@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Random Redirect</title>
+</head>
+<body>
+    <button id="start">Start</button>
+    <div id="clock"></div>
+    <script>
+        let ct = 4
+        let rand_site = [
+            'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+            'https://www.urbandictionary.com/define.php?term=Rick%20Roll',
+            'https://en.wiktionary.org/wiki/rickroll',
+            'https://t5.rbxcdn.com/3ec65288167d11dafe3f2dd674add32f',
+            'http://images4.fanpop.com/image/photos/18500000/Rick-Roll-D-rickrolld-18586299-750-600.jpg'
+        ]
+
+        let start = document.querySelector('#start')
+        start.onclick = function() {
+            clock.innerText = 5
+            let interval = setInterval(function() {
+                clock.innerText = ct
+                ct -= 1
+                if (ct === -1) {
+                    clearInterval(interval)
+                    let rand_index = Math.floor(Math.random() * 5)
+                    location = rand_site[rand_index]
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        html, body, #myframe{
+            width:100%;
+            height:100%;
+            padding:0;
+            margin:0;
+        }
+    </style>
+</head>
+<body>
+<iframe id="myframe">
+
+</iframe>
+<script>
+
+    let site_lst = ['http://bbc.com/sports', 'https://weather.com/weather/tenday/l/Portland+OR+USOR0275:1:US','http://www.nfl.com/network','https://www.mlb.com/']
+    let container = document.getElementById('myframe')
+    document.body.appendChild(container)
+
+    setInterval(reload, 3000)
+
+    function reload{
+    container.src = random_site()}
+
+
+    function random_site() {
+        return site_lst[Math.floor(Math.random()*site_lst.length)]
+    }
+
+
+
+
+</script>
+</body>
+</html>
