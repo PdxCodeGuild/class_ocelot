@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hacker Typer</title>
+    <style>
+        #access_modal, #escape_modal {
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 2em;
+            border: 10px solid;
+            padding: 30px;
+            font-size: 5em;
+            font-weight: bolder;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+    <pre id="typer">Execute the procedure</pre>
+    <div id="access_modal" style="display:none; color:red">ACCESS DENIED!</div>
+    <div id="escape_modal" style="display:none; color:red">THERE IS NO ESCAPE</div>
+    <script>
+        let typer = document.querySelector('#typer')
+        let access_modal = document.querySelector('#access_modal')
+        let escape_modal = document.querySelector('#escape_modal')
+        let enter_ct = 0
+        let key_ct = 0
+        let granted_ct = 0
+        let url = 'https://raw.githubusercontent.com/qrush/unix/master/src/c/c02.c'
+        let code = ''
+        let been_hacked = false
+
+        window.onkeydown = (e) => {
+            if (e.keyCode === 27) {
+                escape_modal.style.display = 'block'
+                access_modal.style.display = 'none'
+            } else if (e.keyCode === 13) {
+                enter_ct += 1
+                escape_modal.style.display = 'none'
+                if (enter_ct === 3 && !been_hacked) {
+                    access_modal.style.display = 'block'
+                    been_hacked = true
+                } else if (been_hacked) {
+                    access_modal.innerText = 'ACCESS GRANTED'
+                    access_modal.style.color = 'green'
+                    granted_ct = 1
+                    been_hacked = false
+                }
+            } else {
+                enter_ct = 0
+                key_ct += 1
+                if (granted_ct > 0) {
+                    granted_ct += 1
+                    if (granted_ct === 15) {
+                        access_modal.innerText = 'ACCESS DENIED'
+                        access_modal.style.color = 'red'
+                        access_modal.style.display = 'none'
+                        granted_ct = 0
+                    }
+                }
+            }
+            update_typer()
+        }
+
+        function update_typer() {
+            typer.innerText = code.substr(0, key_ct * 3)
+            window.scrollTo(0, document.body.scrollHeight)
+        }
+
+        function http_get(url, success) {
+            let xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState === 4 && this.status === 200) {
+                    success(xhttp.responseText);
+                }
+            };
+            xhttp.open("GET", url);
+            xhttp.send();
+        }
+
+        http_get(url, function(data) {
+            code = data
+        })
+    </script>
+</body>
+</html>
