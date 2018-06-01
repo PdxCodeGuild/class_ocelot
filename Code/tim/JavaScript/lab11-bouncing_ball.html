@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bouncing Ball</title>
+    <style>
+        #cnv {
+            margin: auto;
+            display: block;
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="cnv"></canvas>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/13.1.23/Tone.min.js"></script>
+    <script>
+        // boring stuff
+        let synth = new Tone.Synth().toMaster()
+        let width = 1500
+        let height = 600
+        let max_vel = 2
+        let radius = 30
+        let cnv = document.querySelector('#cnv')
+        cnv.height = height
+        cnv.width = width
+        let cnv_rect = cnv.getBoundingClientRect()
+        let ctx = cnv.getContext('2d')
+        ctx.strokeStyle = 'black'
+        // FUNCTIONS
+        function isInArray(value, array) {
+            return array.indexOf(value) > -1;
+        }
+        function balls_touching(px, py) {
+            for (let i=0; i<balls.length; i++) {
+                let a = px - balls[i].px
+                let b = py - balls[i].py
+                let separation = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2))
+                if (separation <= radius * 2) {
+                    return true
+                }
+            }
+        }
+        // BALL CLASS
+        class Ball {
+            constructor(px, py, vx, vy) {
+                this.px = px
+                this.py = py
+                this.vx = vx
+                this.vy = vy
+                this.rad = radius
+                this.fillColor = 'black'
+            }
+            inflate() {
+                console.log('hi')
+                this.rad = this.rad + .1
+                this.fillColor = 'rgba(135,206,250,.5)'
+            }
+        }
+        // FILL BALL ARRAY
+        let balls = []
+        for (let i=0; i<20; i++) {
+            let rand_px = (.1 + Math.random() * .8) * width
+            let rand_py = (.1 + Math.random() * .8) * height
+            while (balls_touching(rand_px, rand_py)) {
+                rand_px = (.1 + Math.random() * .8) * width
+                rand_py = (.1 + Math.random() * .8) * height
+            }
+            let rand_vx = (Math.random() - .5) * 2 * max_vel
+            let rand_vy = (Math.random() - .5) * 2 * max_vel
+            balls.push(new Ball(rand_px, rand_py, rand_vx, rand_vy))
+        }
+        // THE CALLBACK LOOP
+        let move_balls = () => {
+            ctx.clearRect(0, 0, width, height)
+            let bounced = []
+            for (let i=0; i<balls.length; i++) {
+                // DRAW BALLS
+                ctx.beginPath()
+                ctx.arc(balls[i].px, balls[i].py, balls[i].rad, 0, 2 * Math.PI, false)
+                ctx.fillStyle = balls[i].fillColor
+                ctx.fill()
+                ctx.stroke()
+                // CHECK BALL BOUNCE
+                if (balls[i].px + balls[i].vx >= width - radius || balls[i].px + balls[i].vx - radius <= 0) {
+                    balls[i].vx *= -1
+                }
+                if (balls[i].py + balls[i].vy >= height - radius || balls[i].py + balls[i].vy - radius <= 0) {
+                    balls[i].vy *= -1
+                }
+                // MOVE BALLS
+                balls[i].px += balls[i].vx
+                balls[i].py += balls[i].vy
+                // SLOW BALLS
+                if (balls[i].vx < 0) {
+                    balls[i].vx += .001
+                } else if (balls[i].vx > 0) {
+                    balls[i].vx -= .001
+                }
+                if (balls[i].vy < 0) {
+                    balls[i].vy += .003
+                } else if (balls[i].vy > 0) {
+                    balls[i].vy -= .003
+                }
+                // STOP BALLS
+                if (Math.abs(balls[i].vx) <= .002) {
+                    balls[i].vx = 0
+                }
+                if (Math.abs(balls[i].vy) <= .002) {
+                    balls[i].vy = 0
+                }
+                // IF BALL IS STOPPED, INFLATE
+                let has_popped = false
+                if (balls[i].vx + balls[i].vy === 0) {
+                    //IF BALL IS 3x RADIUS, "POP" IT
+                    if (balls[i].rad >= radius * 3) {
+                        has_popped = true
+                        balls.splice(i, 1)
+                        let note = 440*(2*Math.random()-1)*100
+                        synth.triggerAttackRelease(note, '8n')
+                    } else {
+                        balls[i].inflate()
+                    }
+                }
+                // CHECK HIT
+                if (!has_popped && !isInArray(balls[i], bounced) && balls[i].rad === radius) {
+                    for (let j = 0; j < balls.length; j++) {
+                        if (j === i || balls[j].rad != radius) continue
+                        let a = balls[i].px - balls[j].px
+                        let b = balls[i].py - balls[j].py
+                        let separation = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2))
+                        let combo_len = balls[i].rad + balls[j].rad
+                        if (separation <= combo_len) {
+                            let newVelX1 = (balls[i].vx * (balls[i].rad - balls[j].rad) + (2 * balls[j].rad * balls[j].vx)) / (balls[i].rad + balls[j].rad)
+                            let newVelY1 = (balls[i].vy * (balls[i].rad - balls[j].rad) + (2 * balls[j].rad * balls[j].vy)) / (balls[i].rad + balls[j].rad)
+                            let newVelX2 = (balls[j].vx * (balls[j].rad - balls[i].rad) + (2 * balls[i].rad * balls[i].vx)) / (balls[i].rad + balls[j].rad)
+                            let newVelY2 = (balls[j].vx * (balls[j].rad - balls[i].rad) + (2 * balls[i].rad * balls[i].vy)) / (balls[i].rad + balls[j].rad)
+                            balls[j].vx = newVelX2
+                            balls[j].vy = newVelY2
+                            balls[i].vx = newVelX1
+                            balls[i].vy = newVelY1
+                            bounced.push(balls[j])
+                        }
+                    }
+                }
+            }
+            window.requestAnimationFrame(move_balls)
+        }
+        window.requestAnimationFrame(move_balls)
+    </script>
+</body>
+</html>

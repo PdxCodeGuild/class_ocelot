@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bouncing Ball</title>
+</head>
+<body id="body">
+
+
+<script>
+    let body = document.getElementById('body')
+    body.style.backgroundColor = 'black'
+
+    let canvas = document.createElement('canvas')
+    canvas.height = '600'
+    canvas.width = '1000'
+    canvas.style.border = '1px solid white'
+    canvas.fillStyle = 'color'
+    document.body.appendChild(canvas)
+
+    function rnum(lower, upper) {
+        return lower + Math.random() * (upper - lower)
+    }
+
+    let ball_radius = Math.random()*100
+
+    let ball = {
+        radius: ball_radius,
+        px: rnum(ball_radius, canvas.width - ball_radius),
+        py: rnum(ball_radius, canvas.height - ball_radius),
+        vx: (5 * Math.random() - 1) * 10,
+        vy: (5 * Math.random() - 1) * 10,
+    }
+
+    let ctx = canvas.getContext('2d')
+
+    let px = ball.px
+    let py = ball.py
+    let vx = ball.vx
+    let vy = ball.vy
+
+    function draw_ball() {
+        ctx.beginPath()
+        ctx.arc(px, py, ball.radius, 0, 2 * Math.PI, false)
+        ctx.fillStyle = 'rgb(255,182,58)'
+        ctx.fill()
+
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        draw_ball()
+        // draw_plank()
+        if (px + vx > canvas.width - ball_radius || px + vx < ball_radius) {
+            vx *= -1
+            console.log(vx)
+        }
+        else if (py + vy > canvas.height - ball_radius || py + vy < ball_radius) {
+            vy *= -1
+            console.log(vy)
+        }
+
+        px += vx
+        py += vy
+    }
+
+
+
+
+
+    function main_loop() {
+        draw()
+        window.requestAnimationFrame(main_loop)
+    }
+
+    window.requestAnimationFrame(main_loop)
+
+</script>
+</body>
+</html>
