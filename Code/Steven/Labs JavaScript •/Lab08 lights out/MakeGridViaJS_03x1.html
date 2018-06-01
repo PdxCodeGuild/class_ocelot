@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+
+
+
+    </style>
+
+
+
+</head>
+
+<body>
+
+
+
+<!-- Single div containing entire grid -->
+<div id="grid_container"></div>
+
+<script>                                        // Script generates css to apply IN-LINE to elements in the DOM.
+                                                // (view results in browser inspector.)
+
+    let width = 8                               // Width of grid_container in columns
+    let height = 8                              // height of grid_container in frames
+
+
+    function repeat_string(s, n) {              // This function generates n columns, eliminating typing 'auto' 24 times.
+                                                // n = columns, s = string (created for each of n columns)
+
+        let output = ''                         // Sets starting value of string(?) to 'empty'.
+        for (let i=0; i<n; ++i) {               // For loop of i, iterating from 0 to n-1 (1 to n)
+            output += s                         // Appends s (column value) to output n times.
+        }
+        return output                           // Function returns concatenated column-definition string (i.e. 'auto auto auto etc'
+    }
+
+
+    let grid_container = document.querySelector('#grid_container')          // Targets div 'grid_container' in DOM.
+    grid_container.style.display = 'grid'       // Sets in-line css props of 'word-word' to 'wordWord'
+    grid_container.style.gridTemplateColumns = repeat_string('30px ', width)        // repeated column data
+    grid_container.style.alignContent = center
+    grid_container.style.backgroundColor = 'black'
+
+    let divs = []                               // defines blank list 'divs'
+
+
+    // Generates (width * height) grid frames as 'mini-divs.'
+    for (let i=0; i<width; ++i) {                               // Iterates i from 1 to i
+        for (let j=0; j<height; ++j) {                          // Iterates j from 1 to j
+
+            let minidiv = document.createElement('div')         // Uses 'createElement'
+            minidiv.style.height = '30px'                      // Sets in-line css
+            minidiv.style.border = '1.5px solid green'
+            // minidiv.style.color = 'red'
+            grid_container.appendChild(minidiv)                 // TODO Understand function of appendChild
+
+
+
+            minidiv.onclick = function() {                      // Click on a frame to alert it's x & y values.
+                alert(i + ', ' + j)
+            }
+
+            divs.push(minidiv)                                  // Adds all generated frames to an array for later use.
+        }
+    }
+
+    // console.log(divs)                                           // TESTING via console log.
+
+
+    // for (let i=0; i<divs.length; ++i) {                         // Iterates over all generated divs
+    //     divs[i].innerText = 'hello'                             // displays string 'hello' in all frames.
+    // }
+
+
+    divs[4].innerText = 'hello'                                    // Puts text 'hello' into the 4th frame
+
+
+</script>
+
+</body>
+</html>

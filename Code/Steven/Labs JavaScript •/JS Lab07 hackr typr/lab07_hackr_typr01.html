@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <script>
+
+        // setTimeout(function(){ myWindow.close() }, 3000);
+
+        'use strict';
+
+        document.addEventListener('keydown', (event) => {
+            const keyName = event.key;
+            alert('keydown event\n\n' + 'key: ' + keyName);
+        });
+
+
+    </script>
+
+
+    <style>
+
+        <style>
+            /*defines a grid of 5 columns*/
+        .grid_main {
+            display: grid;
+            grid-template-columns: auto auto auto auto auto ;
+            /*background-color: #2196F3;*/
+            padding: 5px;
+        }
+
+        /*defines the frame detail */
+        .grid_frame_off {
+            background-color: rgba(0, 0, 0, 1);
+            border: 2px solid rgba(68, 184, 98, 0.83);
+            padding: 20px;
+            font-size: 30px;
+            text-align: center;
+        }
+    </style>
+
+
+
+
+
+
+</head>
+
+<body>
+
+<!--open new window-->
+
+
+<!--type some text on black background-->
+
+
+<!--wait for 5 seconds-->
+
+
+
+<!--close window -->
+
+<div class="grid_main">
+    <div class="grid_frame" id="clock_div"></div>
+    <div class="grid_frame">(grid frame 2)</div>
+    <div class="grid_frame" id="moonphase_div"></div>
+    <div class="grid_frame">(grid frame 4)</div>
+</div>
+
+</body>
+</html>
+
