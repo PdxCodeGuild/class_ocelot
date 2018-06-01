@@ -65,14 +65,27 @@
         ctx.fill()
     }
 
-    function getPosition(event) {
-        var x = event.x;
-        var y = event.y;
 
-        x -= canvas.offsetLeft;
-        y -= canvas.offsetTop;
 
-        alert("x:" + x + " y:" + y);
+    function increase_gravity(event) {
+        var x = event.x
+        var y = event.y
+
+        x -= canvas.offsetLeft
+        y -= canvas.offsetTop
+
+        let black_hole = new Ball()
+        black_hole.mass = 10000000
+        black_hole.px = x
+        black_hole.py = y
+        black_hole.radius = 5
+        black_hole.color = 'white'
+        ball_arr.push(black_hole)
+
+    }
+
+    function remove_gravity(event) {
+        ball_arr.pop()
     }
 
 
@@ -80,18 +93,23 @@
 
         ctx.clearRect(0, 0, canvas.width, canvas.height)
 
+        canvas.addEventListener("mousedown", increase_gravity, false);
+            canvas.addEventListener("mouseup", remove_gravity, false);
+
         for (let i = 0; i < ball_arr.length; i++) {
 
             let ball = ball_arr[i]
+
             draw_ball(ball)
             if (ball.px + ball.vx > canvas.width - ball.radius || ball.px + ball.vx < ball.radius) {
-                ball.vx *= -1
+                ball.vx *= -.5
             }
             else if (ball.py + ball.vy > canvas.height - ball.radius || ball.py + ball.vy < ball.radius) {
-                ball.vy *= -1
+                ball.vy *= -.5
             }
 
-            canvas.addEventListener("click", getPosition, false);
+
+
 
             for (let j = i + 1; j < ball_arr.length; j++) {
                 let ball_2 = ball_arr[j]
