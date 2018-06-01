@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bouncing Ball</title>
+</head>
+<body id="body">
+
+
+<script>
+    let body = document.getElementById('body')
+    body.style.backgroundColor = 'black'
+    let count = 1000
+    let canvas = document.createElement('canvas')
+    canvas.height = '1350'
+    canvas.width = '2520'
+    canvas.style.border = '1px solid white'
+    canvas.fillStyle = 'color'
+    document.body.appendChild(canvas)
+
+    function rnum(lower, upper) {
+        return lower + Math.random() * (upper - lower)
+    }
+
+
+    // SH
+    class ball {
+        constructor() {
+            let r = getRandomInt(255)
+            let g = getRandomInt(255)
+            let b = getRandomInt(255)
+            this.radius = Math.random() * 30;
+            this.px = rnum(this.radius, canvas.width - this.radius);
+            this.py = rnum(this.radius, canvas.height - this.radius);
+            this.vx = (5 * Math.random() - 1) * 5;
+            this.vy = (5 * Math.random() - 1) * 5;
+            this.color = `rgb(${r},${g},${b})`
+        }
+    }
+
+    let ball_count = count
+    let ball_arr = []
+
+    for (i = 1; i < ball_count; i++) {
+        ball_arr[i] = new ball()
+    }
+
+    let ctx = canvas.getContext('2d')
+
+    function getRandomInt(max) {
+        return Math.floor(Math.random() * Math.floor(max));
+    }
+
+    let r = getRandomInt(255)
+    let g = getRandomInt(255)
+    let b = getRandomInt(255)
+
+    function draw_ball(element) {
+        let r = getRandomInt(255)
+        let g = getRandomInt(255)
+        let b = getRandomInt(255)
+        ctx.beginPath()
+        ctx.arc(element.px, element.py, element.radius, 0, 2 * Math.PI, false)
+        ctx.fillStyle = element.color
+        ctx.fill()
+    }
+
+    function draw() {
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        ball_arr.forEach(function (element) {
+            draw_ball(element)
+            if (element.px + element.vx > canvas.width - element.radius || element.px + element.vx < element.radius) {
+                element.vx *= -.99999
+            }
+            else if (element.py + element.vy > canvas.height - element.radius || element.py + element.vy < element.radius) {
+                element.vy *= -1.00001
+            }
+            element.px += element.vx
+            element.py += element.vy
+        })
+    }
+
+
+    function main_loop() {
+        draw()
+        window.requestAnimationFrame(main_loop)
+    }
+
+    window.requestAnimationFrame(main_loop)
+
+</script>
+</body>
+</html>
