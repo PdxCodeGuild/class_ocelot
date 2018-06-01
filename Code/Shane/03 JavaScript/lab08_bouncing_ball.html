@@ -12,8 +12,8 @@
     body.style.backgroundColor = 'black'
 
     let canvas = document.createElement('canvas')
-    canvas.height = '400'
-    canvas.width = '850'
+    canvas.height = '600'
+    canvas.width = '1000'
     canvas.style.border = '1px solid white'
     canvas.fillStyle = 'color'
     document.body.appendChild(canvas)
@@ -23,6 +23,7 @@
     }
 
     let ball_radius = Math.random()*100
+
     let ball = {
         radius: ball_radius,
         px: rnum(ball_radius, canvas.width - ball_radius),
@@ -32,21 +33,18 @@
     }
 
     let ctx = canvas.getContext('2d')
+
     let px = ball.px
     let py = ball.py
     let vx = ball.vx
     let vy = ball.vy
-
-    // function draw_plank(){
-    //
-    // }
 
     function draw_ball() {
         ctx.beginPath()
         ctx.arc(px, py, ball.radius, 0, 2 * Math.PI, false)
         ctx.fillStyle = 'rgb(255,182,58)'
         ctx.fill()
-        ctx.closePath()
+
     }
 
     function draw() {
@@ -55,26 +53,20 @@
         // draw_plank()
         if (px + vx > canvas.width - ball_radius || px + vx < ball_radius) {
             vx *= -1
-            if (Math.abs(vy) > 40){
-               vx *= .9
-            } else {
-                vx *= 1.005
-            }
             console.log(vx)
         }
         else if (py + vy > canvas.height - ball_radius || py + vy < ball_radius) {
             vy *= -1
-            if (Math.abs(vy) > 40){
-               vy *= .9
-            } else {
-                vy *= 1.005
-            }
             console.log(vy)
         }
 
         px += vx
         py += vy
     }
+
+
+
+
 
     function main_loop() {
         draw()
