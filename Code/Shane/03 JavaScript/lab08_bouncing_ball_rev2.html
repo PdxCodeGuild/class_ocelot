@@ -10,10 +10,10 @@
 <script>
     let body = document.getElementById('body')
     body.style.backgroundColor = 'black'
-
+    let count = 10000
     let canvas = document.createElement('canvas')
-    canvas.height = '600'
-    canvas.width = '1000'
+    canvas.height = '1350'
+    canvas.width = '2520'
     canvas.style.border = '1px solid white'
     canvas.fillStyle = 'color'
     document.body.appendChild(canvas)
@@ -22,61 +22,63 @@
         return lower + Math.random() * (upper - lower)
     }
 
-    let ball_radius = Math.random()*100
 
     class ball {
-        constructor(){
-        this.radius = ball_radius;
-        this.px = rnum(ball_radius, canvas.width - ball_radius);
-        this.py = rnum(ball_radius, canvas.height - ball_radius);
-        this.vx = (5 * Math.random() - 1) * 10;
-        this.vy = (5 * Math.random() - 1) * 10;
+        constructor() {
+            let r = getRandomInt(255)
+            let g = getRandomInt(255)
+            let b = getRandomInt(255)
+            this.radius = Math.random() * 30;
+            this.px = rnum(this.radius, canvas.width - this.radius);
+            this.py = rnum(this.radius, canvas.height - this.radius);
+            this.vx = (5 * Math.random() - 1) * 5;
+            this.vy = (5 * Math.random() - 1) * 5;
+            this.color = `rgb(${r},${g},${b})`
         }
     }
 
-    let ball_count = 10
+    let ball_count = count
     let ball_arr = []
 
-    for (i = 1; i < ball_count; i++ ) {
-        ball[i] = new ball()
-        console.log(ball_arr)
+    for (i = 1; i < ball_count; i++) {
+        ball_arr[i] = new ball()
     }
 
     let ctx = canvas.getContext('2d')
 
-    let px = ball.px
-    let py = ball.py
-    let vx = ball.vx
-    let vy = ball.vy
-
-    function draw_ball() {
-        ctx.beginPath()
-        ctx.arc(px, py, this.radius, 0, 2 * Math.PI, false)
-        ctx.fillStyle = 'rgb(255,182,58)'
-        ctx.fill()
-
+    function getRandomInt(max) {
+        return Math.floor(Math.random() * Math.floor(max));
     }
 
-    for()
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height)
-            draw_ball()
+    let r = getRandomInt(255)
+    let g = getRandomInt(255)
+    let b = getRandomInt(255)
 
-            if (px + vx > canvas.width - ball_radius || px + vx < ball_radius) {
-                vx *= -1
-                console.log(vx)
+    function draw_ball(element) {
+        let r = getRandomInt(255)
+        let g = getRandomInt(255)
+        let b = getRandomInt(255)
+        ctx.beginPath()
+        ctx.arc(element.px, element.py, element.radius, 0, 2 * Math.PI, false)
+        ctx.fillStyle = element.color
+        ctx.fill()
+    }
+
+    function draw() {
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        ball_arr.forEach(function (element) {
+            draw_ball(element)
+            if (element.px + element.vx > canvas.width - element.radius || element.px + element.vx < element.radius) {
+                element.vx *= -.99999
             }
-            else if (py + vy > canvas.height - ball_radius || py + vy < ball_radius) {
-                vy *= -1
-                console.log(vy)
+            else if (element.py + element.vy > canvas.height - element.radius || element.py + element.vy < element.radius) {
+                element.vy *= -1.00001
             }
-
-            px += vx
-            py += vy
-        }
-
-
-
+            element.px += element.vx
+            element.py += element.vy
+        })
+    }
 
 
     function main_loop() {
