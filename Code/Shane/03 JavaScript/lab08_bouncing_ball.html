@@ -28,8 +28,8 @@
         radius: ball_radius,
         px: rnum(ball_radius, canvas.width - ball_radius),
         py: rnum(ball_radius, canvas.height - ball_radius),
-        vx: (5 * Math.random() - 1) * 10,
-        vy: (5 * Math.random() - 1) * 10,
+        vx: ((Math.random()-.5) *2),
+        vy: ((Math.random()-1) *2),
     }
 
     let ctx = canvas.getContext('2d')
