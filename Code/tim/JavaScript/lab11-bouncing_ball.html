@@ -16,10 +16,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/13.1.23/Tone.min.js"></script>
     <script>
         // boring stuff
+        document.documentElement.style.overflow = 'hidden'
+        document.body.scroll = 'no'
         let synth = new Tone.Synth().toMaster()
-        let width = 1500
-        let height = 600
-        let max_vel = 2
+        let width = window.innerWidth*.99
+        let height = window.innerHeight*.98
+        let max_vel = 10
         let radius = 30
         let cnv = document.querySelector('#cnv')
         cnv.height = height
@@ -27,10 +29,7 @@
         let cnv_rect = cnv.getBoundingClientRect()
         let ctx = cnv.getContext('2d')
         ctx.strokeStyle = 'black'
-        // FUNCTIONS
-        function isInArray(value, array) {
-            return array.indexOf(value) > -1;
-        }
+        // YOU DON'T WANT YOUR BALLS TOUCHING
         function balls_touching(px, py) {
             for (let i=0; i<balls.length; i++) {
                 let a = px - balls[i].px
@@ -52,14 +51,15 @@
                 this.fillColor = 'black'
             }
             inflate() {
-                console.log('hi')
                 this.rad = this.rad + .1
-                this.fillColor = 'rgba(135,206,250,.5)'
+                let r = Math.floor(20 + this.rad * 1.6)
+                let g = Math.floor(40 + this.rad * 1.8)
+                this.fillColor = 'rgb(' + r + ',' + g + '206,250)'
             }
         }
         // FILL BALL ARRAY
         let balls = []
-        for (let i=0; i<20; i++) {
+        for (let i=0; i<10; i++) {
             let rand_px = (.1 + Math.random() * .8) * width
             let rand_py = (.1 + Math.random() * .8) * height
             while (balls_touching(rand_px, rand_py)) {
@@ -70,10 +70,10 @@
             let rand_vy = (Math.random() - .5) * 2 * max_vel
             balls.push(new Ball(rand_px, rand_py, rand_vx, rand_vy))
         }
+
         // THE CALLBACK LOOP
         let move_balls = () => {
             ctx.clearRect(0, 0, width, height)
-            let bounced = []
             for (let i=0; i<balls.length; i++) {
                 // DRAW BALLS
                 ctx.beginPath()
@@ -82,38 +82,43 @@
                 ctx.fill()
                 ctx.stroke()
                 // CHECK BALL BOUNCE
-                if (balls[i].px + balls[i].vx >= width - radius || balls[i].px + balls[i].vx - radius <= 0) {
+                if (balls[i].px + balls[i].vx >= width - balls[i].rad || balls[i].px + balls[i].vx - balls[i].rad <= 0) {
                     balls[i].vx *= -1
                 }
-                if (balls[i].py + balls[i].vy >= height - radius || balls[i].py + balls[i].vy - radius <= 0) {
+                if (balls[i].py + balls[i].vy >= height - balls[i].rad || balls[i].py + balls[i].vy - balls[i].rad <= 0) {
                     balls[i].vy *= -1
                 }
                 // MOVE BALLS
                 balls[i].px += balls[i].vx
                 balls[i].py += balls[i].vy
+                // MAKE SURE YOUR BALLS AREN'T STUCK IN THE WALL
+                if (balls[i].px - balls[i].rad < 0) {balls[i].px = balls[i].rad}
+                if (balls[i].px + balls[i].rad > width) {balls[i].px = width - balls[i].rad}
+                if (balls[i].py - balls[i].rad < 0) {balls[i].py = balls[i].rad}
+                if (balls[i].py + balls[i].rad > height) {balls[i].py = height - balls[i].rad}
                 // SLOW BALLS
                 if (balls[i].vx < 0) {
-                    balls[i].vx += .001
+                    balls[i].vx += .005
                 } else if (balls[i].vx > 0) {
-                    balls[i].vx -= .001
+                    balls[i].vx -= .005
                 }
                 if (balls[i].vy < 0) {
-                    balls[i].vy += .003
+                    balls[i].vy += .005
                 } else if (balls[i].vy > 0) {
-                    balls[i].vy -= .003
+                    balls[i].vy -= .005
                 }
                 // STOP BALLS
-                if (Math.abs(balls[i].vx) <= .002) {
+                if (Math.abs(balls[i].vx) <= .003) {
                     balls[i].vx = 0
                 }
-                if (Math.abs(balls[i].vy) <= .002) {
+                if (Math.abs(balls[i].vy) <= .003) {
                     balls[i].vy = 0
                 }
                 // IF BALL IS STOPPED, INFLATE
                 let has_popped = false
                 if (balls[i].vx + balls[i].vy === 0) {
                     //IF BALL IS 3x RADIUS, "POP" IT
-                    if (balls[i].rad >= radius * 3) {
+                    if (balls[i].rad >= radius * 4) {
                         has_popped = true
                         balls.splice(i, 1)
                         let note = 440*(2*Math.random()-1)*100
@@ -123,23 +128,41 @@
                     }
                 }
                 // CHECK HIT
-                if (!has_popped && !isInArray(balls[i], bounced) && balls[i].rad === radius) {
+                if (!has_popped) {
                     for (let j = 0; j < balls.length; j++) {
-                        if (j === i || balls[j].rad != radius) continue
-                        let a = balls[i].px - balls[j].px
-                        let b = balls[i].py - balls[j].py
-                        let separation = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2))
+                        if (j === i) continue
+                        let change_in_x = balls[i].px - balls[j].px
+                        let change_in_y = balls[i].py - balls[j].py
+                        let separation = Math.sqrt(Math.pow(change_in_x, 2) + Math.pow(change_in_y, 2))
                         let combo_len = balls[i].rad + balls[j].rad
                         if (separation <= combo_len) {
+                            // YOUR BALLS ARE TOUCHING, SEPARATE THEM, FIRST CALCULATE NUDGE
+                            let diff = combo_len - separation
+                            let nudge = diff / 2
+                            let x_part_of_separation = Math.pow(change_in_x / separation, 2)
+                            let y_part_of_separation = Math.pow(change_in_y / separation, 2)
+                            let nudge_x = nudge * x_part_of_separation
+                            let nudge_y = nudge * y_part_of_separation
+                            // NUDGE YOUR BALLS
+                            balls[i].px -= nudge_x
+                            balls[i].py -= nudge_y
+                            balls[j].px += nudge_x
+                            balls[j].py += nudge_y
+                            // CALCULATE NEW VELOCITIES
                             let newVelX1 = (balls[i].vx * (balls[i].rad - balls[j].rad) + (2 * balls[j].rad * balls[j].vx)) / (balls[i].rad + balls[j].rad)
                             let newVelY1 = (balls[i].vy * (balls[i].rad - balls[j].rad) + (2 * balls[j].rad * balls[j].vy)) / (balls[i].rad + balls[j].rad)
                             let newVelX2 = (balls[j].vx * (balls[j].rad - balls[i].rad) + (2 * balls[i].rad * balls[i].vx)) / (balls[i].rad + balls[j].rad)
                             let newVelY2 = (balls[j].vx * (balls[j].rad - balls[i].rad) + (2 * balls[i].rad * balls[i].vy)) / (balls[i].rad + balls[j].rad)
+                            // CHANGE VELOCITY
                             balls[j].vx = newVelX2
                             balls[j].vy = newVelY2
                             balls[i].vx = newVelX1
                             balls[i].vy = newVelY1
-                            bounced.push(balls[j])
+                            // MOVE IN NEW DIRECTION ONE TICK
+                            balls[i].px += balls[i].vx
+                            balls[i].py += balls[i].vy
+                            balls[j].px += balls[j].vx
+                            balls[j].py += balls[j].vy
                         }
                     }
                 }
