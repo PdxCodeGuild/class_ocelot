@@ -51,12 +51,15 @@
             // this.gravitySpeed = 0
 
             this.color = randomColor()
+            this.ball_color_prev = ''
+            this.shape_cent_prev_x = ''
+            this.shape_cent_prev_y = ''
+
 
         }
 
 
     }
-
 
     let shapes_array = [];
     let ball_count = shape_count;
@@ -78,7 +81,6 @@
         let opac = 1
         return `rgba(${red},${green},${blue},${opac})`
 
-
     }
 
 
@@ -94,6 +96,7 @@
 
 
         let grd = context.createRadialGradient(grad_st_x, grad_st_y, grad_st_r, grad_end_x, grad_end_y, grad_end_r)
+        let ball_color_prev = ball.color
         grd.addColorStop(0, ball.color)
         grd.addColorStop(1, body.style.backgroundColor)
 
@@ -106,16 +109,23 @@
         context.fillStyle = grd;
 
         context.fill()
-
     }
 
-    // function draw_ball_eraser(TheBall) {
+
+    // function draw_ball_eraser(ball) {
+    //     shape_center_x = ball.shape_cent_prev_x
+    //     shape_center_y = ball.shape_cent_prev_y
+    //
+    //
     //     context.beginPath()
-    //     let shape_center_x = shape_cent_prev_x
-    //     let shape_center_y = shape_cent_prev_y
-    //     context.arc(TheBall.shape_cent_prev_x, TheBall.shape_cent_prev_y, TheBall.radius, 0, 2 * Math.PI, false)
-    //     // context.arc(TheBall.shape_center_x, TheBall.shape_center_y, 25, 0, 2 * Math.PI, false)
-    //     context.fillStyle = TheBall.color
+    //     context.arc(ball.shape_center_x, ball.shape_center_y, ball.radius, 0, 2 * Math.PI, false)
+    //     // context.arc(ball.shape_center_x, ball.shape_center_y, 25, 0, 2 * Math.PI, false)
+    //
+    //     // context.fillStyle = ball.color
+    //     context.fillStyle =
+    //     // context.fillStyle = ball.ball_color_prev
+    //
+    //
     //     context.fill()
     //
     // }
@@ -149,6 +159,29 @@
 
     }
 
+
+
+    // function draw_all_shapes() {
+    //     do {
+    //         shapes_array.forEach(function (TheBall) {
+    //             TheBall.shape_center_x += (TheBall.velocity_x)
+    //             TheBall.shape_center_y += (TheBall.velocity_y)
+    //             draw_ball(TheBall)
+    //             ball_rebound(TheBall)}
+    //         i++
+    //     }
+    //     while(i < 10) {
+    //         context.clearRect(0, 0, canvas.width, canvas.height)
+    //     }
+    // }
+    //
+    //
+    // window.requestAnimationFrame(draw_all_shapes)
+    // }
+    //
+    // window.requestAnimationFrame(draw_all_shapes)
+
+
     function draw_all_shapes() {
         context.clearRect(0, 0, canvas.width, canvas.height)
         shapes_array.forEach(function (TheBall) {
@@ -162,6 +195,7 @@
     }
 
     window.requestAnimationFrame(draw_all_shapes)
+
 
 </script>
 
