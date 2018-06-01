@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            margin: 0px;
+            padding: 0px;
+        }
+
+        canvas {
+            border: 1px solid black;
+            background:#000;
+            width:auto;
+            height:auto;
+            margin: 0 auto;
+        }
+
+
+        .pixelated {
+            -ms-interpolation-mode: nearest-neighbor;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: -webkit-crisp-edges;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: -o-crisp-edges;
+            image-rendering: pixelated;
+        }
+        .centered {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            -webkit-transform: translate(-50%, -50%);
+            -moz-transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+        }
+    </style>
+
+    <style>
+        body{
+            background:#000;
+        }
+        /*canvas {*/
+            /*border: 1px solid black;*/
+            /*background:#000;*/
+            /*width:auto;*/
+            /*height:auto;*/
+            /*margin: 0 auto;*/
+        /*}*/
+
+        /*No smoothing for canvas
+          https://builtvisible.com/image-scaling-in-css/
+        */
+        /*.pixelated {*/
+            /*-ms-interpolation-mode: nearest-neighbor;*/
+            /*image-rendering: -webkit-optimize-contrast;*/
+            /*image-rendering: -webkit-crisp-edges;*/
+            /*image-rendering: -moz-crisp-edges;*/
+            /*image-rendering: -o-crisp-edges;*/
+            /*image-rendering: pixelated;*/
+        /*}*/
+        /*.centered {*/
+            /*position: fixed;*/
+            /*top: 50%;*/
+            /*left: 50%;*/
+            /*-webkit-transform: translate(-50%, -50%);*/
+            /*-moz-transform: translate(-50%, -50%);*/
+            /*-ms-transform: translate(-50%, -50%);*/
+            /*transform: translate(-50%, -50%);*/
+        /*}*/
+
+
+    </style>
+</head>
+
+
+<body>
+<canvas id="the_canvas" width="800" height="500"></canvas>
+
+
+<script>
+    let canvas = document.getElementById('the_canvas');
+    let context = canvas.getContext('2d');
+    let centerX = canvas.width / 2;
+    let centerY = canvas.height / 2;
+    let radius = 50;
+    let speed = .8
+    let velocityX = 2 * speed
+    let velocityY = 2.4 * speed
+    let randAngleMult = Math.random() * 3
+    let ballColor = 'green'
+
+    // function ballColorChange() {
+    //     red = Math.random() * 255
+    //     green = Math.random() * 255
+    //     blue = Math.random() * 255
+    //     opac = Math.random()
+    //     return `rgba(${red},${green},${blue},${opac}`
+    //
+    // }
+
+    function drawBall() {
+        context.clearRect(0,0,canvas.width,canvas.height)
+        centerX += velocityX
+        centerY += velocityY
+        if (centerX - radius < 0) {
+            velocityX *= -1
+            velocityY += (Math.random() - 1) *randAngleMult
+            // ballColor = ballColorChange()
+        }
+        if (centerX + radius > canvas.width) {
+            velocityX *= -1
+            velocityY += (Math.random() - 1) *randAngleMult
+            // ballColor = ballColorChange()
+        }
+        if (centerY - radius < 0) {
+            velocityY *= -1
+            velocityX += (Math.random() - 1) *randAngleMult
+            // ballColor = ballColorChange()
+        }
+        if (centerY + radius > canvas.height) {
+            velocityY *= -1
+            velocityX += (Math.random() - 1) *randAngleMult
+            // ballColor = ballColorChange()
+        }
+
+        context.beginPath();
+        context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+        context.fillStyle = ballColor;
+        // context.fillStyle = 'green';
+
+        context.fill();
+        window.requestAnimationFrame(drawBall)
+
+
+    }
+
+    let the_canvas = document.getElementById('the_canvas')
+    the_canvas.onclick = function(event) {
+        let clickX = event.clientX
+        let clickY = event.clientY
+
+        let diffX = centerX - clickX
+        let diffY = centerY - clickY
+
+        // Returns true if mouseclick is within ball radius
+        onTarget = Math.sqrt(Math.pow(diffX,2)+(Math.pow(diffY,2))) < radius
+
+
+        document.getElementById("output_div").innerText = `mX:${clickX} mY:${clickY} cX:${centerX} cY:${centerY} diffX:${diffX} diffY${diffY} ON TARGET: ${onTarget}`
+
+
+        // if (ball.px = 0+ball.radius+d;
+        // ball.vx *= -1;
+        // ball.vx *= friction;
+        // ball.vy *= friction;
+
+        // alert('position: '+clickX+', '+clickY)
+    }
+
+
+    window.requestAnimationFrame(drawBall)
+
+
+
+</script>
+
+<script>
+    var t = 0,
+    turn = 0,
+    rot = 0,
+    arms = 0.4,
+    pts = 2500,
+    offset = 200,
+    cos = Math.cos,
+    sin = Math.sin;
+
+//Create canvas
+var canvas = document.createElement('canvas');
+canvas.id = 'canvas';
+canvas.height = 600;
+canvas.width = 600;
+canvas.classList ='centered pixelated';
+
+//append to body
+document.body.appendChild(canvas);
+
+//ctx
+var ctx = canvas.getContext('2d'),
+     cw = canvas.width,
+     ch = canvas.height;
+
+
+//draw pixels
+function draw() {
+
+    for (var i = 0; i < pts; i++) {
+        var j = i / arms,
+            r = sin(i / offset) * cw/3,
+            x = cos(j + t),
+            y = sin(j + t) * sin(rot),
+            z = cos(i / offset) * cos(rot) * ch/3;
+//        pixel(x * r + 64, y * r + 64 + z, (0x1000000 + (Math.random()) * 0xffffff).toString(16).substr(1, 6));
+        pixel(x * r + cw/2, y * r + ch/2 + z, 'fff000');
+
+    }
+}
+
+//Draw pixel
+function pixel(x, y, colHex) {
+    ctx.fillStyle = '#' + colHex;
+    ctx.fillRect(x, y, 3, 3);
+}
+
+function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    draw();
+    t += 0.01;
+    // pts += 10
+    rot += 0.01;
+    requestAnimationFrame(animate);
+}
+
+animate();
+
+
+
+//Request animation frame
+(function() {
+    var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
+        window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+    window.requestAnimationFrame = requestAnimationFrame;
+})();
+
+
+
+
+
+</script>
+
+<div id="output_div">
+
+
+</div>
+
+</body>
+</html>

@@ -34,6 +34,16 @@
         let velocityX = 2 * speed
         let velocityY = 2.4 * speed
         let randAngleMult = Math.random() * 3
+        let ballColor = 'green'
+
+        function ballColorChange() {
+            red = Math.random() * 255
+            green = Math.random() * 255
+            blue = Math.random() * 255
+            opac = Math.random()
+            return `rgba(${red},${green},${blue},${opac}`
+
+        }
 
         function drawBall() {
             context.clearRect(0,0,canvas.width,canvas.height)
@@ -42,24 +52,29 @@
             if (centerX - radius < 0) {
                 velocityX *= -1
                 velocityY += (Math.random() - 1) *randAngleMult
+                ballColor = ballColorChange()
             }
             if (centerX + radius > canvas.width) {
                 velocityX *= -1
                 velocityY += (Math.random() - 1) *randAngleMult
+                ballColor = ballColorChange()
             }
             if (centerY - radius < 0) {
                 velocityY *= -1
                 velocityX += (Math.random() - 1) *randAngleMult
+                ballColor = ballColorChange()
             }
            if (centerY + radius > canvas.height) {
                 velocityY *= -1
                 velocityX += (Math.random() - 1) *randAngleMult
+                ballColor = ballColorChange()
             }
-
 
             context.beginPath();
             context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-            context.fillStyle = 'green';
+            context.fillStyle = ballColor;
+            // context.fillStyle = 'green';
+
             context.fill();
             window.requestAnimationFrame(drawBall)
 
@@ -74,10 +89,11 @@
             let diffX = centerX - clickX
             let diffY = centerY - clickY
 
+            // Returns true if mouseclick is within ball radius
             onTarget = Math.sqrt(Math.pow(diffX,2)+(Math.pow(diffY,2))) < radius
 
 
-            document.getElementById("output_div").innerText = `mX:${clickX} mY:${clickY} cX:${centerX} cY:${centerY} diffX:${diffX} diffY${diffY} ON TARGET:${onTarget}`
+            document.getElementById("output_div").innerText = `mX:${clickX} mY:${clickY} cX:${centerX} cY:${centerY} diffX:${diffX} diffY${diffY} ON TARGET: ${onTarget}`
 
 
             // if (ball.px = 0+ball.radius+d;

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+
+        html,
+        body {
+            height: 100%;
+        }
+        body {
+            margin: 0;
+            background: #3D3D4A;
+            font-family: sans-serif;
+        }
+        .container {
+            padding-top: 40px;
+            display: inline-block;
+        }
+        .block {
+            margin: 25px 25px 0 0;
+            background: #3D3D4A;
+            border-radius: 5px;
+            float: left;
+            width: 300px;
+            overflow: hidden;
+        }
+
+        .donut-chart-block {
+            overflow: hidden;
+        }
+
+        .donut-chart {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 2rem auto;
+            border-radius: 100%
+        }
+
+        .donut-chart .center {
+            background: #3D3D4A;
+            border-radius: 50%;
+            height: 60%;
+            left: 20%;
+            position: absolute;
+            top: 20%;
+            width: 60%;
+        }
+
+        .center span {
+            color: #7a7a7a;
+            display: block;
+            font-size: 36px;
+            font-weight: 800;
+            left: 50%;
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%,-50%);
+        }
+
+        .clip {
+            border-radius: 50%;
+            clip: rect(0px, 200px, 200px, 100px);
+            height: 100%;
+            position: absolute;
+            width: 100%;
+        }
+
+        .item {
+            border-radius: 50%;
+            clip: rect(0px, 100px, 200px, 0px);
+            height: 100%;
+            position: absolute;
+            width: 100%;
+            font-family: monospace;
+            font-size: 1.5rem;
+        }
+
+        #section1 {
+            transform: rotate(0deg);
+        }
+
+        #section1 .item {
+            background-color: #E64C65;
+            transform: rotate(180deg);
+        }
+
+        #section2 {
+            transform: rotate(180deg);
+        }
+
+        #section2 .item {
+            background-color: #41A8AB;
+            transform: rotate(180deg);
+        }
+
+        /*  slider */
+        .range-slider {
+            display: inline-block;
+            width: 40px;
+            position: relative;
+            text-align: center;
+            height: 300px;
+
+        }
+        .range-slider__thumb {
+            position: absolute;
+            left: 5px;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            background: #e6323e;
+            color: #fff;
+            font-size: 60%;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .range-slider__bar {
+            left: 16px;
+            bottom: -200px;
+            position: absolute;
+            pointer-events: none;
+            width: 8px;
+            border-radius: 10px;
+        }
+        .range-slider input[type=range][orient=vertical] {
+            position: relative;
+            margin: 0;
+            height: 100%;
+            width: 100%;
+            display: inline-block;
+            position: relative;
+            writing-mode: bt-lr;
+            -webkit-appearance: slider-vertical;
+        }
+        .range-slider input[type=range][orient=vertical]::-webkit-slider-runnable-track, .range-slider input[type=range][orient=vertical]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+        }
+        .range-slider input[type=range][orient=vertical]::-webkit-slider-runnable-track {
+            border: none;
+            background: #343440;
+            width: 8px;
+            border-color: #343440;
+            border-radius: 10px;
+        }
+        .range-slider input[type=range][orient=vertical]::-moz-range-track {
+            border: none;
+            background: #343440;
+            width: 8px;
+            border-color: #343440;
+            border-radius: 10px;
+        }
+        .range-slider input[type=range][orient=vertical]::-ms-track {
+            border: none;
+            background: #343440;
+            width: 8px;
+            border-color: #343440;
+            border-radius: 10px;
+            color: transparent;
+            height: 100%;
+        }
+        .range-slider input[type=range][orient=vertical]::-ms-fill-lower, .range-slider input[type=range][orient=vertical]::-ms-fill-upper, .range-slider input[type=range][orient=vertical]::-ms-tooltip {
+            display: none;
+        }
+        .range-slider input[type=range][orient=vertical]::-webkit-slider-thumb {
+            width: 30px;
+            height: 30px;
+            opacity: 0;
+        }
+        .range-slider input[type=range][orient=vertical]::-moz-range-thumb {
+            width: 30px;
+            height: 30px;
+            opacity: 0;
+        }
+        .range-slider input[type=range][orient=vertical]::-ms-thumb {
+            width: 30px;
+            height: 30px;
+            opacity: 0;
+        }
+    </style>
+
+
+</head>
+<body>
+
+<div class="container">
+    <div class="donut-chart-block block">
+        <div class="donut-chart">
+            <div id="section1" class="clip">
+                <div class="item"></div>
+            </div>
+            <div id="section2" class="clip">
+                <div class="item"></div>
+            </div>
+            <div id="section3" class="clip">
+                <div class="item"></div>
+            </div>
+            <div class="center">
+                <span></span>
+            </div>
+        </div>
+    </div>
+    <div class="range-slider">
+        <input type="range" orient="vertical" min="0" max="100" />
+        <div class="range-slider__bar"></div>
+        <div class="range-slider__thumb"></div>
+    </div>
+</div>
+<div class="container">
+    <div class="donut-chart-block block">
+        <div class="donut-chart">
+            <div id="section1" class="clip">
+                <div class="item"></div>
+            </div>
+            <div id="section2" class="clip">
+                <div class="item"></div>
+            </div>
+            <div id="section3" class="clip">
+                <div class="item"></div>
+            </div>
+            <div class="center"><span></span></div>
+        </div>
+    </div>
+    <div class="range-slider">
+        <input type="range" orient="vertical" min="0" max="100" />
+        <div class="range-slider__bar"></div>
+        <div class="range-slider__thumb"></div>
+    </div>
+</div>
+<div class="container">
+    <div class="donut-chart-block block">
+        <div class="donut-chart">
+            <div id="section1" class="clip">
+                <div class="item"></div>
+            </div>
+            <div id="section2" class="clip">
+                <div class="item"></div>
+            </div>
+            <div id="section3" class="clip">
+                <div class="item"></div>
+            </div>
+            <div class="center"><span></span></div>
+        </div>
+    </div>
+    <div class="range-slider">
+        <input type="range" orient="vertical" min="0" max="100" />
+        <div class="range-slider__bar"></div>
+        <div class="range-slider__thumb"></div>
+    </div>
+</div>
+<div class="container">
+    <div class="donut-chart-block block">
+        <div class="donut-chart">
+            <div id="section1" class="clip">
+                <div class="item"></div>
+            </div>
+            <div id="section2" class="clip">
+                <div class="item"></div>
+            </div>
+            <div id="section3" class="clip">
+                <div class="item"></div>
+            </div>
+            <div class="center"><span></span></div>
+        </div>
+    </div>
+    <div class="range-slider">
+        <input type="range" orient="vertical" min="0" max="100" />
+        <div class="range-slider__bar"></div>
+        <div class="range-slider__thumb"></div>
+    </div>
+</div>
+<div class="container">
+    <div class="donut-chart-block block">
+        <div class="donut-chart">
+            <div id="section1" class="clip">
+                <div class="item"></div>
+            </div>
+            <div id="section2" class="clip">
+                <div class="item"></div>
+            </div>
+            <div id="section3" class="clip">
+                <div class="item"></div>
+            </div>
+            <div class="center"><span></span></div>
+        </div>
+    </div>
+    <div class="range-slider">
+        <input type="range" orient="vertical" min="0" max="100" />
+        <div class="range-slider__bar"></div>
+        <div class="range-slider__thumb"></div>
+    </div>
+</div>
+
+<script>
+    function updateDonut(percent, element){
+        //var percent = 45;
+        if (percent < 50){
+            offset = (360 / 100) * percent;
+            element.parentNode.querySelector("#section3").style.webkitTransform = "rotate(" + offset + "deg)";
+            element.parentNode.querySelector("#section3 .item").style.webkitTransform = "rotate(" + (180 - offset) + "deg)";
+            element.parentNode.querySelector("#section3").style.msTransform = "rotate(" + offset + "deg)";
+            element.parentNode.querySelector("#section3 .item").style.msTransform = "rotate(" + (180 - offset) + "deg)";
+            element.parentNode.querySelector("#section3").style.MozTransform = "rotate(" + offset + "deg)";
+            element.parentNode.querySelector("#section3 .item").style.MozTransform = "rotate(" + (180 - offset) + "deg)";
+            element.parentNode.querySelector("#section3 .item").style.backgroundColor = "#41A8AB";
+        } else {
+            offset = ((360 / 100) * percent) - 180;
+            element.parentNode.querySelector("#section3").style.webkitTransform = "rotate(180deg)";
+            element.parentNode.querySelector("#section3 .item").style.webkitTransform = "rotate(" +  offset + "deg)";
+            element.parentNode.querySelector("#section3").style.msTransform = "rotate(180deg)";
+            element.parentNode.querySelector("#section3 .item").style.msTransform = "rotate(" +  offset + "deg)";
+            element.parentNode.querySelector("#section3").style.MozTransform = "rotate(180deg)";
+            element.parentNode.querySelector("#section3 .item").style.MozTransform = "rotate(" +  offset + "deg)";
+            element.parentNode.querySelector("#section3 .item").style.backgroundColor = "#E64C65";
+        }
+        element.parentNode.querySelector("span").innerHTML = percent + "%";
+    }
+
+    function updateSlider(element) {
+        if (element) {
+            var parent = element.parentElement;
+            var thumb = parent.querySelector('.range-slider__thumb'),
+                bar = parent.querySelector('.range-slider__bar'),
+                pct = element.value * ((parent.clientHeight - thumb.clientHeight) / parent.clientHeight);
+            thumb.style.bottom = pct + '%';
+            bar.style.height = 'calc(' + pct + '% + ' + thumb.clientHeight / 2 + 'px)';
+            thumb.textContent = element.value + '%';
+        }
+        updateDonut(element.value, element.parentNode);
+    }
+    (function initAndSetupTheSliders() {
+        [].forEach.call(document.getElementsByClassName("container"), function(el) {
+            var inputs = [].slice.call(el.querySelectorAll('.range-slider input'));
+            inputs.forEach(function (input) {
+                input.setAttribute('value', '50');
+                updateSlider(input);
+                input.addEventListener('input', function (element) {
+                    updateSlider(input);
+                });
+                input.addEventListener('change', function (element) {
+                    updateSlider(input);
+                });
+            });
+        });
+    }());
+</script>
+
+
+
+</body>
+</html>
