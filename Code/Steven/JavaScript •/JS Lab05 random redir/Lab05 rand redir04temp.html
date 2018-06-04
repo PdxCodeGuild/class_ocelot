@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Random Redirecter</title>
+    <style>
+        @font-face {
+            font-family: 'Segment7Standard';
+            src: url(Segment7Standard.otf);
+            font-weight: normal;
+
+        {
+
+        }
+        }
+
+        #countdown {
+            text-align: center;
+            background-color: black;
+            margin: none;
+            width: 100%;
+            font-family: 'Segment7Standard';
+            color: rgba(255, 255, 0, .4);
+            font-size: 500px;
+        }
+
+        #message1 {
+            text-align: center;
+            background-color: black;
+            vertical-align: top;
+            margin: none;
+            width: 100%;
+            font-family: 'Segment7Standard';
+            color: rgba(255, 255, 0, .4);
+            font-size: 30px;
+        }
+
+
+    </style>
+
+
+</head>
+<body>
+<!--<div id="message"></div>-->
+<div id="countdown"></div>
+<script>
+    let countdown = document.querySelector('#countdown');
+    let c = 5;
+    document.getElementById("message1").innerHTML = "Browser will redirect in...";
+    let interval = setInterval(function () {
+        countdown.innerText = c;
+        if (c === 0) {
+            clearInterval(interval)
+            let urls = ['http://www.wikipedia.org',
+                'http://www.reddit.com',
+                'http://digg.com'];
+            let index = Math.floor(Math.random() * urls.length);
+            window.location = urls[index];
+        }
+        c -= 1;
+
+    }, 1000);
+
+</script>
+
+</body>
+</html>
+
+
+
+
+
