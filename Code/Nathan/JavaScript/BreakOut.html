@@ -48,12 +48,17 @@
     //
 
 
+// things to add:
+//     -instead of just releasing the ball at a predetermined spot use mousclick event
+//     -increase verticle velocity per bounce
+//     -have paddle attributes that allow for more control of ball
+//     -place ball on paddle to start based on position itll release at set angle
 
     var ballRadius = 10;
     var x = canvas.width/2;
     var y = canvas.height-30;
     var dx = 2;
-    var dy = -2;
+    var dy = -4;
     var paddleHeight = 10;
     var paddleWidth = 75;
     var paddleX = (canvas.width-paddleWidth)/2;
@@ -68,7 +73,7 @@
     var brickOffsetLeft = 30;
     var score = 0;
     var lives = 3;
-
+    var bounceCounter = 0
     var bricks = [];
     for(var c=0; c<brickColumnCount; c++) {
       bricks[c] = [];
