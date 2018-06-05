@@ -58,7 +58,7 @@
     var x = canvas.width/2;
     var y = canvas.height-30;
     var dx = 2;
-    var dy = -4;
+    var dy = -2;
     var paddleHeight = 10;
     var paddleWidth = 75;
     var paddleX = (canvas.width-paddleWidth)/2;
@@ -186,10 +186,18 @@
       }
       else if(y + dy > canvas.height-ballRadius) {
         if(x > paddleX && x < paddleX + paddleWidth) {
-          dy = -dy;
+          // halfing paddle goes here
+          let velocity = -(dy + bounceCounter*.2)
+          dy = velocity;
+          bounceCounter += 1
+          console.log(bounceCounter)
+          console.log(velocity)
+
         }
         else {
           lives--;
+          let bounceCounter = 2
+            console.log(bounceCounter)
           if(!lives) {
             alert("GAME OVER");
             document.location.reload();
