@@ -224,8 +224,14 @@
         let ctx = cnv.getContext("2d")
         let lives = 3
         let speed = 100
+        let snark = [
+            'you lose', 'you suck', 'you\'re awful', 'just quit',
+            'oh man, that\'s horrible', 'womp womp', 'muhahaha',
+            'loser', 'epic fail', 'failure'
+        ]
         let rectangles = []
         let circles = []
+
         for (let i = 0; i < 30; ++i) {
             let x = Math.random() * cnv.width
             let y = Math.random() * cnv.height / 2
@@ -233,31 +239,37 @@
             let r = Math.floor(Math.random() * 255)
             let g = Math.floor(Math.random() * 255)
             let b = Math.floor(Math.random() * 255)
-            while (r + g + b < 40) {
+            let avg_rgb = (r + g + b) / 3
+            while (!(Math.abs (r - avg_rgb) > 60
+                && Math.abs (g - avg_rgb) > 60
+                && Math.abs (b - avg_rgb) > 60
+                && r + b + g < 600
+                && r + b + g > 250)) {
                 r = Math.floor(Math.random() * 255)
                 g = Math.floor(Math.random() * 255)
                 b = Math.floor(Math.random() * 255)
             }
             let color = `rgb(${r},${g},${b})`
-            if (Math.random() < 0.5) {
+            if (Math.random() < 0.60) {
                 rectangles.push(new Rectangle(x, y, radius*2, radius*2, color))
             } else {
-                circles.push(new Circle(x, y, radius, color, Math.random()*6-3, Math.random()*6-3))
+                circles.push(new Circle(x, y, radius, color, ((Math.random()+.2)-.5)*5, ((Math.random()+.2)-.5)*5))
             }
         }
 
-        let paddle_color = "rgb(0,0,255)"
+        let paddle_color = "rgb(255,0,0)"
         let projectile_color = "rgb(255,255,255)"
         let paddle = new Rectangle(cnv.width/2, cnv.height-10, 70, 10, paddle_color)
-        let projectile = new Circle(cnv.width/2, cnv.height-15, 5, projectile_color, 5, -5)
+        let projectile = new Circle(cnv.width/2, cnv.height-15, 5, projectile_color, 3, -3)
+        let p_lives, rand_choice
 
         function update() {
             ctx.clearRect(0, 0, cnv.width, cnv.height)
             ctx.fillStyle = "white"
             ctx.font = "30px Arial"
-            if (speed < 100) {speed *= 1.01}
-            ctx.fillText('lives: ' + lives, 10, 30)
-            ctx.fillText('speed: ' + Math.floor(speed) + '%', 10, 70)
+            if (speed < 100 || speed < projectile.getVelVectLen()) {
+                speed *= 1.01
+            }
             if (key_tracker.isKeyDown('ArrowLeft') && paddle.x > 0) {
                 paddle.x -= 8 * speed / 100
             } else if (key_tracker.isKeyDown('ArrowRight') && paddle.x < cnv.width - paddle.w) {
@@ -294,40 +306,31 @@
             }
             paddle.draw(ctx)
             projectile.draw(ctx)
-            if (rectangles.length === 0) {
-                alert('you win')
-                return
+
+            let life_change = p_lives != lives
+            p_lives = lives
+            if (life_change) {
+                rand_choice = Math.floor(Math.random() * snark.length)
             }
+
+            if (rectangles.length === 0) {
+                if (lives > 0) {
+                    alert('you win')
+                } else {
+                    alert(snark[rand_choice])
+                }
+                    return
+            }
+
+            if (lives > 0) {
+                ctx.fillText('lives: ' + lives, 10, 30)
+            } else {
+                ctx.fillText(snark[rand_choice], 10, 30)
+            }
+            ctx.fillText('speed: ' + Math.floor(speed) + '%', 10, 70)
             window.requestAnimationFrame(update)
         }
         window.requestAnimationFrame(update)
-
-        // document.body.onmousemove = function(evt) {
-        //     let rect = cnv.getBoundingClientRect()
-        //     let x = evt.clientX - rect.left
-        //     // let y = evt.clientY - rect.top
-        //     mouse_shape.x = x
-        //     // mouse_shape.y = y
-        //
-        //     let bounds_mouse_shape = mouse_shape.getBounds()
-        //     output_text = 'none'
-        //     for (let i = 0; i < shapes.length; ++i) {
-        //         let shape_bounds = shapes[i].getBounds()
-        //         let collision = bounds_mouse_shape.checkCollision(shape_bounds)
-        //         if (collision !== 'none') {
-        //             output_text = collision;
-        //             if (collision === 'left') {
-        //                 mouse_shape.setRight(shape_bounds.left())
-        //             } else if (collision === 'right') {
-        //                 mouse_shape.setLeft(shape_bounds.right())
-        //             } else if (collision === 'top') {
-        //                 mouse_shape.setBottom(shape_bounds.top())
-        //             } else if (collision === 'bottom') {
-        //                 mouse_shape.setTop(shape_bounds.bottom())
-        //             }
-        //         }
-        //     }
-        // }
     </script>
 </body>
 </html>
