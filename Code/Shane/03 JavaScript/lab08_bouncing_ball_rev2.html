@@ -16,7 +16,6 @@
     canvas.height = window.innerHeight
     canvas.width = window.innerWidth
     canvas.style.border = '1px solid white'
-    canvas.fillStyle = 'color'
     document.body.appendChild(canvas)
 
     function rnum(lower, upper) {
@@ -45,7 +44,7 @@
     let count = 500
     let ball_count = count
     let ball_arr = []
-    let gravity = 0.05
+    let gravity = 0.005
 
     for (let i = 0; i < ball_count; i++) {
         ball_arr.push(new Ball())
@@ -74,7 +73,7 @@
         y -= canvas.offsetTop
 
         let black_hole = new Ball()
-        black_hole.mass = 10000000
+        black_hole.mass = 100000000
         black_hole.px = x
         black_hole.py = y
         black_hole.radius = 5
