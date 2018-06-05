@@ -21,7 +21,7 @@
         let synth = new Tone.Synth().toMaster()
         let width = window.innerWidth*.99
         let height = window.innerHeight*.98
-        let max_vel = 10
+        let max_vel = 15
         let radius = 30
         let cnv = document.querySelector('#cnv')
         cnv.height = height
@@ -30,11 +30,11 @@
         let ctx = cnv.getContext('2d')
         ctx.strokeStyle = 'black'
         // YOU DON'T WANT YOUR BALLS TOUCHING
-        function balls_touching(px, py) {
+        function ballsTouching(px, py) {
             for (let i=0; i<balls.length; i++) {
                 let a = px - balls[i].px
                 let b = py - balls[i].py
-                let separation = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2))
+                let separation = Math.sqrt(a ** 2 + b ** 2)
                 if (separation <= radius * 2) {
                     return true
                 }
@@ -56,13 +56,16 @@
                 let g = Math.floor(40 + this.rad * 1.8)
                 this.fillColor = 'rgb(' + r + ',' + g + '206,250)'
             }
+            getVelVectLen() {
+                return Math.sqrt(this.vx ** 2 + this.vy ** 2)
+            }
         }
         // FILL BALL ARRAY
         let balls = []
-        for (let i=0; i<10; i++) {
+        for (let i=0; i<20; i++) {
             let rand_px = (.1 + Math.random() * .8) * width
             let rand_py = (.1 + Math.random() * .8) * height
-            while (balls_touching(rand_px, rand_py)) {
+            while (ballsTouching(rand_px, rand_py)) {
                 rand_px = (.1 + Math.random() * .8) * width
                 rand_py = (.1 + Math.random() * .8) * height
             }
@@ -70,9 +73,12 @@
             let rand_vy = (Math.random() - .5) * 2 * max_vel
             balls.push(new Ball(rand_px, rand_py, rand_vx, rand_vy))
         }
+        // TEST OFFSET BALLS COMING HORIZONTAL AT EACH OTHER
+        // balls.push(new Ball(10, 230, 20, 0))
+        // balls.push(new Ball(width - 10, 270, -10, 0))
 
         // THE CALLBACK LOOP
-        let move_balls = () => {
+        let moveBalls = () => {
             ctx.clearRect(0, 0, width, height)
             for (let i=0; i<balls.length; i++) {
                 // DRAW BALLS
@@ -81,6 +87,9 @@
                 ctx.fillStyle = balls[i].fillColor
                 ctx.fill()
                 ctx.stroke()
+                // MOVE BALLS
+                balls[i].px += balls[i].vx
+                balls[i].py += balls[i].vy
                 // CHECK BALL BOUNCE
                 if (balls[i].px + balls[i].vx >= width - balls[i].rad || balls[i].px + balls[i].vx - balls[i].rad <= 0) {
                     balls[i].vx *= -1
@@ -88,9 +97,6 @@
                 if (balls[i].py + balls[i].vy >= height - balls[i].rad || balls[i].py + balls[i].vy - balls[i].rad <= 0) {
                     balls[i].vy *= -1
                 }
-                // MOVE BALLS
-                balls[i].px += balls[i].vx
-                balls[i].py += balls[i].vy
                 // MAKE SURE YOUR BALLS AREN'T STUCK IN THE WALL
                 if (balls[i].px - balls[i].rad < 0) {balls[i].px = balls[i].rad}
                 if (balls[i].px + balls[i].rad > width) {balls[i].px = width - balls[i].rad}
@@ -133,43 +139,55 @@
                         if (j === i) continue
                         let change_in_x = balls[i].px - balls[j].px
                         let change_in_y = balls[i].py - balls[j].py
-                        let separation = Math.sqrt(Math.pow(change_in_x, 2) + Math.pow(change_in_y, 2))
+                        let separation = Math.sqrt(change_in_x ** 2 + change_in_y ** 2)
                         let combo_len = balls[i].rad + balls[j].rad
                         if (separation <= combo_len) {
-                            // YOUR BALLS ARE TOUCHING, SEPARATE THEM, FIRST CALCULATE NUDGE
+                            // YOUR BALLS ARE TOUCHING, SEPARATE THEM
                             let diff = combo_len - separation
                             let nudge = diff / 2
-                            let x_part_of_separation = Math.pow(change_in_x / separation, 2)
-                            let y_part_of_separation = Math.pow(change_in_y / separation, 2)
+                            let x_part_of_separation = (change_in_x / separation) ** 2
+                            let y_part_of_separation = (change_in_y / separation) ** 2
                             let nudge_x = nudge * x_part_of_separation
                             let nudge_y = nudge * y_part_of_separation
-                            // NUDGE YOUR BALLS
+                            // NUDGE YOUR BALLS BACK TO TOUCHING EDGES
                             balls[i].px -= nudge_x
                             balls[i].py -= nudge_y
                             balls[j].px += nudge_x
                             balls[j].py += nudge_y
                             // CALCULATE NEW VELOCITIES
-                            let newVelX1 = (balls[i].vx * (balls[i].rad - balls[j].rad) + (2 * balls[j].rad * balls[j].vx)) / (balls[i].rad + balls[j].rad)
-                            let newVelY1 = (balls[i].vy * (balls[i].rad - balls[j].rad) + (2 * balls[j].rad * balls[j].vy)) / (balls[i].rad + balls[j].rad)
-                            let newVelX2 = (balls[j].vx * (balls[j].rad - balls[i].rad) + (2 * balls[i].rad * balls[i].vx)) / (balls[i].rad + balls[j].rad)
-                            let newVelY2 = (balls[j].vx * (balls[j].rad - balls[i].rad) + (2 * balls[i].rad * balls[i].vy)) / (balls[i].rad + balls[j].rad)
-                            // CHANGE VELOCITY
-                            balls[j].vx = newVelX2
-                            balls[j].vy = newVelY2
-                            balls[i].vx = newVelX1
-                            balls[i].vy = newVelY1
-                            // MOVE IN NEW DIRECTION ONE TICK
-                            balls[i].px += balls[i].vx
-                            balls[i].py += balls[i].vy
-                            balls[j].px += balls[j].vx
-                            balls[j].py += balls[j].vy
+                            let collision_angle = Math.atan2(balls[j].py - balls[i].py, balls[j].px - balls[i].px)
+                            let vel_vect_len_i = balls[i].getVelVectLen()
+                            let vel_vect_len_j = balls[j].getVelVectLen()
+                            if (vel_vect_len_i + vel_vect_len_j > 0) {
+                                let direction_i = Math.atan2(balls[i].vy, balls[i].vx)
+                                let direction_j = Math.atan2(balls[j].vy, balls[j].vx)
+                                let vx_new_plane_i = vel_vect_len_i * Math.cos(direction_i - collision_angle)
+                                let vy_new_plane_i = vel_vect_len_i * Math.sin(direction_i - collision_angle)
+                                let vx_new_plane_j = vel_vect_len_j * Math.cos(direction_j - collision_angle)
+                                let vy_new_plane_j = vel_vect_len_j * Math.sin(direction_j - collision_angle)
+                                let vx_final_i = ((balls[i].rad - balls[j].rad) * vx_new_plane_i + (balls[j].rad + balls[j].rad) * vx_new_plane_j) / (balls[i].rad + balls[j].rad)
+                                let vx_final_j = ((balls[i].rad + balls[i].rad) * vx_new_plane_i + (balls[j].rad - balls[i].rad) * vx_new_plane_j) / (balls[i].rad + balls[j].rad)
+                                let vy_final_i = vy_new_plane_i
+                                let vy_final_j = vy_new_plane_j
+                                let cosAngle = Math.cos(collision_angle)
+                                let sinAngle = Math.sin(collision_angle)
+                                balls[i].vx = cosAngle * vx_final_i - sinAngle * vy_final_i
+                                balls[i].vy = sinAngle * vx_final_i + cosAngle * vy_final_i
+                                balls[j].vx = cosAngle * vx_final_j - sinAngle * vy_final_j
+                                balls[j].vy = sinAngle * vx_final_j + cosAngle * vy_final_j
+                                // MOVE IN NEW DIRECTION ONE TICK
+                                balls[i].px += balls[i].vx
+                                balls[i].py += balls[i].vy
+                                balls[j].px += balls[j].vx
+                                balls[j].py += balls[j].vy
+                            }
                         }
                     }
                 }
             }
-            window.requestAnimationFrame(move_balls)
+            window.requestAnimationFrame(moveBalls)
         }
-        window.requestAnimationFrame(move_balls)
+        window.requestAnimationFrame(moveBalls)
     </script>
 </body>
 </html>

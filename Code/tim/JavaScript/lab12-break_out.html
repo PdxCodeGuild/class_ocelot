@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Break Out</title>
+    <style>
+        body {
+            color:white;
+            background-color:black;
+        }
+        #cnv {
+            border: 1px solid white
+        }
+    </style>
+</head>
+<body>
+    <canvas id="cnv" width="1200" height="500"></canvas>
+
+    <script>
+        class Rectangle {
+            constructor(x, y, width, height, color) {
+                this.x = x;
+                this.y = y;
+                this.w = width;
+                this.h = height;
+                this.color = color;
+            }
+            draw(ctx) {
+                ctx.fillStyle = this.color;
+                ctx.fillRect(this.x, this.y, this.w, this.h);
+            }
+            getLeft() {
+                return this.x
+            }
+            getRight() {
+                return this.x + this.w
+            }
+            getTop() {
+                return this.y
+            }
+            getBottom() {
+                return this.y + this.h
+            }
+        }
+
+        class Circle {
+            constructor(x, y, radius, color, vx=0, vy=0) {
+                this.x = x
+                this.y = y
+                this.vx = vx
+                this.vy = vy
+                this.rad = radius
+                this.color = color
+            }
+            draw(ctx) {
+                ctx.beginPath()
+                ctx.arc(this.x, this.y, this.rad, 0, 2 * Math.PI, false)
+                ctx.fillStyle = this.color
+                ctx.fill()
+            }
+            update() {
+                this.x += this.vx
+                this.y += this.vy
+                if (this.x + this.rad > cnv.width) {
+                    this.setRight(cnv.width)
+                    this.vx *= -1
+                    this.x += this.vx
+                } else if (this.x - this.rad < 0) {
+                    this.setLeft(0)
+                    this.vx *= -1
+                    this.x += this.vx
+                } else if (this.y + this.rad > cnv.height) {
+                    this.setBottom(cnv.height)
+                    this.vy *= -1
+                    this.y += this.vy
+                    return true
+                } else if (this.y - this.rad < 0) {
+                    this.setTop(0)
+                    this.vy *= -1
+                    this.y += this.vy
+                }
+            }
+            checkCollidePad(pad) {
+                if (this.x > pad.getLeft() && this.x < pad.getRight()) {
+                    this.y = pad.getTop() - this.rad
+                    this.vy = -Math.abs(this.vy)
+                    this.y += this.vy
+                    return true
+                }
+            }
+            checkCollideRec(rec) {
+                let dx = this.x - (rec.x + rec.w / 2)
+                let dy = this.y - (rec.y + rec.h / 2)
+                let width = (this.rad*2 + rec.w) / 2
+                let height = (this.rad*2 + rec.h) / 2
+                let crossWidth = width * dy
+                let crossHeight = height * dx
+                if (Math.abs(dx) <= width && Math.abs(dy) <= height) {
+                    if (crossWidth > crossHeight) {
+                        if (crossWidth > -crossHeight) {
+                            this.setTop(rec.getBottom())
+                            this.vy *= -1
+                        } else {
+                            this.setRight(rec.getLeft())
+                            this.vx *= -1
+                        }
+                    } else {
+                        if (crossWidth > -crossHeight) {
+                            this.setLeft(rec.getRight())
+                            this.vx *= -1
+                        } else {
+                            this.setBottom(rec.getTop())
+                            this.vy *= -1
+                        }
+                    }
+                    this.update()
+                    return true
+                }
+                return false
+            }
+            checkCollideCir(cir) {
+                let change_in_x = this.x - cir.x
+                let change_in_y = this.y - cir.y
+                let separation = Math.sqrt(change_in_x ** 2 + change_in_y ** 2)
+                let combo_len = this.rad + cir.rad
+                if (separation <= combo_len) {
+                    // YOUR BALLS ARE TOUCHING, SEPARATE THEM
+                    let diff = combo_len - separation
+                    let nudge = diff / 2
+                    let x_part_of_separation = (change_in_x / separation) ** 2
+                    let y_part_of_separation = (change_in_y / separation) ** 2
+                    let nudge_x = nudge * x_part_of_separation
+                    let nudge_y = nudge * y_part_of_separation
+                    // NUDGE YOUR BALLS BACK TO TOUCHING EDGES
+                    this.x -= nudge_x
+                    this.y -= nudge_y
+                    cir.x += nudge_x
+                    cir.y += nudge_y
+                    // CALCULATE NEW VELOCITIES
+                    let collision_angle = Math.atan2(cir.y - this.y, cir.x - this.x)
+                    let vel_vect_len_i = this.getVelVectLen()
+                    let vel_vect_len_j = cir.getVelVectLen()
+                    if (vel_vect_len_i + vel_vect_len_j > 0) {
+                        let direction_i = Math.atan2(this.vy, this.vx)
+                        let direction_j = Math.atan2(cir.vy, cir.vx)
+                        let vx_new_plane_i = vel_vect_len_i * Math.cos(direction_i - collision_angle)
+                        let vy_new_plane_i = vel_vect_len_i * Math.sin(direction_i - collision_angle)
+                        let vx_new_plane_j = vel_vect_len_j * Math.cos(direction_j - collision_angle)
+                        let vy_new_plane_j = vel_vect_len_j * Math.sin(direction_j - collision_angle)
+                        let vx_final_i = ((this.rad - cir.rad) * vx_new_plane_i + (cir.rad + cir.rad) * vx_new_plane_j) / (this.rad + cir.rad)
+                        let vx_final_j = ((this.rad + this.rad) * vx_new_plane_i + (cir.rad - this.rad) * vx_new_plane_j) / (this.rad + cir.rad)
+                        let vy_final_i = vy_new_plane_i
+                        let vy_final_j = vy_new_plane_j
+                        let cosAngle = Math.cos(collision_angle)
+                        let sinAngle = Math.sin(collision_angle)
+                        this.vx = cosAngle * vx_final_i - sinAngle * vy_final_i
+                        this.vy = sinAngle * vx_final_i + cosAngle * vy_final_i
+                        cir.vx = cosAngle * vx_final_j - sinAngle * vy_final_j
+                        cir.vy = sinAngle * vx_final_j + cosAngle * vy_final_j
+                        // MOVE IN NEW DIRECTION ONE TICK
+                        this.x += this.vx
+                        this.y += this.vy
+                        cir.x += cir.vx
+                        cir.y += cir.vy
+                    }
+                }
+            }
+            getVelVectLen() {
+                return Math.sqrt(this.vx ** 2 + this.vy ** 2)
+            }
+            setLeft(x) {
+                this.x = x + this.rad
+            }
+            setRight(x) {
+                this.x = x - this.rad
+            }
+            setTop(y) {
+                this.y = y + this.rad
+            }
+            setBottom(y) {
+                this.y = y - this.rad
+            }
+            getLeft() {
+                return this.x
+            }
+            getRight() {
+                return this.x + this.rad
+            }
+            getTop() {
+                return this.y
+            }
+            getBottom() {
+                return this.y + this.rad
+            }
+        }
+
+        class KeyTracker {
+            constructor() {
+                this.keys = [];
+            }
+            keyDown(key) {
+                this.keys.push(key);
+            }
+            keyUp(key) {
+                this.keys = this.keys.filter(function(e) {
+                    return e !== key;
+                });
+            }
+            isKeyDown(key) {
+                return this.keys.indexOf(key) > -1;
+            }
+        }
+
+        let key_tracker = new KeyTracker()
+        document.addEventListener('keydown', (evt) => {
+            key_tracker.keyDown(evt.key);
+        });
+
+        document.addEventListener('keyup', (evt) => {
+            key_tracker.keyUp(evt.key);
+        });
+
+        let cnv = document.querySelector("#cnv")
+        let ctx = cnv.getContext("2d")
+        let lives = 3
+        let speed = 100
+        let rectangles = []
+        let circles = []
+        for (let i = 0; i < 30; ++i) {
+            let x = Math.random() * cnv.width
+            let y = Math.random() * cnv.height / 2
+            let radius = 10 + Math.random() * 10;
+            let r = Math.floor(Math.random() * 255)
+            let g = Math.floor(Math.random() * 255)
+            let b = Math.floor(Math.random() * 255)
+            while (r + g + b < 40) {
+                r = Math.floor(Math.random() * 255)
+                g = Math.floor(Math.random() * 255)
+                b = Math.floor(Math.random() * 255)
+            }
+            let color = `rgb(${r},${g},${b})`
+            if (Math.random() < 0.5) {
+                rectangles.push(new Rectangle(x, y, radius*2, radius*2, color))
+            } else {
+                circles.push(new Circle(x, y, radius, color, Math.random()*6-3, Math.random()*6-3))
+            }
+        }
+
+        let paddle_color = "rgb(0,0,255)"
+        let projectile_color = "rgb(255,255,255)"
+        let paddle = new Rectangle(cnv.width/2, cnv.height-10, 70, 10, paddle_color)
+        let projectile = new Circle(cnv.width/2, cnv.height-15, 5, projectile_color, 5, -5)
+
+        function update() {
+            ctx.clearRect(0, 0, cnv.width, cnv.height)
+            ctx.fillStyle = "white"
+            ctx.font = "30px Arial"
+            if (speed < 100) {speed *= 1.01}
+            ctx.fillText('lives: ' + lives, 10, 30)
+            ctx.fillText('speed: ' + Math.floor(speed) + '%', 10, 70)
+            if (key_tracker.isKeyDown('ArrowLeft') && paddle.x > 0) {
+                paddle.x -= 8 * speed / 100
+            } else if (key_tracker.isKeyDown('ArrowRight') && paddle.x < cnv.width - paddle.w) {
+                paddle.x += 8 * speed / 100
+            }
+            let bottom_hit = projectile.update()
+            if (bottom_hit) {lives -= 1}
+            if (projectile.y + projectile.rad + paddle.h >= cnv.height) {
+                projectile.checkCollidePad(paddle)
+            }
+            for (let i = 0; i < rectangles.length; ++i) {
+                let result = projectile.checkCollideRec(rectangles[i])
+                if (result) {
+                    rectangles.splice(i, 1)
+                } else {
+                    rectangles[i].draw(ctx)
+                }
+            }
+            for (let i = 0; i < circles.length; ++i) {
+                circles[i].update()
+                if (circles[i].y + circles[i].rad + paddle.h >= cnv.height) {
+                    hurt_pad = circles[i].checkCollidePad(paddle)
+                    if (hurt_pad) {speed *= .25}
+                }
+                projectile.checkCollideCir(circles[i])
+                for (let j = 0; j < rectangles.length; ++j) {
+                    circles[i].checkCollideRec(rectangles[j])
+                }
+                for (let j = 0; j < circles.length; ++j) {
+                    if (i === j) continue
+                    circles[i].checkCollideCir(circles[j])
+                }
+                circles[i].draw(ctx)
+            }
+            paddle.draw(ctx)
+            projectile.draw(ctx)
+            if (rectangles.length === 0) {
+                alert('you win')
+                return
+            }
+            window.requestAnimationFrame(update)
+        }
+        window.requestAnimationFrame(update)
+
+        // document.body.onmousemove = function(evt) {
+        //     let rect = cnv.getBoundingClientRect()
+        //     let x = evt.clientX - rect.left
+        //     // let y = evt.clientY - rect.top
+        //     mouse_shape.x = x
+        //     // mouse_shape.y = y
+        //
+        //     let bounds_mouse_shape = mouse_shape.getBounds()
+        //     output_text = 'none'
+        //     for (let i = 0; i < shapes.length; ++i) {
+        //         let shape_bounds = shapes[i].getBounds()
+        //         let collision = bounds_mouse_shape.checkCollision(shape_bounds)
+        //         if (collision !== 'none') {
+        //             output_text = collision;
+        //             if (collision === 'left') {
+        //                 mouse_shape.setRight(shape_bounds.left())
+        //             } else if (collision === 'right') {
+        //                 mouse_shape.setLeft(shape_bounds.right())
+        //             } else if (collision === 'top') {
+        //                 mouse_shape.setBottom(shape_bounds.top())
+        //             } else if (collision === 'bottom') {
+        //                 mouse_shape.setTop(shape_bounds.bottom())
+        //             }
+        //         }
+        //     }
+        // }
+    </script>
+</body>
+</html>
