@@ -19,11 +19,12 @@
     <script>
         class Rectangle {
             constructor(x, y, width, height, color) {
-                this.x = x;
-                this.y = y;
-                this.w = width;
-                this.h = height;
-                this.color = color;
+                this.x = x
+                this.y = y
+                this.w = width
+                this.h = height
+                this.color = color
+                this.vulnerable = true
             }
             draw(ctx) {
                 ctx.fillStyle = this.color;
@@ -270,7 +271,12 @@
             if (speed < 100 || speed < projectile.getVelVectLen()) {
                 speed *= 1.01
             }
-            if (key_tracker.isKeyDown('ArrowLeft') && paddle.x > 0) {
+            paddle.vulnerable = true
+            paddle.color = 'red'
+            if (key_tracker.isKeyDown('ArrowDown')) {
+                paddle.color = 'blue'
+                paddle.vulnerable = false
+            } else if (key_tracker.isKeyDown('ArrowLeft') && paddle.x > 0) {
                 paddle.x -= 8 * speed / 100
             } else if (key_tracker.isKeyDown('ArrowRight') && paddle.x < cnv.width - paddle.w) {
                 paddle.x += 8 * speed / 100
@@ -278,7 +284,10 @@
             let bottom_hit = projectile.update()
             if (bottom_hit) {lives -= 1}
             if (projectile.y + projectile.rad + paddle.h >= cnv.height) {
-                projectile.checkCollidePad(paddle)
+                bounce_projectile = projectile.checkCollidePad(paddle)
+                if (bounce_projectile && !projectile.vulnerable) {
+                    projectile.vy = -3
+                }
             }
             for (let i = 0; i < rectangles.length; ++i) {
                 let result = projectile.checkCollideRec(rectangles[i])
@@ -292,7 +301,9 @@
                 circles[i].update()
                 if (circles[i].y + circles[i].rad + paddle.h >= cnv.height) {
                     hurt_pad = circles[i].checkCollidePad(paddle)
-                    if (hurt_pad) {speed *= .25}
+                    if (hurt_pad && paddle.vulnerable) {
+                        speed *= .25
+                    }
                 }
                 projectile.checkCollideCir(circles[i])
                 for (let j = 0; j < rectangles.length; ++j) {
