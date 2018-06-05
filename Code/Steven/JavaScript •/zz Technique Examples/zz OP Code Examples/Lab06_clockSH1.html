@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Clocks and Clocks and Clocks</title>
+    <script src="https://tonejs.github.io/build/Tone.min.js"></script>
+    <style>
+    .dot{
+        position:absolute;
+        top:0;
+        left:0;
+        width:100px;
+        height:100px;
+        background:yellow;
+        border-radius:50%;
+    }
+    .sun{
+        width:800px;
+        height:800px;
+        position:absolute;
+        -webkit-animation-iteration-count:infinite;
+        -webkit-animation-timing-function:linear;
+        -webkit-animation-name:orbit;
+        -webkit-animation-duration:4s;
+        top:43%;
+        left:27.5%;
+}
+
+    /*Need to JS a value current time in seconds / 120 to get starting degree and then add 360 for stop degree*/
+    @-webkit-keyframes orbit {
+    from { -webkit-transform:rotate(40deg) }
+    to { -webkit-transform:rotate(400deg) } }
+
+    </style>
+
+</head>
+<body>
+<div class="sun">
+ <div class="dot"></div>
+</div>
+
+
+<script>
+
+    // style class in the head
+    var style = document.createElement('style')
+    style.type = 'text/css'
+    style.innerHTML = '.cssFontSizeAndColor{letter-spacing: 4px; text-align: left; font-size: 3em; color: darkgrey; background-color: black; width: 50%}'
+    document.head.appendChild(style)
+
+    // body
+    document.body.style.padding = '0'
+    document.body.style.margin = '30px'
+    document.body.style.backgroundColor = 'black'
+
+    // date and title div container
+    let title_and_date_container = document.createElement('div')
+    document.body.appendChild(title_and_date_container)
+    title_and_date_container.style.display = 'flex'
+
+    // date title div
+    let date_title_container = document.createElement('div')
+    title_and_date_container.appendChild(date_title_container)
+    date_title_container.style.width = '50%'
+    date_title_container.innerText = 'Current Date'
+    date_title_container.className = 'cssFontSizeAndColor'
+
+    // date div
+    let date_container = document.createElement('div')
+    title_and_date_container.appendChild(date_container)
+    date_container.style.width = '50%'
+    date_container.className = 'cssFontSizeAndColor'
+
+    // time and title div container
+    let title_and_clock_container = document.createElement('div')
+    document.body.appendChild(title_and_clock_container)
+    title_and_clock_container.style.display = 'flex'
+
+    // time title div
+    let clock_title_container = document.createElement('div')
+    title_and_clock_container.appendChild(clock_title_container)
+    clock_title_container.style.width = '50%'
+    clock_title_container.innerText = 'Current Time'
+    clock_title_container.className = 'cssFontSizeAndColor'
+
+    // time div
+    let clock_container = document.createElement('div')
+    title_and_clock_container.appendChild(clock_container)
+    clock_container.style.width = '50%'
+    clock_container.className = 'cssFontSizeAndColor'
+
+    var synth = new Tone.Synth().toMaster()
+    var synth2 = new Tone.Synth().toMaster()
+
+    setInterval(function() {
+
+        let date = new Date()
+
+        let full_date = `${date.getMonth()+1}/${date.getDate()}/${date.getFullYear()}`
+
+        let full_clock = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}:${date.getMilliseconds   ()}`
+        clock_container.innerHTML = full_clock
+        date_container.innerHTML = full_date
+        synth.triggerAttackRelease("C#"+(Math.random()/4*date.getSeconds()))
+        synth2.triggerAttackRelease("g#"+(Math.random()%100*date.getHours()))
+        console.log(Math.random()/4*date.getSeconds())
+
+    }, 110)
+
+
+
+
+
+
+
+</script>
+</body>
+</html>

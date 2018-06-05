@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body {
+  background-color:black;
+  color:white;
+}
+#grid_container {
+  display:grid;
+  margin:20px;
+}
+    </style>
+</head>
+<body>
+<div>
+  width:<input id="width_input" type="text" value="100"/>
+  height:<input id="height_input" type="text" value="100"/>
+  <button id="generate_bt">generate</button>
+</div>
+<div>
+  <button id="off_bt">turn off</button>
+  <button id="randomize_bt">randomize</button>
+  <button id="conway_bt">run conway's</button>
+</div>
+<div id="grid_container"></div>
+
+<script>
+
+
+let grid_container = document.querySelector('#grid_container')
+let width_input = document.querySelector('#width_input')
+let height_input = document.querySelector('#height_input')
+let generate_bt = document.querySelector('#generate_bt')
+let off_bt = document.querySelector('#off_bt')
+let randomize_bt = document.querySelector('#randomize_bt')
+let conway_bt = document.querySelector('#conway_bt')
+let total_width_px = 800
+let color_off = '#101010'
+let color_on = 'goldenrod'
+
+
+class GridCell {
+  constructor() {
+    this.on = false;
+    this.element = document.createElement('div')
+    //this.element.style.margin = '1px'
+    //this.element.style.border = '1px solid black'
+    this.element.style.backgroundColor = color_off
+  }
+  turnOff() {
+    this.on = false;
+    this.element.style.backgroundColor = color_off;
+  }
+  turnOn() {
+    this.on = true;
+    this.element.style.backgroundColor = color_on;
+  }
+  toggle() {
+    if (this.on) {
+      this.on = false;
+      this.element.style.backgroundColor = color_off;
+    } else {
+      this.on = true;
+      this.element.style.backgroundColor = color_on;
+    }
+  }
+}
+
+
+class Grid {
+  constructor(width, height) {
+    this.width = width
+    this.height = height
+    this.cells = []
+
+    for (let r=0; r<height; ++r) {
+      this.cells.push([])
+      for (let c=0; c<width; ++c) {
+        let cell = new GridCell()
+        // add an onclick listener
+        let g = this
+        cell.element.onclick = function() {
+          g.tryToggle(r, c)
+          g.tryToggle(r-1, c)
+          g.tryToggle(r+1, c)
+          g.tryToggle(r, c-1)
+          g.tryToggle(r, c+1)
+        }
+        this.cells[r].push(cell)
+        grid_container.appendChild(cell.element)
+      }
+    }
+  }
+  tryToggle(r, c) {
+    if (r < 0 || r >= this.height || c < 0 || c >= this.width) {
+      return
+    }
+    this.cells[r][c].toggle()
+  }
+  checkNeighbor(r, c) {
+    if (r < 0 || r >= this.height || c < 0 || c >= this.width) {
+      return false
+    }
+    return this.cells[r][c].on
+  }
+  countNeighbors(r, c) {
+    let count = 0
+    for (let rt=-1; rt<2; ++rt) {
+      for (let ct=-1; ct<2; ++ct) {
+        if (rt === 0 && ct === 0) continue
+        if (this.checkNeighbor(r+rt, c+ct)) {
+          count += 1
+        }
+      }
+    }
+    return count
+  }
+  randomize() {
+    for (let r=0; r<this.height; ++r) {
+      for (let c=0; c<this.width; ++c) {
+        if (Math.random() < .1) {
+          this.cells[r][c].turnOn()
+        } else {
+          this.cells[r][c].turnOff()
+        }
+      }
+    }
+  }
+  turnOff() {
+    for (let r=0; r<this.height; ++r) {
+      for (let c=0; c<this.width; ++c) {
+        this.cells[r][c].turnOff()
+      }
+    }
+  }
+  conway() {
+    let temp = []
+    for (let r=0; r<this.height; ++r) {
+      temp.push([])
+      for (let c=0; c<this.width; ++c) {
+        temp[r].push(false)
+
+        let neighbors = this.countNeighbors(r, c)
+        let alive = this.cells[r][c].on
+
+        if ((alive && neighbors < 2) || (alive && neighbors > 3)) {
+          alive = false
+        } else if (!alive && neighbors === 3) {
+          alive = true
+        }
+
+
+        temp[r][c] = alive
+      }
+    }
+
+    for (let r=0; r<this.height; ++r) {
+      for (let c=0; c<this.width; ++c) {
+        if (temp[r][c]) {
+          this.cells[r][c].turnOn()
+        } else {
+          this.cells[r][c].turnOff()
+        }
+      }
+    }
+  }
+}
+
+
+
+let grid = null
+
+generate_bt.onclick = function() {
+  grid_container.innerHTML = ''
+  let width = width_input.value
+  let height = height_input.value
+  let cell_width_px = total_width_px / width
+  grid_container.style.gridTemplateColumns = (cell_width_px + 'px ').repeat(width)
+  grid_container.style.gridTemplateRows = (cell_width_px + 'px ').repeat(height)
+
+  grid = new Grid(width, height)
+}
+
+randomize_bt.onclick = function() {
+  grid.randomize()
+}
+
+off_bt.onclick = function() {
+  grid.turnOff()
+}
+
+let interval = null
+conway_bt.onclick = function() {
+  if (interval) {
+    clearInterval(interval)
+    interval = null
+  } else {
+    interval = setInterval(function() {
+      grid.conway()
+    }, 200)
+  }
+}
+
+generate_bt.onclick()
+randomize_bt.onclick()
+
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>bounce</title>
+</head>
+<body>
+
+
+<script type="text/javascript">
+    // body style
+    let body = document.body
+    body.style.backgroundColor = 'black'
+    body.style.color = 'white'
+    body.style.padding = 0
+    body.style.margin = 0
+
+
+    // canvas setup
+    let canvas = document.createElement('canvas')
+    document.body.appendChild(canvas)
+    canvas.height = '500'
+    canvas.width = '800'
+    canvas.style.border = '2px solid white'
+    let context = canvas.getContext('2d');
+
+    // shape setup
+    let shape_count = 30
+    let shape_center_x = randomInteger(canvas.width - 100) + 50
+    let shape_center_y = randomInteger(canvas.height - 100) + 50
+    let radius_init = 20
+    let rand_radius_mult = 2
+    // let speed_mult = 1.5
+    let rand_angle_multiplier = randomInteger(3)
+
+    // random range for ball spawning location
+    function random_range(range_low, range_high) {
+        return range_low + Math.random() * (range_high - range_low)
+    }
+
+    // define ball class
+    class ShapeBall {
+        constructor() {
+            this.radius = radius_init * randomInteger(rand_radius_mult);
+            // this.radius = initRadius * rand_radius_mult
+            this.shape_center_x = random_range(this.radius, canvas.width - this.radius);
+            this.shape_center_y = random_range(this.radius, canvas.height - this.radius);
+            this.velocity_x = randomInteger(8)
+            this.velocity_y = randomInteger(8)
+            // this.gravity = .05
+            // this.gravitySpeed = 0
+
+            this.color = randomColor()
+
+        }
+
+
+    }
+
+
+    let shapes_array = [];
+    let ball_count = shape_count;
+
+    for (let bc = 1; bc < shape_count; bc++) {
+        shapes_array.push(new ShapeBall())
+    }
+
+    function randomInteger(max_val) {
+        return Math.floor(Math.random() * Math.floor(max_val));
+    }
+
+    function randomColor(ball) {
+        let red = randomInteger(255)
+        let green_offset = 50
+        let green = 200 + randomInteger(green_offset) - (green_offset / 2)
+        let blue = randomInteger(255)
+        // let opac = randomInteger(100) / 100
+        let opac = 1
+        return `rgba(${red},${green},${blue},${opac})`
+
+
+    }
+
+
+    function draw_ball(ball) {
+        let shape_cent_prev_x = shape_center_x
+        let shape_cent_prev_y = shape_center_y
+        let grad_st_x = ball.shape_center_x
+        let grad_st_y = ball.shape_center_y
+        let grad_st_r = 0
+        let grad_end_x = ball.shape_center_x
+        let grad_end_y = ball.shape_center_y
+        let grad_end_r = ball.radius
+
+
+        let grd = context.createRadialGradient(grad_st_x, grad_st_y, grad_st_r, grad_end_x, grad_end_y, grad_end_r)
+        grd.addColorStop(0, ball.color)
+        grd.addColorStop(1, body.style.backgroundColor)
+
+        context.beginPath()
+        context.arc(ball.shape_center_x, ball.shape_center_y, ball.radius, 0, 2 * Math.PI, false)
+        // context.arc(ball.shape_center_x, ball.shape_center_y, 25, 0, 2 * Math.PI, false)
+
+        // context.fillStyle = ball.color
+        // context.fillStyle = ball.color
+        context.fillStyle = grd;
+
+        context.fill()
+
+    }
+
+    // function draw_ball_eraser(TheBall) {
+    //     context.beginPath()
+    //     let shape_center_x = shape_cent_prev_x
+    //     let shape_center_y = shape_cent_prev_y
+    //     context.arc(TheBall.shape_cent_prev_x, TheBall.shape_cent_prev_y, TheBall.radius, 0, 2 * Math.PI, false)
+    //     // context.arc(TheBall.shape_center_x, TheBall.shape_center_y, 25, 0, 2 * Math.PI, false)
+    //     context.fillStyle = TheBall.color
+    //     context.fill()
+    //
+    // }
+
+    function ball_rebound(ball) {
+        if (ball.shape_center_x - ball.radius < 0) {
+            ball.velocity_x *= -1
+            ball.velocity_y += ((randomInteger(2) - 1) - 1) * rand_angle_multiplier
+            ball.color = randomColor()
+        }
+
+        if (ball.shape_center_x + ball.radius > canvas.width) {
+
+            ball.velocity_x *= -1
+            ball.velocity_y += ((randomInteger(2) - 1) - 1) * rand_angle_multiplier
+            ball.color = randomColor()
+        }
+        if (ball.shape_center_y - ball.radius < 0) {
+            ball.velocity_y *= -1
+            ball.velocity_x += (randomInteger(2) - 1) * rand_angle_multiplier
+            ball.color = randomColor()
+        }
+        if (ball.shape_center_y + ball.radius > canvas.height) {
+            ball.velocity_y *= -1
+            ball.velocity_x += (randomInteger(2) - 1) * rand_angle_multiplier
+            ball.color = randomColor()
+        }
+
+        // document.getElementById("output_div").innerText = ball.shape_center_x - radius
+
+
+    }
+
+    function draw_all_shapes() {
+        context.clearRect(0, 0, canvas.width, canvas.height)
+        shapes_array.forEach(function (TheBall) {
+            TheBall.shape_center_x += (TheBall.velocity_x)
+            TheBall.shape_center_y += (TheBall.velocity_y)
+            draw_ball(TheBall)
+            ball_rebound(TheBall)
+
+        })
+        window.requestAnimationFrame(draw_all_shapes)
+    }
+
+    window.requestAnimationFrame(draw_all_shapes)
+
+</script>
+
+<!--<div id="output_div">-->
+
+
+<!--</div>-->
+
+</body>
+</html>

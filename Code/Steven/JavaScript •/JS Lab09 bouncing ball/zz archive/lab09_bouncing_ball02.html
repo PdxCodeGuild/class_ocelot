@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            margin: 0px;
+            padding: 0px;
+        }
+
+        canvas {
+            border: 2px solid white;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<canvas id="the_canvas" width="1000" height="500"></canvas>
+
+
+    <script>
+        let canvas = document.getElementById('the_canvas');
+        let context = canvas.getContext('2d');
+        let centerX = canvas.width / 2;
+        let centerY = canvas.height / 2;
+        let radius = 70;
+        let speed = 2
+        let velocityX = 2 * speed
+        let velocityY = 2.4 * speed
+        let randAngleMult = Math.random() * 3
+        let ballColor = 'green'
+
+        function ballColorChange() {
+            red = Math.random() * 255
+            green = Math.random() * 255
+            blue = Math.random() * 255
+            opac = Math.random()
+            return `rgba(${red},${green},${blue},${opac}`
+
+        }
+
+        function drawBall() {
+            context.clearRect(0,0,canvas.width,canvas.height)
+            centerX += velocityX
+            centerY += velocityY
+            if (centerX - radius < 0) {
+                velocityX *= -1
+                velocityY += (Math.random() - 1) *randAngleMult
+                ballColor = ballColorChange()
+            }
+            if (centerX + radius > canvas.width) {
+                velocityX *= -1
+                velocityY += (Math.random() - 1) *randAngleMult
+                ballColor = ballColorChange()
+            }
+            if (centerY - radius < 0) {
+                velocityY *= -1
+                velocityX += (Math.random() - 1) *randAngleMult
+                ballColor = ballColorChange()
+            }
+           if (centerY + radius > canvas.height) {
+                velocityY *= -1
+                velocityX += (Math.random() - 1) *randAngleMult
+                ballColor = ballColorChange()
+            }
+
+            context.beginPath();
+            context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+            context.fillStyle = ballColor;
+            // context.fillStyle = 'green';
+
+            context.fill();
+            window.requestAnimationFrame(drawBall)
+
+
+        }
+
+        let the_canvas = document.getElementById('the_canvas')
+        the_canvas.onclick = function(event) {
+            let clickX = event.clientX
+            let clickY = event.clientY
+
+            let diffX = centerX - clickX
+            let diffY = centerY - clickY
+
+            // Returns true if mouseclick is within ball radius
+            onTarget = Math.sqrt(Math.pow(diffX,2)+(Math.pow(diffY,2))) < radius
+
+
+            document.getElementById("output_div").innerText = `mX:${clickX} mY:${clickY} cX:${centerX} cY:${centerY} diffX:${diffX} diffY${diffY} ON TARGET: ${onTarget}`
+
+
+            // if (ball.px = 0+ball.radius+d;
+            // ball.vx *= -1;
+            // ball.vx *= friction;
+            // ball.vy *= friction;
+
+            // alert('position: '+clickX+', '+clickY)
+        }
+
+
+        window.requestAnimationFrame(drawBall)
+
+
+
+    </script>
+
+<div id="output_div">
+
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>bounce</title>
+
+    <style>
+
+    </style>
+
+</head>
+
+
+<body>
+
+</canvas>
+
+
+<script type="text/javascript">
+    // body style
+    let body = document.body
+    body.style.backgroundColor = 'black'
+    body.style.color = 'white'
+    body.style.padding = 0
+    body.style.margin = 0
+
+    // canvas setup
+    let canvas = document.createElement('the_canvas')
+    canvas.height = '500'
+    canvas.width = '800'
+    canvas.style.border = '2px solid white'
+    let context = canvas.getContext('2d');
+
+
+    // shape setup
+    let shape_count = 5
+    // let shape_center_x = randomizer1(canvas.width-100) + 50
+    // let shape_center_y = randomizer1(canvas.height-100) + 50
+    let radius_init = 50
+    let rand_radius = 20
+    let speed = 1.5
+    let rand_angle_multiplier = randomizer1(2)
+
+    // random range for ball spawning location
+    function random_range(range_low, range_high) {
+        return range_low + Math.random() * (range_high - range_low)
+    }
+
+    // define ball class
+    class ShapeBall {
+        constructor() {
+            this.radius = radius_init * rand_radius;
+            this.shape_center_x = random_range(this.radius, canvas.width - this.radius);
+            this.shape_center_y = random_range(this.radius, canvas.height - this.radius);
+            this.velocity_x = (randomizer1(4) - 1) * 4
+            this.velocity_y = (randomizer1(4) - 1) * 4
+            this.color = randomColor()
+        }
+
+        // let velocity_y = 2.4 * speed
+        // let velocity_x = 2 * speed
+    }
+
+
+    let shapes_array = [];
+    let ball_count = shape_count;
+
+    for (let bc = 1; bc < ball_count; bc++) {
+        shapes_array.push(new ShapeBall())
+    }
+
+    function randomizer1(max_val) {
+        return Math.floor(Math.random() * Math.floor(max_val));
+    }
+
+    function randomColor() {
+        let red = randomizer1(255)
+        let green_offset = 50
+        let green = 200 + (randomizer1(green_offset) - (green_offset / 2)
+        let blue = randomizer1(255)
+        let opac = randomizer1(100) / 100
+        return `rgba(${red},${green},${blue},${opac})`
+    }
+
+    function draw_ball(TheBall) {
+        context.beginPath()
+        context.arc(TheBall.shape_center_x, TheBall.shape_center_y, TheBall.radius, 0, 2 * Math.PI, false)
+        context.fillStyle = TheBall.color()
+        context.fill()
+    }
+
+    function ball_rebound(ball) {
+        if (ball.shape_cent_x - radius < 0) {
+            ball.velocity_x *= -1
+            ball.velocity_y += ((randomizer1(2) - 1) - 1) * rand_angle_multiplier
+            ball.color = ballColorChange()
+        }
+        if (ball.shape_cent_x + radius > canvas.width) {
+            ball.velocity_x *= -1
+            ball.velocity_y += ((randomizer1(2) - 1) - 1) * rand_angle_multiplier
+            ball.color = ballColorChange()
+        }
+        if (ball.shape_cent_y - radius < 0) {
+            ball.velocity_y *= -1
+            ball.velocity_x += (randomizer1(2) - 1) * rand_angle_multiplier
+            ball.color = ballColorChange()
+        }
+        if (ball.shape_cent_y + radius > canvas.height) {
+            ball.velocity_y *= -1
+            ball.velocity_x += (randomizer1(2) - 1) * rand_angle_multiplier
+            ball.color = ballColorChange()
+        }
+
+    }
+
+    // function draw() {
+    //
+    //     context.clearRect(0, 0, canvas.width, canvas.height)
+    //     ball_arr.forEach(function (element) {
+    //         draw_ball(element)
+    //         if (element.shape_center_x + element.velocity_x > canvas.width - element.radius || element.shape_center_x + element.velocity_x < element.radius) {
+    //             element.velocity_x *= -.99999
+    //         }
+    //         else if (element.shape_center_y + element.velocity_y > canvas.height - element.radius || element.shape_center_y + element.velocity_y < element.radius) {
+    //             element.velocity_y *= -1.00001
+    //         }
+    //         element.shape_center_x += element.velocity_x
+    //         element.shape_center_y += element.velocity_y
+    //     })
+    // }
+
+
+    function draw_all_shapes() {
+        context.clearRect(0, 0, canvas.width, canvas.height)
+        shapes_array.forEach(function (TheBall) {
+            TheBall.shape_center_x += TheBall.velocity_x
+            TheBall.shape_center_y += TheBall.velocity_y
+            draw_ball(TheBall)
+            ball_rebound(shape_center_x, shape_center_y)
+
+
+
+            // let context = canvas.getContext('2d')
+            // context.shapePathStart();
+            // context.arc(shape_center_x, shape_center_y, radius, 0, 2 * Math.PI, false);
+            // context.fillStyle = ball_color;
+            // // context.fillStyle = 'green';
+            //
+            // context.fill();
+            window.requestAnimationFrame(draw_all_shapes)
+        })
+
+        // let the_canvas = document.getElementById('the_canvas')
+        // the_canvas.onclick = function(event) {
+        //     let clickX = event.clientX
+        //     let clickY = event.clientY
+        //
+        //     let diffX = shape_center_x - clickX
+        //     let diffY = shape_center_y - clickY
+        //
+        //     // Returns true if mouseclick is within ball radius
+        //     onTarget = Math.sqrt(Math.pow(diffX,2)+(Math.pow(diffY,2))) < radius
+        //
+        //
+        //     document.getElementById("output_div").innerText = `mX:${clickX} mY:${clickY} cX:${shape_center_x} cY:${shape_center_y} diffX:${diffX} diffY${diffY} ON TARGET: ${onTarget}`
+        //
+        //
+        //     if (ball.shape_center_x = 0+ball.radius+d;
+        //     ball.velocity_x *= -1;
+        //     ball.velocity_x *= friction;
+        //     ball.velocity_y *= friction;
+        //
+        //     alert('position: '+clickX+', '+clickY)
+    }
+
+    window.requestAnimationFrame(draw_all_shapes)
+
+
+</script>
+
+<div id="output_div">
+
+
+</div>
+
+</body>
+</html>
