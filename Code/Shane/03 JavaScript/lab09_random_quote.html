@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Random Quote</title>
+</head>
+<body>
+
+<h1>Click for Quotes</h1>
+<button id="click_btn"> click to me</button>
+<ul id="quotelist">
+
+</ul>
+
+<script>
+
+
+    function http_request(url, method, data, success) {
+        let xhttp = new XMLHttpRequest()
+        xhttp.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                success(xhttp.responseText)
+            }
+        }
+        xhttp.open(method, url)
+        xhttp.setRequestHeader('Authorization', 'Token token="a3a9a6ba592cc0de1c8a489002539325"')
+        xhttp.setRequestHeader('Content-Type', 'application/json')
+
+        if (user_token) {
+            xhttp.setRequestHeader('User-Token', user_token)
+        }
+
+        xhttp.send(JSON.stringify(data))
+        //xhttp.send('{"user":{"login":"unitedideas@gmail.com","password":"zxCV12#$"}}')
+
+    }
+
+</script>
+
+
+<script>
+    let quotelist = document.getElementById('quotelist')
+    let click_btn = document.getElementById('click_btn')
+    let base_url = 'https://favqs.com/api/'
+    let user_token = null
+    let user_data = {user: {login: 'shane@endurobox.com', password: 'password'}}
+
+    http_request(base_url + 'session', 'POST', user_data, function (response) {
+        let data = JSON.parse(response)
+        user_token = data['User-Token']
+        console.log(data)
+    })
+
+    let quote_id = null
+
+    let up_img = new Image(25, 25)
+    up_img.src = 'https://cdn3.iconfinder.com/data/icons/glyph-web-application-5/64/thumb_up_dislike_facebook_youtube-512.png'
+    let down_img = new Image(25, 25)
+    down_img.src = 'https://cdn3.iconfinder.com/data/icons/black-web-application-5/64/thumb_down_dislike_facebook_youtube-512.png'
+
+    let vote_btn_container = document.createElement('div')
+    let upvote_btn = document.createElement('div')
+    let downvote_btn = document.createElement('div')
+
+    vote_btn_container.appendChild(upvote_btn)
+    vote_btn_container.appendChild(downvote_btn)
+
+
+    click_btn.addEventListener('click', function () {
+
+        http_request(base_url + "qotd", 'GET', {}, function (response) {
+            let data = JSON.parse(response)
+            quote_id = data.quote.id
+            let li = document.createElement('li')
+            li.innerText = data.quote.body + ' -' + data.quote.author
+            quotelist.appendChild(li)
+            li.appendChild(up_img)
+            li.appendChild(down_img)
+            console.log(data)
+
+        })
+
+    })
+
+    console.log(quote_id)
+    up_img.addEventListener('click', function(){
+        http_request(base_url + 'quotes/' + quote_id + '/upvote', 'PUT', {}, function (response) {
+            // check if it was successful
+            console.log(JSON.parse(response))
+            let data = JSON.parse(response)
+            if (data.user_details.upvote){
+                up_img.display = 'none'
+            }
+        })
+    })
+
+    down_img.addEventListener('click', function(){
+        http_request(base_url + 'quotes/' + quote_id + '/upvote', 'PUT', {}, function (response) {
+            // check if it was successful
+            let data = JSON.parse(response)
+            if (data.user_details.downvote){
+                down_img.color = 'red'
+            }
+        })
+    })
+
+
+
+
+</script>
+</body>
+</html>
