@@ -1,0 +1,667 @@
+/* (217-6-24) new style file covering all aspects 
+(no pun intended) except sliders
+in the new exhibition format (including mobile)
+
+old version: stylePortrait_2017_06.css, styleLandscape_2017_06.css, styleResponsive.css, 
+sliders_2017_06.css and all the other
+style files (depending on ring or U), except styleUPortrait.css, styleLandscape.css
+
+new version: only stylePortrait.css, styleLandscape.css, sliders.css
+for all html files 
+*/
+
+
+/* media queries: 
+https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries
+
+example: @media (min-width: 700px), handheld and (orientation: landscape) { ... }
+operator "or" = ","
+boolean variables:
+(min-width: 700px)
+handheld
+(orientation: landscape)
+(monochrome)
+(color)
+(min-aspect-ratio: 1/1)  horiz/vertical
+limits: 
+*/
+
+/*#############################################################
+ big landscape:   (min-width: 720px)  and (min-aspect-ratio: 6/5) 
+ small landscape: (max-width: 719px)  and (min-aspect-ratio: 6/5) 
+ big portrait:    (min-height: 600px) and (max-aspect-ratio: 6/5) 
+ small portrait:  (max-height: 599px) and (max-aspect-ratio: 6/5) 
+ATTENTION!! no space before pixels! 
+INFO: full HD =1080p (1920×1080 px), aspect ratio 5/3; 
+#############################################################*/
+
+/*1080p (1920×1080 px; 
+
+/*#############################################################*/
+/* basic settings for all aspect ratios */
+/*#############################################################*/
+
+
+body{
+  margin: 0;
+  padding: 0;
+  font-family: 'helvetica', sans-serif;
+                 /*font-size: 14px;*/
+  font-size: 2vmin;
+  text-align: center;
+  color: #404050;   /* text color */
+  background-color: #FFFFFF;
+}
+
+
+/* <h2>, <h3> not used in the main sim page but in some help pages */
+
+ h1{
+     font-family: helvetica, sans-serif;
+     font-size: 2.6vmin;
+     font-weight: bold;
+     color: #446;
+     padding-top:0px;
+ }
+
+ h2{
+     font-family: helvetica, sans-serif;
+     font-size: 2.4vmin;
+     font-weight: bold;
+     color: #446;
+     padding-top:0px;
+ }
+
+ h3{ 
+     font-family: sans-serif;
+     font-size: 2.2vmin; 
+     font-weight: bold;
+     font-style: italic;
+     color: #446;
+     padding-top:0px;
+ }
+
+/* standard: white */
+
+#container{
+    margin: 0em auto;
+    width: 98vw;
+    text-align: left;
+    background-color: #FFFFFF;
+}
+
+/* suppresses borders on images used as links */
+
+img {
+    border-width: 0;
+}
+
+
+/* general links */
+
+a {
+	color: #07A;
+	font-weight: normal;
+ }
+
+a:link {
+	color: #07A;
+	text-decoration: none;
+}
+
+a:visited {
+	color: #957;
+	text-decoration: none;
+}
+
+a:active {
+	text-decoration: underline;
+	background-color: #F80;
+}
+
+a:hover {
+	text-decoration: underline;
+	color: #07A;
+}
+
+table.infoTable {
+   border: 0px ridge rgb(130,130,130); /* spacing, padding DOS with border-collapse */
+   border-collapse: collapse; 
+   background-color: rgba(255,255,255,0.7);
+}
+table.infoTable td {
+   border: 2px ridge rgb(130,130,130);
+}
+
+
+
+/*#############################################################*/
+/* basic settings for landscape formats */
+/*#############################################################*/
+
+@media all and  (min-aspect-ratio: 6/5){
+
+
+/* (1) the title */
+
+#header{
+  position: absolute;
+  top: 0.5vmin;
+  height: 5vmin;
+  left: calc( 1vw + 35vmin);
+  width: 40vmin; /* needed for reference of width: */
+  font-size: 4vmin;
+  font-weight:bold;
+  z-index: 0;  /* above simulation canvas in rare chances of overlapping */
+}
+
+
+/* title image */
+
+img.title{
+  max-height: 5vmin;
+}
+
+
+/* (2) the simulation canvas */
+
+#contents{
+  position: absolute;
+  left:   0vw;
+  top:   0vmin;
+  width:  120vmin;  /* 6/5 */
+  height: 100vmin;
+  margin-right: 0vw;
+  margin-left: 0vw;
+  z-index: 1;
+}
+
+
+/* DOS canvas size specification; none works:
+(i) as here
+(ii) removing outer div spec
+(iii) both combinations with "width=100%" etc in html canvas
+=> NEED document.getElementById("contents").clientWidth
+which always gives correct size!!
+ 
+*/
+
+
+/* (2a) position of the copyright: left bottom of simCanvas landscape*/
+
+#impressum{ 
+  position: absolute;
+  bottom: 0vmin;
+  height: 2vmin;
+  left: 0vw;
+  width: 10vw;
+  background-color: rgba(255,255,255,0.7);
+  font-size: 1.5vmin;
+  z-index: 1; /* the higher the integer, the more on top landscape */
+}
+
+
+/* (2b) position of the info button: right top of simCanvas landscape*/
+
+#infoDiv{
+  position: absolute;
+  top: 1vmin;
+  height: 8vmin;
+  left: 111vmin;
+  width: 8vmin;
+  z-index: 2; /* the higher the integer, the more on top */
+}
+
+/* (2c) position of the start/stop sign: just to the left of info button */
+
+#startStopDiv{
+  position: absolute;
+  top: 1vmin;
+  height: 8vmin;
+  left: 101vmin;
+  width: 8vmin;
+  z-index: 2; /* the higher the integer, the more on top */
+}
+
+/* (2d) add/subtract one lane: just to the left of start/stop button */
+
+#lanePlusDiv{
+  position: absolute;
+  top: 1vmin;
+  height: 7vmin;
+  left: 91vmin;
+  width: 7vmin;
+  z-index: 2; /* the higher the integer, the more on top */
+}
+
+#laneMinusDiv{
+  position: absolute;
+  top: 1vmin;
+  height: 7vmin;
+  left: 81vmin;
+  width: 7vmin;
+  z-index: 2; /* the higher the integer, the more on top */
+}
+
+#gameDiv{
+  position: absolute;
+  top: 1vmin;
+  height: 7vmin;
+  left: 51vmin;
+  width: 28vmin;
+  z-index: 2; /* the higher the integer, the more on top */
+}
+
+#debugDiv{
+  position: absolute;
+  top: 25vmin;
+  height: 15vmin;
+  left: 100vmin;
+  width: 15vmin;
+  z-index: 2; /* the higher the integer, the more on top */
+}
+
+/* (2e) position of the enforce truck overtaking ban in uphill scen*/
+
+#buttonsInsideSimulations{
+  position: absolute;
+  top: 1vmin;
+  left: 40vmin;
+  z-index: 2; /* the higher the integer, the more on top */
+}
+
+/* (2f) position of the general link list landscape (table.infoTable top-level)*/
+
+#linkDiv{
+  position: absolute;
+  top:   94.5vmin;
+  left:   20vmin;
+  width:  80vmin; /* no height */
+  z-index: 2;
+} 
+
+
+/* (3) position of the flags for language selection: right top of simCanvas */
+
+#infoFlags{
+  position: absolute;
+  top:   95vmin;
+  left:   104vmin;
+  width:  16vmin; /* no height */
+  z-index: 2;
+}
+
+
+/* (4) the field for selecting the scenarios; */
+
+#scenarios{
+  position: absolute;
+  top:     0vmin;
+  height:  20vmin;
+  left: 121vmin;
+  width: 50vmin;
+  z-index: 2;
+}
+
+
+
+
+/* (5) sliders: top-div for all three slider fields */
+/* Notice: table elements relevant for font size */
+
+
+#sliders{ 
+  position: absolute;
+  top: 12vmin;
+  height: 20vmin;
+  left: 121vmin;
+  width: 55vmin;
+  background-color: rgba(0,40,255,0);
+  z-index: 2; /* the higher the integer, the more on top */
+}
+
+
+/* (5) text layout of sliders: tables override general text spec) */
+
+th{                    /* only used in infotext */
+  font-size: 2.2vmin;
+  font-weight: bold; 
+  color: #404060;      /* text color */
+
+}
+
+td{
+  font-size:1.8vmin; 
+  font-weight: bold; 
+  color: #404060;   /* only WITHOUT quotes here, not "#404060" etc */
+}
+
+td.important{
+  font-size:1.8vmin; 
+  font-weight: bold; 
+  color: #dd0033;
+}
+
+
+/* (5a-c) nested div's single slider-areas. In landscape, just let them flow
+(no spec), in portrait,  unfortunately DOS  => position by brute force  */
+
+#slidersGen,#slidersIDM,#slidersLC{
+
+}
+
+
+/* (6) infotext div-box landscape (sub-div! no pos info, just below the sliders*/
+
+ul { margin-left: 2vmin; padding: 0vmin; }
+
+ul.noindent {   /* then in html <ul class="noindent">...</ul>*/
+    margin-left: 5px;
+    margin-right: 0px;
+    padding-left: 10px;
+    padding-right: 0px;
+}
+
+#infotext{
+  border:1px solid black;
+  width: 49vmin; /* DOS with calc(98.0vw-121.0vmin);*/
+  height: 31vmin;
+  text-align: left;
+  padding-top: 0vmin;
+  padding-left: 2vmin;
+  padding-right: 2vmin;
+  background-color: rgba(0,40,255,0.0);
+  overflow:auto;
+}
+
+/* (7) position/size of the colorbox */
+
+#colorBox{
+  position: absolute;
+  top:   45vmin;
+  left: 103vmin;
+  width:  15vmin; /* no height */
+  z-index: 2;
+}
+
+
+} /* end @media filter landscape normal */
+
+
+
+
+/*#############################################################*/
+/* basic settings for square/portrait formats */
+/*#############################################################*/
+
+@media all and  (max-aspect-ratio: 6/5){
+
+/* (1) the title */
+
+#header{
+  position: absolute;
+  top: 0.5vmin;
+  height: 5vmin;
+  left: calc( 1vw + 35vmin);
+  width: 40vmin; /* needed for reference of width: */
+  font-size: 4vmin;
+  font-weight:bold;
+  z-index: 0; 
+}
+
+
+/* title image */
+
+img.title{
+  max-height: 5vmin;  z-index: 2;
+}
+
+
+/* (2) the simulation canvas */
+
+#contents{
+  position: absolute;
+  left:   0vw;
+  top:   0vmin;
+  width:  99vmin;  /* proportional to above .#contents 120/95 approx 5/4*/
+  height: 78vmin;
+  margin-right: 0vw;
+  margin-left: 0vw;
+  z-index: 1;
+}
+
+
+/* (2a) position of the copyright: left bottom of simCanvas */
+
+#impressum{ 
+  position: absolute;
+  top: 75.5vmin;
+  height: 2vmin;
+  left: 1vw;
+  width: 12vmin;
+  background-color: rgba(255,255,255,0.5);
+  font-size: 1.5vmin;
+  z-index: 1; /* the higher the integer, the more on top */
+}
+
+
+/* (2b) position of the info button: right top of simCanvas */
+
+#infoDiv{
+  position: absolute;
+  top: 1vmin;
+  height: 6vmin;
+  left: 90vmin;
+  width: 6vmin;
+  z-index: 2; /* the higher the integer, the more on top */
+}
+
+/* (2c) position of the start/stop sign: just to the left of info button */
+
+#startStopDiv{
+  position: absolute;
+  top: 1vmin;
+  height: 6vmin;
+  left: 82vmin;
+  width: 6vmin;
+  z-index: 2; /* the higher the integer, the more on top */
+}
+
+/* (2d) add/subtract one lane: just to the left of start/stop button */
+
+#lanePlusDiv{
+  position: absolute;
+  top: 1vmin;
+  height: 6vmin;
+  left: 74vmin;
+  width: 6vmin;
+  z-index: 2; /* the higher the integer, the more on top */
+}
+
+#laneMinusDiv{
+  position: absolute;
+  top: 1vmin;
+  height: 6min;
+  left: 66vmin;
+  width: 6vmin;
+  z-index: 2; /* the higher the integer, the more on top */
+}
+
+#gameDiv{
+  position: absolute;
+  top: 1vmin;
+  height: 6vmin;
+  left: 40vmin;
+  width: 24vmin;
+  z-index: 2; /* the higher the integer, the more on top */
+}
+
+#debugDiv{
+  position: absolute;
+  top: 25vmin;
+  height: 15vmin;
+  left: 84vmin;
+  width: 15vmin;
+  z-index: 2; /* the higher the integer, the more on top */
+}
+
+/* (2e) position of the enforce truck overtaking ban in uphill scen*/
+
+#buttonsInsideSimulations{
+  position: absolute;
+  top: 1vmin;
+  left: 30vmin;
+  z-index: 2; /* the higher the integer, the more on top */
+}
+
+/* (2f) position of the general link list square/portrait */
+
+#linkDiv{
+  position: absolute;
+  top:   79vmin;
+  left:   51vmin;
+  width:  47.5vmin; /* no height */
+  z-index: 2;
+} 
+
+/* (3) position of the flags for language selection: right top of simCanvas */
+
+#infoFlags{
+  position: absolute;
+  top:   73.5vmin;
+  left:   83vmin;
+  width:  15vmin; /* no height */
+  z-index: 2;
+}
+
+
+/* (4) the field for selecting the scenarios; */
+
+#scenarios{
+  position: absolute;
+  top:     76vmin;
+  height:  50vmin;
+  left: 1vmin;
+  width: 49vmin;
+  z-index: 2;
+}
+
+
+
+
+
+/* (5) sliders: top-div for all three slider fields */
+/* Notice: table elements relevant for font size */
+
+#sliders{ 
+  position: absolute;
+  top: 88vmin;
+  left: 0vmin;
+  width: 54vmin;
+  background-color: rgba(0,40,255,0);
+  z-index: 2; /* the higher the integer, the more on top */
+}
+
+/* text layout of sliders: tables override general text spec) */
+
+th{                    /* only used in infotext */
+  font-size: 2.2vmin;
+  font-weight: bold; 
+  color: #404060;      /* text color */
+
+}
+
+td{
+  font-size:1.8vmin; 
+  font-weight: bold; 
+  color: #404060;   /* only WITHOUT quotes here, not "#404060" etc */
+}
+
+td.important{
+  font-size:1.8vmin; 
+  font-weight: bold; 
+  color: #dd0033;
+}
+
+
+/* (5a-c) nested div's single slider-areas. In landscape, just let them flow
+(no spec), in portrait,  unfortunately DOS  => position by brute force  */
+
+#slidersGen{ 
+  position: absolute;   /* w/respect to outer div */
+  left: 0;
+  width: 50vmin;
+  top: 0;
+  background-color: rgba(0,40,255,0);
+  z-index: 2; /* the higher the integer, the more on top */
+}
+
+#slidersIDM{ 
+  position: absolute;   /* w/respect to outer div */
+  left: 49vmin;
+  width: 50vmin;
+  top: 0;
+  background-color: rgba(0,40,255,0);
+  z-index: 2; /* the higher the integer, the more on top */
+}
+
+#slidersLC{ 
+  position: absolute;   /* w/respect to outer div */
+  left: 0;
+  width: 46vmin;
+  top: 18vmin;
+  background-color: rgba(0,40,255,0);
+  z-index: 2; /* the higher the integer, the more on top */
+}
+
+
+/* (6) infotext div-box portrait (sub-div!, in contrast to landscape pos info*/
+
+#infotext{
+  border:1px solid black;
+  position: absolute;   /* w/respect to outer div */
+  left: 51vmin;
+  width: 43vmin; /* DOS with calc(98.0vw-121.0vmin);*/
+  top: 1vmin;
+  height: 27vmin;
+  text-align: left;
+  padding-top: 0vmin;
+  padding-left: 2vmin;
+  padding-right: 2vmin;
+  background-color: rgba(0,40,255,0.0);
+  overflow:auto;
+}
+
+
+ul { margin-left: 2vmin; padding: 0vmin; }
+
+ul.noindent {   /* then in html <ul class="noindent">...</ul>*/
+    margin-left: 5px;
+    margin-right: 0px;
+    padding-left: 10px;
+    padding-right: 0px;
+}
+
+
+/* (7) position/size of the colorbox */
+
+#colorBox{
+  position: absolute;
+  top:   45vmin;
+  left: 83vmin;
+  width:  14vmin; /* no height */
+  z-index: 2;
+}
+
+
+} /* end @media filter landscape normal */
+
+
+
+
+/*#########################################################*/
+/* addl settings hendheld-type devices with small screen */
+/*#########################################################*/
+
+@media all and  (min-aspect-ratio: 6/5) and (max-height: 599px){
+
