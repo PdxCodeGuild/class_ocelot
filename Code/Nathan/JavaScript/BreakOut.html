@@ -175,7 +175,7 @@
                 let velocity = -(dy + bounceCounter * .2)
                 dy = velocity;
                 bounceCounter += 1
-                dx = -dx  //-(Math.random()/5-.1)+1*   trying to randomize angle
+                dx = -(Math.random()*100)+dx
             } else {
                 lives--;
                 let bounceCounter = 2

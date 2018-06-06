@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        li{
+            width: 400px;
+            display: flex;
+            font-family: Arial;
+            border-style: solid;
+            padding: 5px;
+            margin: 5px;
+        }
+    </style>
+</head>
+    <body>
+        <button id ="stop_bt">Stop</button>
+        <button id = "clear_bt">Clear</button>
+        <ul id="quotelist"></ul>
+    <script>
+        let quotelist = document.querySelector('#quotelist')
+        let stop_bt = document.querySelector('#stop_bt')
+        let clear_bt = document.querySelector("#clear_bt")
+
+        // define elements list and stop button
+        function http_get(url, success) {        //ajax request lines 11 - 20
+            let xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status === 200) {
+                    let data = JSON.parse(xhttp.responseText);
+                    success(data);
+                }
+            };
+            xhttp.open("GET", url);
+            xhttp.send();
+        }
+        //"https://favqs.com/api/qotd"
+        let quoteGenerator = setInterval(function() {
+            http_get("https://favqs.com/api/qotd", function (data) {
+                let li = document.createElement('li')
+                li.innerText = data.quote.body + '-' + data.quote.author
+                quotelist.appendChild(li)
+            } )
+        },3000)
+        stop_bt.onclick = function() {
+            clearInterval(quoteGenerator)
+        }
+        clear_bt.onclick = function () {
+            quotelist.innerHTML = ''
+        }
+    </script>
+    </body>
+</html>
