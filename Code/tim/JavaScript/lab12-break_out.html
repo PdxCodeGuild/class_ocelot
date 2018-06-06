@@ -12,10 +12,10 @@
             border: 1px solid white
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/13.1.23/Tone.min.js"></script>
 </head>
 <body>
     <canvas id="cnv" width="1200" height="500"></canvas>
-
     <script>
         class Rectangle {
             constructor(x, y, width, height, color) {
@@ -41,6 +41,13 @@
             }
             getBottom() {
                 return this.y + this.h
+            }
+            checkCollideRec(rec) {
+                let dx = this.x - (rec.x + rec.w / 2)
+                let dy = this.y - (rec.y + rec.h / 2)
+                let width = (this.w + rec.w * 1.1) / 2
+                let height = (this.h + rec.h * 1.1) / 2
+                return (Math.abs(dx) <= width && Math.abs(dy) <= height)
             }
         }
 
@@ -164,6 +171,7 @@
                         cir.x += cir.vx
                         cir.y += cir.vy
                     }
+                    return true
                 }
             }
             getVelVectLen() {
@@ -226,42 +234,46 @@
         let lives = 3
         let speed = 100
         let snark = [
-            'you lose', 'you suck', 'you\'re awful', 'just quit',
-            'oh man, that\'s horrible', 'womp womp', 'muhahaha',
-            'loser', 'epic fail', 'failure'
+            'you lose', 'you suck', 'you\'re awful', 'just quit', 'so bad. so so bad.',
+            'oh man, that\'s horrible', 'womp womp', 'muhahaha', 'i wanna cry', 'yuck',
+            'loser', 'epic fail', 'failure', 'ugh... just ugh.', 'eeeeeww', 'gross'
         ]
         let rectangles = []
         let circles = []
 
         for (let i = 0; i < 30; ++i) {
-            let x = Math.random() * cnv.width
-            let y = Math.random() * cnv.height / 2
             let radius = 10 + Math.random() * 10;
-            let r = Math.floor(Math.random() * 255)
-            let g = Math.floor(Math.random() * 255)
-            let b = Math.floor(Math.random() * 255)
-            let avg_rgb = (r + g + b) / 3
-            while (!(Math.abs (r - avg_rgb) > 60
-                && Math.abs (g - avg_rgb) > 60
-                && Math.abs (b - avg_rgb) > 60
-                && r + b + g < 600
-                && r + b + g > 250)) {
-                r = Math.floor(Math.random() * 255)
-                g = Math.floor(Math.random() * 255)
-                b = Math.floor(Math.random() * 255)
+            let rand_color = Math.floor(Math.random() * 360 + 1)
+            let color = `hsl(${rand_color}, 100%, 50%)`
+            let found_a_spot = false
+            let t_rect, x, y
+            while (!found_a_spot) {
+                found_a_spot = true
+                x = Math.random() * (cnv.width - radius)
+                y = Math.random() * cnv.height / 2
+                t_rect = new Rectangle(x, y, radius * 2, radius * 2, color)
+                for (j=0; j<rectangles.length; j++) {
+                    if (t_rect.checkCollideRec(rectangles[j])) {
+                        // console.log('hi')
+                        found_a_spot = false
+                    }
+                }
             }
-            let color = `rgb(${r},${g},${b})`
             if (Math.random() < 0.60) {
-                rectangles.push(new Rectangle(x, y, radius*2, radius*2, color))
+                rectangles.push(t_rect)
             } else {
                 circles.push(new Circle(x, y, radius, color, ((Math.random()+.2)-.5)*5, ((Math.random()+.2)-.5)*5))
             }
         }
 
+        let synth = new Tone.Synth().toMaster()
+        let notes = ["C4", "C4", "A#3", "C4", "G3", "G3", "C4", "F4", "E4", "C4"]
+        let curr_note = 0
         let paddle_color = "rgb(255,0,0)"
         let projectile_color = "rgb(255,255,255)"
         let paddle = new Rectangle(cnv.width/2, cnv.height-10, 70, 10, paddle_color)
         let projectile = new Circle(cnv.width/2, cnv.height-15, 5, projectile_color, 3, -3)
+        let catch_projectile = false
         let p_lives, rand_choice
 
         function update() {
@@ -271,28 +283,54 @@
             if (speed < 100 || speed < projectile.getVelVectLen()) {
                 speed *= 1.01
             }
-            paddle.vulnerable = true
-            paddle.color = 'red'
+
             if (key_tracker.isKeyDown('ArrowDown')) {
                 paddle.color = 'blue'
                 paddle.vulnerable = false
-            } else if (key_tracker.isKeyDown('ArrowLeft') && paddle.x > 0) {
-                paddle.x -= 8 * speed / 100
-            } else if (key_tracker.isKeyDown('ArrowRight') && paddle.x < cnv.width - paddle.w) {
-                paddle.x += 8 * speed / 100
+            } else {
+                paddle.vulnerable = true
+                paddle.color = 'red'
             }
-            let bottom_hit = projectile.update()
-            if (bottom_hit) {lives -= 1}
+            if (key_tracker.isKeyDown('ArrowLeft') && paddle.x > 0) {
+                move_speed = 8 * speed / 100
+                if (!paddle.vulnerable) move_speed *= .5
+                paddle.x -= move_speed
+                if (catch_projectile) {
+                    projectile.x -= move_speed
+                }
+            } else if (key_tracker.isKeyDown('ArrowRight') && paddle.x < cnv.width - paddle.w) {
+                move_speed = 8 * speed / 100
+                if (!paddle.vulnerable) move_speed *= .5
+                paddle.x += move_speed
+                if (catch_projectile) {
+                    projectile.x += move_speed
+                }
+            }
+
             if (projectile.y + projectile.rad + paddle.h >= cnv.height) {
                 bounce_projectile = projectile.checkCollidePad(paddle)
-                if (bounce_projectile && !projectile.vulnerable) {
-                    projectile.vy = -3
+                if (bounce_projectile && !paddle.vulnerable && !catch_projectile) {
+                    catch_projectile = true
+                    projectile.setBottom(cnv.height - paddle.h - 1)
                 }
+            }
+
+            if (catch_projectile && paddle.vulnerable) {
+                projectile.vy = -Math.random() * 5 - 5
+                projectile.vx = Math.random() * 5 - 2.5
+                catch_projectile = false
+            }
+            if (!catch_projectile) {
+                let bottom_hit = projectile.update()
+                if (bottom_hit) {lives -= 1}
             }
             for (let i = 0; i < rectangles.length; ++i) {
                 let result = projectile.checkCollideRec(rectangles[i])
                 if (result) {
                     rectangles.splice(i, 1)
+                    let note = notes[curr_note % notes.length]
+                    synth.triggerAttackRelease(note, '8n')
+                    curr_note += 1
                 } else {
                     rectangles[i].draw(ctx)
                 }
@@ -305,16 +343,29 @@
                         speed *= .25
                     }
                 }
-                projectile.checkCollideCir(circles[i])
+                if (!catch_projectile) {
+                    let result = projectile.checkCollideCir(circles[i])
+                    if (result) {
+                        let note = notes[curr_note % notes.length]
+                        synth.triggerAttackRelease(note, '8n')
+                        curr_note += 1
+                    }
+                }
                 for (let j = 0; j < rectangles.length; ++j) {
                     circles[i].checkCollideRec(rectangles[j])
                 }
                 for (let j = 0; j < circles.length; ++j) {
                     if (i === j) continue
-                    circles[i].checkCollideCir(circles[j])
+                    let bounced = circles[i].checkCollideCir(circles[j])
+                    if (bounced) {
+                        let note = notes[curr_note % notes.length]
+                        synth.triggerAttackRelease(note, '8n')
+                        curr_note += 1
+                    }
                 }
                 circles[i].draw(ctx)
             }
+
             paddle.draw(ctx)
             projectile.draw(ctx)
 
@@ -330,7 +381,7 @@
                 } else {
                     alert(snark[rand_choice])
                 }
-                    return
+                return
             }
 
             if (lives > 0) {

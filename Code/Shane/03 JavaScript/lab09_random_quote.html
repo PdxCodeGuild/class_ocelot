@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Random Quote</title>
+    <style>
+        .vote_img{
+            height: 100vh;
+            height: 100vh;
+        }
+        .btn-group button {
+            background-color: blue;
+            border: 1px solid black;
+            color: white;
+            padding: 10px 24px;
+            cursor: pointer;
+            float: left;
+}
+        .btn-group button:hover {
+            background-color: grey;
+}
+        #quote_container{
+            margin-top: 60px;
+            margin-left: 20px;
+            margin-right: 20px;
+
+            font-size: 2em;
+            text-align: center;
+            height: 150px;
+        }
+
+        #next_btn{
+            background-color: green;
+            text-align: center;
+        }
+
+        #voting_container{
+            display: flex;
+            flex-direction: row;
+            background-color: #111111;
+            text-align: center;
+        }
+
+        #upvote{
+            background-color: blue;
+            width: 50%;
+        }
+
+        #downvote{
+            width: 50%;
+        }
+    </style>
+</head>
+<body>
+<div id="quote_container">
+</div>
+
+<div id="voting_container">
+    <div id="upvote">
+        <img src="https://cdn2.iconfinder.com/data/icons/circle-icons-1/64/heart-512.png">
+    </div>
+    <div id="downvote">
+        <img src="https://cdn3.iconfinder.com/data/icons/emoticons-50/24/dislike_emoticon_emoticons_emoji_emote-512.png">
+    </div>
+
+</div>
+
+
+<script>
+
+
+    function http_request(url, method, data, success) {
+        let xhttp = new XMLHttpRequest()
+        xhttp.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                success(xhttp.responseText)
+            }
+        }
+        xhttp.open(method, url)
+        xhttp.setRequestHeader('Authorization', 'Token token="a3a9a6ba592cc0de1c8a489002539325"')
+        xhttp.setRequestHeader('Content-Type', 'application/json')
+
+        if (user_token) {
+            xhttp.setRequestHeader('User-Token', user_token)
+        }
+
+        xhttp.send(JSON.stringify(data))
+        //xhttp.send('{"user":{"login":"unitedideas@gmail.com","password":"zxCV12#$"}}')
+
+    }
+
+</script>
+
+
+<script>
+    let quote_container = document.getElementById('quote_container')
+    let base_url = 'https://favqs.com/api/'
+    let user_token = null
+    let user_data = {user: {login: 'shane@endurobox.com', password: 'password'}}
+
+    http_request(base_url + 'session', 'POST', user_data, function (response) {
+        let data = JSON.parse(response)
+        user_token = data['User-Token']
+        console.log(data)
+    })
+
+    let quote_id = null
+
+        http_request(base_url + "qotd", 'GET', {}, function (response) {
+            let data = JSON.parse(response)
+            quote_id = data.quote.id
+            quote_container.innerText = data.quote.body + ' -' + data.quote.author
+
+            console.log(data)
+
+    })
+
+    console.log(quote_id)
+    up_img.addEventListener('click', function(){
+        http_request(base_url + 'quotes/' + quote_id + '/upvote', 'PUT', {}, function (response) {
+            // check if it was successful
+            console.log(JSON.parse(response))
+            let data = JSON.parse(response)
+            if (data.user_details.upvote){
+                up_img.display = 'none'
+            }
+        })
+    })
+
+    down_img.addEventListener('click', function(){
+        http_request(base_url + 'quotes/' + quote_id + '/upvote', 'PUT', {}, function (response) {
+            // check if it was successful
+            let data = JSON.parse(response)
+            if (data.user_details.downvote){
+                down_img.color = 'red'
+            }
+        })
+    })
+
+
+
+
+</script>
+</body>
+</html>
