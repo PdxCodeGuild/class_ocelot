@@ -4,51 +4,52 @@
     <meta charset="UTF-8">
     <title>Random Quote</title>
     <style>
-        .vote_img{
-            height: 100vh;
-            height: 100vh;
-        }
-        .btn-group button {
-            background-color: blue;
-            border: 1px solid black;
-            color: white;
-            padding: 10px 24px;
-            cursor: pointer;
-            float: left;
-}
-        .btn-group button:hover {
-            background-color: grey;
-}
-        #quote_container{
-            margin-top: 60px;
-            margin-left: 20px;
-            margin-right: 20px;
 
-            font-size: 2em;
+        body {
+            background-color: black;
+        }
+
+        #quote_container {
+            margin-top: 10px;
+            padding: 20px;
+            font-size: 2.5em;
             text-align: center;
-            height: 150px;
+            height: 200px;
+            -webkit-text-stroke-width: 1px;
+            -webkit-text-stroke-color: black;
+            -webkit-text-fill-color: goldenrod;
+            background-color: lightgrey;
         }
 
-        #next_btn{
-            background-color: green;
-            text-align: center;
-        }
-
-        #voting_container{
+        #voting_container {
             display: flex;
             flex-direction: row;
-            background-color: #111111;
             text-align: center;
         }
 
-        #upvote{
-            background-color: blue;
+        #upvote {
+            background-color: rgb(85, 94, 99);
             width: 50%;
+            cursor: progress;
+            filter: blur(2px);
         }
 
-        #downvote{
+        #downvote {
+            background-color: rgb(199, 92, 92);
             width: 50%;
+            cursor: not-allowed;
+            filter: blur(2px);
         }
+
+        #downvote:hover{
+            filter: none;
+        }
+
+        #upvote:hover{
+            filter: none;
+        }
+
+
     </style>
 </head>
 <body>
@@ -57,7 +58,7 @@
 
 <div id="voting_container">
     <div id="upvote">
-        <img src="https://cdn2.iconfinder.com/data/icons/circle-icons-1/64/heart-512.png">
+        <img class="blur" src="https://cdn2.iconfinder.com/data/icons/circle-icons-1/64/heart-512.png">
     </div>
     <div id="downvote">
         <img src="https://cdn3.iconfinder.com/data/icons/emoticons-50/24/dislike_emoticon_emoticons_emoji_emote-512.png">
@@ -85,8 +86,6 @@
         }
 
         xhttp.send(JSON.stringify(data))
-        //xhttp.send('{"user":{"login":"unitedideas@gmail.com","password":"zxCV12#$"}}')
-
     }
 
 </script>
@@ -106,39 +105,44 @@
 
     let quote_id = null
 
-        http_request(base_url + "qotd", 'GET', {}, function (response) {
-            let data = JSON.parse(response)
-            quote_id = data.quote.id
-            quote_container.innerText = data.quote.body + ' -' + data.quote.author
-
-            console.log(data)
+    http_request(base_url + "qotd", 'GET', {}, function (response) {
+        let data = JSON.parse(response)
+        quote_id = data.quote.id
+        quote_container.innerText = data.quote.body + ' -' + data.quote.author
+        console.log(data)
 
     })
 
-    console.log(quote_id)
-    up_img.addEventListener('click', function(){
+    let upvote = document.getElementById('upvote')
+    upvote.addEventListener('click', function () {
         http_request(base_url + 'quotes/' + quote_id + '/upvote', 'PUT', {}, function (response) {
-            // check if it was successful
             console.log(JSON.parse(response))
             let data = JSON.parse(response)
-            if (data.user_details.upvote){
-                up_img.display = 'none'
+            if (data.user_details.upvote) {
+                http_request(base_url + "qotd", 'GET', {}, function (response) {
+                    let data = JSON.parse(response)
+                    quote_id = data.quote.id
+                    quote_container.innerText = data.quote.body + ' -' + data.quote.author
+                })
             }
         })
     })
 
-    down_img.addEventListener('click', function(){
-        http_request(base_url + 'quotes/' + quote_id + '/upvote', 'PUT', {}, function (response) {
-            // check if it was successful
+    let downvote = document.getElementById('downvote')
+    downvote.addEventListener('click', function () {
+        http_request(base_url + 'quotes/' + quote_id + '/downvote', 'PUT', {}, function (response) {
+            console.log(JSON.parse(response))
             let data = JSON.parse(response)
-            if (data.user_details.downvote){
-                down_img.color = 'red'
+            if (data.user_details.downvote) {
+                http_request(base_url + "qotd", 'GET', {}, function (response) {
+                    let data = JSON.parse(response)
+                    quote_id = data.quote.id
+                    quote_container.innerText = data.quote.body + ' -' + data.quote.author
+                })
+
             }
         })
     })
-
-
-
 
 </script>
 </body>
