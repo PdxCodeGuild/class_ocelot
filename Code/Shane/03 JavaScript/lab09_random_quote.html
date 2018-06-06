@@ -3,14 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <title>Random Quote</title>
+    <style>
+        .vote_img{
+            height: 100vh;
+            height: 100vh;
+        }
+        .btn-group button {
+            background-color: blue;
+            border: 1px solid black;
+            color: white;
+            padding: 10px 24px;
+            cursor: pointer;
+            float: left;
+}
+        .btn-group button:hover {
+            background-color: grey;
+}
+        #quote_container{
+            margin-top: 60px;
+            margin-left: 20px;
+            margin-right: 20px;
+
+            font-size: 2em;
+            text-align: center;
+            height: 150px;
+        }
+
+        #next_btn{
+            background-color: green;
+            text-align: center;
+        }
+
+        #voting_container{
+            display: flex;
+            flex-direction: row;
+            background-color: #111111;
+            text-align: center;
+        }
+
+        #upvote{
+            background-color: blue;
+            width: 50%;
+        }
+
+        #downvote{
+            width: 50%;
+        }
+    </style>
 </head>
 <body>
+<div id="quote_container">
+</div>
 
-<h1>Click for Quotes</h1>
-<button id="click_btn"> click to me</button>
-<ul id="quotelist">
+<div id="voting_container">
+    <div id="upvote">
+        <img src="https://cdn2.iconfinder.com/data/icons/circle-icons-1/64/heart-512.png">
+    </div>
+    <div id="downvote">
+        <img src="https://cdn3.iconfinder.com/data/icons/emoticons-50/24/dislike_emoticon_emoticons_emoji_emote-512.png">
+    </div>
 
-</ul>
+</div>
+
 
 <script>
 
@@ -39,8 +93,7 @@
 
 
 <script>
-    let quotelist = document.getElementById('quotelist')
-    let click_btn = document.getElementById('click_btn')
+    let quote_container = document.getElementById('quote_container')
     let base_url = 'https://favqs.com/api/'
     let user_token = null
     let user_data = {user: {login: 'shane@endurobox.com', password: 'password'}}
@@ -53,32 +106,12 @@
 
     let quote_id = null
 
-    let up_img = new Image(25, 25)
-    up_img.src = 'https://cdn3.iconfinder.com/data/icons/glyph-web-application-5/64/thumb_up_dislike_facebook_youtube-512.png'
-    let down_img = new Image(25, 25)
-    down_img.src = 'https://cdn3.iconfinder.com/data/icons/black-web-application-5/64/thumb_down_dislike_facebook_youtube-512.png'
-
-    let vote_btn_container = document.createElement('div')
-    let upvote_btn = document.createElement('div')
-    let downvote_btn = document.createElement('div')
-
-    vote_btn_container.appendChild(upvote_btn)
-    vote_btn_container.appendChild(downvote_btn)
-
-
-    click_btn.addEventListener('click', function () {
-
         http_request(base_url + "qotd", 'GET', {}, function (response) {
             let data = JSON.parse(response)
             quote_id = data.quote.id
-            let li = document.createElement('li')
-            li.innerText = data.quote.body + ' -' + data.quote.author
-            quotelist.appendChild(li)
-            li.appendChild(up_img)
-            li.appendChild(down_img)
-            console.log(data)
+            quote_container.innerText = data.quote.body + ' -' + data.quote.author
 
-        })
+            console.log(data)
 
     })
 
