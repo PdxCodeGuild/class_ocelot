@@ -1,0 +1,47 @@
+<html>
+    <head>
+
+    </head>
+<body>
+        <script>
+
+
+
+            function http_get(url, success) {
+                let xhttp = new XMLHttpRequest()
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState === 4 && this.status === 200) {
+                        success(xhttp.responseText)
+                    }
+                };
+                xhttp.open("GET", url)
+                xhttp.send()
+            }
+
+            document.body.style.fontSize = '100px'
+
+            http_get("https://getbootstrap.com/docs/4.1/getting-started/introduction/", function(data) {
+
+                let re = /https?:\/\/[\.\w\/-]+/gm
+                let m = null
+                let urls = []
+                while (m = re.exec(data)) {
+                    urls.push(m[0])
+                }
+
+                let countdown = 5
+                setInterval(function() {
+                    countdown--
+                    document.body.innerText = countdown
+                    if (countdown === 0) {
+                        window.location = urls[Math.floor(Math.random()*urls.length)]
+                    }
+                }, 1000)
+            });
+
+
+
+
+        </script>
+</body>
+</html>
