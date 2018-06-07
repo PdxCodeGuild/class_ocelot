@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        * {
+            font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+        }
+
+        .container-fluid {
+            width: 100%;
+            height: 100%;
+            text-align: center;
+        }
+
+        .btn-default {
+            width: 50%;
+            height: 100%;
+            font-style: italic;
+        }
+
+
+
+        .jumbotron {
+            width: 50%;
+            height: 50%;
+            background-color: white;
+            margin-left: 25%;
+            margin-top: 15%;
+        }
+
+    </style>
+
+
+</head>
+<body>
+
+
+<div class="container-fluid">
+    <div class="jumbotron">
+        <div class="row">
+            <div class="col-md-12">
+                <blockquote>
+                    <h1 id="qod">Keep it simple, stupid!</h1>
+                    <h3 id="author">God</h3>
+                </blockquote>
+            </div>
+
+
+            <button id="getQuote" type="button" class="btn btn-default">Get a New Quote</button>
+
+            </br>
+            </br>
+            </br>
+
+
+            <a href="https://twitter.com/share" class="twitter-share-button" data-url="https://codepen.io/Fabiola22/pen/jqdWrJ" data-size="large">Tweet</a>
+            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+        </div>
+    </div>
+</div>
+</div>
+
+
+<!--<div class = "col-xs-12 well getQuote">-->
+<!--The message will go here-->
+<!--</div>-->
+
+
+
+
+<script>
+    $(document).ready(function() {
+
+        $('#getQuote').on('click', function(e) {
+            e.preventDefault();
+            $.ajax({
+                url: "https://quotesondesign.com/wp-json/posts?filter[orderby]=rand&filter[posts_per_page]=1&callback=", success: function(data) {
+                    var post = data.shift(); // The data is an array of posts. Grab the first one.
+
+                    $('#qod').html(post.content);
+                    $('#author').text(post.title);
+
+                    // If the Source is available, use it. Otherwise hide it.
+                    if (typeof post.custom_meta !== 'undefined' && typeof post.custom_meta.Source !== 'undefined') {
+                        $('#quote-source').html('Source:' + post.custom_meta.Source);
+                    } else {
+                        $('#quote-source').text('');
+                    }
+                },
+                cache: false
+            });
+        }); $('#getQuote').on('click', function() {
+            var randomColorChange = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
+            $('body').css('background-color', randomColorChange);
+        });
+    });
+</script>
+
+</body>
+</html>
