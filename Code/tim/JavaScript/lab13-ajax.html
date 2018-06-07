@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="../local_settings.js"></script>
+    <script>
+        function http_get(url, success) {
+            let xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState === 1) {
+                    xhttp.setRequestHeader('Authorization', 'Token token=' + favQ_api_key)
+                } else if (this.readyState === 4 && this.status === 200) {
+                    let data = JSON.parse(xhttp.responseText);
+                    success(data);
+                }
+            };
+            xhttp.open("GET", url);
+            xhttp.send();
+        }
+    </script>
+    <script>
+        window.onload = function() {
+            let author_input = document.querySelector('#author_input')
+            let author_bt = document.querySelector('#author_bt')
+            let tag_input = document.querySelector('#tag_input')
+            let tag_bt = document.querySelector('#tag_bt')
+            let quote_list = document.querySelector('#quote_list')
+            let my_url = 'https://favqs.com/api/quotes/?filter='
+
+            function singleFilter(filter_value, filter_type) {
+                quote_list.innerText = ''
+                if (filter_value.length > 0) {
+                    my_url += filter_value + '&type=' + filter_type
+                } else {
+                    alert('enter a value for ' + filter_type)
+                    return
+                }
+                http_get(my_url, function(data) {
+                    console.log(data)
+                    let quotes = data.quotes
+                    for (i=0; i<quotes.length; i++) {
+                        let li = document.createElement('li')
+                        li.innerText = quotes[i].body
+                        quote_list.appendChild(li)
+                    }
+                })
+            }
+
+            function dualFilter(filter_value, filter_type) {
+                quote_list.innerText = ''
+                if (filter_value.length > 0) {
+                    my_url += filter_value + '' +
+                        '&type=' + filter_type
+                } else {
+                    alert('enter a value for ' + filter_type)
+                    return
+                }
+                http_get(my_url, function(data) {
+                    console.log(data)
+                    let quotes = data.quotes
+                    for (i=0; i<quotes.length; i++) {
+                        let li = document.createElement('li')
+                        li.innerText = quotes[i].body
+                        quote_list.appendChild(li)
+                    }
+                })
+            }
+
+            author_bt.onclick = function() {
+                if (author_input.length > 0 && tag_input.length > 0) {
+
+                }
+                singleFilter(author_input.value, 'author')
+            }
+            tag_bt.onclick = function() {
+                singleFilter(tag_input.value, 'tag')
+            }
+        }
+    </script>
+    <style>
+        body {
+
+        }
+        .label {
+            display: inline-block;
+            width: 6em;
+            text-align: right;
+            padding: 5px;
+        }
+        #list_container {
+            margin-left: 6em;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <title>RANDOM QUOTE</title>
+</head>
+<body>
+    <div id="input_div">
+        <div>Keyword</div>
+        <div>Author</div>
+        <div>Type-Tag</div>
+        <div>Upvote Minimum</div>
+        <input type="text" id="keyword_input"/>
+        <input type="text" id="author_input"/>
+        <input type="text" id="tag_input"/>
+        <input type="text" id="upvote_input"/>
+    </div>
+    <button id="search_bt">Search</button>
+    <div id="list_container">
+        <h3><u>Quotes</u></h3>
+        <ul id="quote_list"></ul>
+    </div>
+</body>
+</html>
