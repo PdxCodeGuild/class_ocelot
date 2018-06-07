@@ -4,14 +4,29 @@
     <meta charset="UTF-8">
     <title>Any API Text to Speech</title>
 
+    <style>
+        #text_input{
+            height: 500px;
+            width: 500px;
+            word-wrap: normal;
+        }
+    </style>
+
 </head>
 <body>
 
 <script src="http://code.responsivevoice.org/responsivevoice.js"></script>
 
-<input id="text_input" type="text" value="bananananananabanabananabanannanabanananana and My sprinkler goes like thisstststststststststststststststststststststststst"/>
+<textarea id="text_input">bananananananabanabananabanannanabanananana and My sprinkler goes like thisstststststststststststststststststststststststst</textarea>
 
-<input onclick="responsiveVoice.speak(text_input.value);" type="button" value="Say it!" />
-
+<button id="speak_bt" type="button">Say It!</button>
+<script>
+    let text_input = document.querySelector('#text_input')
+    let speak_bt = document.querySelector('#speak_bt')
+    speak_bt.onclick = function() {
+        let text = text_input.textContent
+        responsiveVoice.speak(text);
+    }
+</script>
 </body>
 </html>
