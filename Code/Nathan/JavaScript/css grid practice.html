@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .wrapper{
+            display: grid;
+            /*main div = 70, sidebar div = 30*/
+            grid-template-columns: 70% 30%;
+            grid-gap:1em
+        }
+        .wrapper > div{
+            background: #eee;
+            padding: 1em
+        }
+        .wrapper> div:nth-child(odd){
+            background: #ddd
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div>1.Lorem</div>
+        <div>2.lorem</div>
+    </div>
+</body>
+</html>
