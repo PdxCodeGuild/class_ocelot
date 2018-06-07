@@ -139,6 +139,9 @@
         }
     }
 
+    function randomRange(lower, upper){
+        return lower + Math.random()*(upper-lower)
+    }
     function drawScore() {
         ctx.font = "16px Arial";
         ctx.fillStyle = "#0095DD";
@@ -167,15 +170,15 @@
             dy = -dy;
         } else if (y + dy > canvas.height - ballRadius) {
             if (x > paddleX && x < paddleX + paddleWidth / 2) {//leftside
-                let velocity = -(dy + bounceCounter * .1)
+                let velocity = -(dy + bounceCounter * .4)
                 dy = velocity;
-                dx = dx
+                dx = dx*randomRange(0.8,1.2)
                 bounceCounter += 1
             } else if (x > paddleX + paddleWidth/2 && x < paddleX + paddleWidth) {//rightside
-                let velocity = -(dy + bounceCounter * .2)
+                let velocity = -(dy + bounceCounter * .4)
                 dy = velocity;
                 bounceCounter += 1
-                dx = -(Math.random()*100)+dx
+                dx = -dx*randomRange(0.8,1.2)
             } else {
                 lives--;
                 let bounceCounter = 2

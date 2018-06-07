@@ -5,26 +5,41 @@
     <title>Title</title>
     <style>
         li{
-            width: 400px;
-            display: flex;
             font-family: Arial;
             border-style: solid;
             padding: 5px;
             margin: 5px;
         }
+        .wrapper{
+            display: grid;
+            /*main div = 70, sidebar div = 30*/
+            grid-template-columns: 50% 50%;
+            grid-gap:1em
+        }
+        .wrapper > button {
+            background: #eee;
+            padding: 1em
+        }
+        .wrapper> button:nth-child(odd){
+            background: #ddd
+        }
     </style>
 </head>
     <body>
-        <button id ="stop_bt">Stop</button>
-        <button id = "clear_bt">Clear</button>
-        <ul id="quotelist"></ul>
+        <div class="wrapper">
+            <button id="stop_bt">Stop</button>
+            <button id="clear_bt">Clear</button>
+            <ul id="quotelist"></ul>
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvWemBUEGlTe7KajWmMrJCo2K309yoSVsxNDvq2ejcrDQ26gtCJw">
+
+        </div>
     <script>
         let quotelist = document.querySelector('#quotelist')
         let stop_bt = document.querySelector('#stop_bt')
         let clear_bt = document.querySelector("#clear_bt")
 
         // define elements list and stop button
-        function http_get(url, success) {        //ajax request lines 11 - 20
+        function http_get(url, success) {        //ajax request lines 27 - 36
             let xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function () {
                 if (this.readyState === 4 && this.status === 200) {
