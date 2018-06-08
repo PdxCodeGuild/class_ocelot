@@ -16,7 +16,7 @@
 <div id="main_div_1">
     <!--<input type="text" v-model=-->
     <!--<input type="text"/>-->
-    <span {{lyrics}} </span>
+    <pre> {{lyrics}} </pre>
 </div>
 
 
@@ -34,24 +34,25 @@
     // console.log(url)
 
         el: '#main_div_1',
-            data: {},
-
+        data: {
+            lyrics: ''
+        },
 
         methods: {
             loadSongData() {
                 this.$http.get(lyric_api_url).then(response => {
-                    let data = response.body
+                    let data = response.body.result
                     // let lyrics = response.body.bodyText
 
-                    console.log(lyrics)
+                    console.log(data)
+
+                    this.lyrics = data.track.text
 
                 }, response => {
                     // error callback
                 });
             }
         },
-
-
 
         created: function () {
             this.loadSongData()
