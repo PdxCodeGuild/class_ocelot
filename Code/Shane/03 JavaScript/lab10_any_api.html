@@ -69,34 +69,54 @@
 <body>
 
 <div id="app">
-    {{ message }}
 
     <div>
-        <button v-on:click='foass'>This</button>
+        <button v-on:click='foass'>Let the insults begin</button>
     </div>
+    <div>
+        <p>From: <input v-model='name_from' placeholder='Your name'/></p>
+        <p>To: <input v-model='name_to' placeholder='name_to'/></p>
+        <p>Verb: <input v-model='action' placeholder='Action'/></p>
+        <p>Some Thing: <input v-model='something' placeholder='something'/></p>
+        <p>A Tool: <input v-model='tool' placeholder=tool'/></p>
+        <p>Do: <input v-model='doing' placeholder='doing'/></p>
 
+    </div>
+    {{message}}
 </div>
-
-
 
 
 <script>
     var app = new Vue({
         el: '#app',
         data: {
-            message: 'this'
+            message: '',
+            message2: '',
+            name_to: 'Steve',
+            name_from: 'Shane',
+            language: 'English',
+            action: 'running',
+            something: "the thing",
+            company: 'Microsoft',
+            tool: 'a hammer',
+            doing: 'do',
+            thing: 'thing',
         },
         methods: {
             foass() {
+                let app = this
                 let all_url = 'https://www.foaas.com/operations'
-                let name_to = 'Steve'
-                let name_from = 'Shane'
-                let full_url = base_url = 'https://www.foaas.com'
-                let language = 'English'
-                let action = ''
-                let something = "thing"
-                let company = name_to
-                let tool = 'a hammer'
+                let name_to = this.name_to
+                let name_from = this.name_from
+                let full_url = 'https://www.foaas.com'
+                let base_url = 'https://www.foaas.com'
+                let language = this.language
+                let action = this.action
+                let something = this.something
+                let company = this.name_to
+                let tool = this.tool
+                let doing = this.doing
+                let thing = this.thing
                 console.log(base_url)
 
                 function getRandomInt(min, max) {
@@ -124,33 +144,32 @@
 
                     full_url += data[getRandomInt(0, data.length - 1)].url
 
-                    //Need to create a for loop to check for all variables and
-                    //replace them
 
-                    if (full_url.includes(':from')) {
-                        r_full_url = full_url.replace('from', name_from)
-                        full_url = r_full_url
-                        console.log(full_url)
-                    }
-
-                    if (full_url.includes(':name')) {
-                        r_full_url = full_url.replace('name', name_to)
-                        full_url = r_full_url
-                        console.log(full_url)
-                    }
+                    full_url = full_url.replace(':from', name_from)
+                        .replace(':name', name_to)
 
                     http_get(full_url, function (data) {
-                        console.log(data)
+                        //Clean Version
                         responsiveVoice.setDefaultVoice("US English Female");
-                        this.message = data.message
-                        responsiveVoice.speak(data.message)
+                        responsiveVoice.speak(data.message.replace('fuck', 'beep')
+                                                        .replace('Fuck', 'beep')
+                                                        .replace('fucking', 'beeping')
+                        .replace('fucking', 'beeping')
+                        .replace('fucks', 'beeping'))
+
+
+
+
+                        // The real version
+                        // responsiveVoice.speak(data.message)
+                        app.message = data.message
                     })
                 })
             }
         },
-        mounted: function () {
-            this.foass()
-        }
+        // mounted: function () {
+        //     this.foass()
+        // }
     })
 </script>
 
