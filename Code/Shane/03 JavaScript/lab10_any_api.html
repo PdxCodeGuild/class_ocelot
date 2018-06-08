@@ -64,104 +64,106 @@
     </style>
 
 </head>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="http://code.responsivevoice.org/responsivevoice.js"></script>
 <body>
-<!--selectable radio buttons for choosing if the quotes are rolled at a set interval-->
-<div id="license">
-    <p>License information:</p>
-    <p>GLWT Public License</p>
-    <p>Copyright (c) [2018] [Shane Cheek]</p>
 
-    <p>The author has no fucking clue what the code in this project does.
-        It might just work or not, there is no third option.</p>
-
-    <p>Everyone is permitted to copy, distribute, modify, merge, sell, publish,
-        sublicense or whatever you want with this software but at your OWN RISK.</p>
-
-
-    <p>GOOD LUCK WITH THAT PUBLIC LICENSE</p>
-    <p>TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION, AND MODIFICATION</p>
-
-    <p>0. You just DO WHAT THE FUCK YOU WANT TO as long as you NEVER LEAVE A
-        TRACE TO TRACK THE AUTHOR of the original product.</p>
-
-    <p>IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-        DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,</p>
-    <p>ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-        DEALINGS IN THE SOFTWARE.</p>
-
-    <p>Good luck</p>
+<div id="app">
+  {{ message }}
 </div>
 
-<p>Please select your preferred method:</p>
+<!--<div>-->
 
-<label class="switch">
-    <input type="checkbox">
-    <span class="slider round"></span>
-</label>
+<!--<label class="switch">-->
+    <!--<input type="checkbox">-->
+    <!--<span class="slider round"></span>-->
+<!--</label>-->
 
-<label class="switch">
-    <input type="checkbox" checked for="this">
-    <span class="slider round"></span>
-</label>
+<!--<label class="switch">-->
+    <!--<input type="checkbox" checked for="this">-->
+    <!--<span class="slider round"></span>-->
+<!--</label>-->
 
-<input type="radio" id="contactChoice1"
-       name="contact" value="Automatic">
+<!--<input type="radio" id="contactChoice1"-->
+       <!--name="contact" value="Automatic">-->
 
+<!--<input type="radio" id="contactChoice2"-->
+       <!--name="contact" value="phone">-->
 
-<input type="radio" id="contactChoice2"
-       name="contact" value="phone">
+<!--<input type="radio" id="contactChoice3"-->
+       <!--name="contact" value="mail">-->
 
+<!--<button type="submit">Submit</button>-->
 
-<input type="radio" id="contactChoice3"
-       name="contact" value="mail">
-
-
-<button type="submit">Submit</button>
-
-
-<!--name of the cussed-->
-<input id="to_person" onfocus="this.value=''" value="Name of your favorite Person">
-
-
-<script src="http://code.responsivevoice.org/responsivevoice.js"></script>
-
-<textarea id="text_input">bananananananabanabananabanannbanabanananbana and My sprinkler
-    goes like thisststststststststststststststststststststststststs</textarea>
-
-<button id="speak_bt" type="button">Say It!</button>
+<!--&lt;!&ndash;name of the cussed&ndash;&gt;-->
+<!--<input id="to_person" onfocus="this.value=''" value="Name of your favorite Person">-->
+<!--</div>-->
 
 <script>
-
-    let url = 'https://www.foaas.com/operations'
-
-    function http_get(url, success) {
-        let xhttp = new XMLHttpRequest()
-        xhttp.onreadystatechange = function () {
-            if (this.readyState === 4 && this.status === 200) {
-                let data = JSON.parse(xhttp.responseText)
-                success(data)
-                console.log(data)
-            }
-        }
-        xhttp.open("GET", url)
-        xhttp.send()
-    }
-
-    http_get(url, function (data) {
-        return (data[0].name)
-    })
 
 
 </script>
 
 
 <script>
-    let text_input = document.querySelector('#text_input')
-    let speak_bt = document.querySelector('#speak_bt')
-    speak_bt.onclick = function () {
-        let text = text_input.textContent
-        responsiveVoice.speak(text)
-    }
+    var app = new Vue({
+        el: '#app',
+        data: {
+            message: 'Hello Vue!'
+        },
+        methods: {
+
+        },
+        created: function() {
+            let all_url = 'https://www.foaas.com/operations'
+            let name_to = 'You'
+            let name_from = 'Shane'
+            let full_url = base_url = 'https://www.foaas.com'
+                console.log(base_url)
+
+            function getRandomInt(min, max) {
+                return Math.floor(Math.random() * (max - min + 1)) + min
+            }
+
+            function http_get(url, success) {
+                let xhttp = new XMLHttpRequest()
+                xhttp.onreadystatechange = function () {
+                    if (this.readyState === 4 && this.status === 200) {
+                        console.log('RAW RESPONSE')
+                        console.log(xhttp.responseText)
+                        let data = JSON.parse(xhttp.responseText)
+                        success(data)
+
+                    }
+                }
+                xhttp.open("GET", url)
+                xhttp.setRequestHeader('Accept', 'application/json')
+                xhttp.send()
+            }
+
+
+            http_get(all_url, function (data) {
+
+                mydata = data
+
+                let r_full_url = ''
+
+                full_url += data[getRandomInt(0,data.length-1)].url
+                console.log(full_url)
+
+                if(full_url.includes('from')){
+                    r_full_url = full_url.replace('from',name_from)
+                }
+
+                http_get(r_full_url, function (data) {
+                    console.log(data)
+                })
+                responsiveVoice.speak(data[21].name)
+            })
+
+
+        }
+    })
 </script>
 
 </body>
