@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8"/>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+
+
+
+
+</head>
+<body>
+
+<!-- basic Vue -->
+
+
+<div id="main_div_1">
+    <!--<input type="text" v-model=-->
+
+</div>
+
+
+<script>
+    const url = 'https://favqs.com/api/qotd'
+    var app = new Vue({
+        el: '#main_div_1',
+        data: {},
+
+
+        methods: {
+            loadTheText() {
+                this.$http.get(url).then(response => {
+                    let data = response.body
+                    console.log(data)
+                    // for (let i=0; i<data.)
+                    // console.log(response)
+
+                }, response => {
+                    // error callback
+                });
+            }
+        },
+
+
+
+        created: function () {
+            this.loadTheText()
+        }
+    })
+
+</script>
+
+
+</body>
+</html>
+
