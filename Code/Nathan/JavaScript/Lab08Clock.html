@@ -7,10 +7,13 @@
         body {
             font-family: 'Courier New', sans-serif;
             text-align: center;
+            background: url("https://www.pngarts.com/files/1/Globe-PNG-Pic.png")
         }
         #clock_div {
             font-size: 30px;
             margin: 20px;
+            border-width:5px;
+            border-style:groove;
         }
     </style>
 </head>
@@ -36,8 +39,6 @@
             var Current_Time = `${M}:${D}:${Y}:${H}:${Mins}:${S}`;
             clock_div.innerHTML = Current_Time
         }
-
-
         var Clock_Interval = setInterval(Full_Time_Display, 1000);
 
     </script>

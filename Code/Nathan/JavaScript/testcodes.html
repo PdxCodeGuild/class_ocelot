@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html>
+
+
+var bounceCounter = 0
+
+let velocity = dy + bounceCounter*1.02
+          dy = -velocity;
+          bounceCounter += 1
+
+          console.log(bounceCounter)
+          console.log(velocity)
+        }
+        //            right side                        left side
+        else if(x > paddleX + paddleWidth/2 && x < paddleX + paddleWidth ){
+            Math.abs(x)                                     -Math.abs(x)

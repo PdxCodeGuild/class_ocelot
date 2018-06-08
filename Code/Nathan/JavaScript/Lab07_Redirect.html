@@ -15,17 +15,17 @@
         <div id="counter"></div>
         <script>
             let counter = document.querySelector('#counter');
-            let c = 5;
+            let t = 5;
             setInterval(function(){
-                counter.innerText = c;
-                if (c === 0){
+                counter.innerText = t;
+                if (t === 0){
                     let urls = ['https://www.twitch.tv',
                                 'http://wtffunfact.com',
                                 'https://www.google.com'];
                     let i = Math.floor(Math.random()*urls.length)
                     window.location = urls[i]
                 }
-                    c --;
+                    t --;
             }, 1000)
 
         </script>
