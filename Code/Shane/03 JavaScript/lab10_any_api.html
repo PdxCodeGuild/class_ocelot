@@ -72,53 +72,26 @@
   {{ message }}
 </div>
 
-<!--<div>-->
-
-<!--<label class="switch">-->
-    <!--<input type="checkbox">-->
-    <!--<span class="slider round"></span>-->
-<!--</label>-->
-
-<!--<label class="switch">-->
-    <!--<input type="checkbox" checked for="this">-->
-    <!--<span class="slider round"></span>-->
-<!--</label>-->
-
-<!--<input type="radio" id="contactChoice1"-->
-       <!--name="contact" value="Automatic">-->
-
-<!--<input type="radio" id="contactChoice2"-->
-       <!--name="contact" value="phone">-->
-
-<!--<input type="radio" id="contactChoice3"-->
-       <!--name="contact" value="mail">-->
-
-<!--<button type="submit">Submit</button>-->
-
-<!--&lt;!&ndash;name of the cussed&ndash;&gt;-->
-<!--<input id="to_person" onfocus="this.value=''" value="Name of your favorite Person">-->
-<!--</div>-->
-
-<script>
-
-
-</script>
-
 
 <script>
     var app = new Vue({
         el: '#app',
         data: {
-            message: 'Hello Vue!'
+            message: ''
         },
         methods: {
 
         },
         created: function() {
             let all_url = 'https://www.foaas.com/operations'
-            let name_to = 'You'
+            let name_to = 'Steve'
             let name_from = 'Shane'
             let full_url = base_url = 'https://www.foaas.com'
+            let language = 'English'
+            let action = ''
+            let something = "thing"
+            let company = name_to
+            let tool = 'a hammer'
                 console.log(base_url)
 
             function getRandomInt(min, max) {
@@ -129,11 +102,8 @@
                 let xhttp = new XMLHttpRequest()
                 xhttp.onreadystatechange = function () {
                     if (this.readyState === 4 && this.status === 200) {
-                        console.log('RAW RESPONSE')
-                        console.log(xhttp.responseText)
                         let data = JSON.parse(xhttp.responseText)
                         success(data)
-
                     }
                 }
                 xhttp.open("GET", url)
@@ -149,16 +119,27 @@
                 let r_full_url = ''
 
                 full_url += data[getRandomInt(0,data.length-1)].url
-                console.log(full_url)
 
-                if(full_url.includes('from')){
+                //Need to create a for loop to check for all variables and
+                //replace them
+
+                if(full_url.includes(':from')){
                     r_full_url = full_url.replace('from',name_from)
+                    full_url = r_full_url
+                    console.log(full_url)
                 }
 
-                http_get(r_full_url, function (data) {
+                if(full_url.includes(':name')){
+                    r_full_url = full_url.replace('name',name_to)
+                    full_url = r_full_url
+                    console.log(full_url)
+                }
+
+                http_get(full_url, function (data) {
                     console.log(data)
+                    responsiveVoice.speak(data.message)
                 })
-                responsiveVoice.speak(data[21].name)
+
             })
 
 
