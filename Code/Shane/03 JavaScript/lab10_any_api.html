@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Star Wars API</title>
+    <title>tts++</title>
 
     <style>
         .switch {
@@ -58,7 +58,7 @@
             border-radius: 50%;
         }
 
-        #license{
+        #license {
             font-size: 5px;
         }
     </style>
@@ -122,11 +122,45 @@
 <!--name of the cussed-->
 <input id="to_person" onfocus="this.value=''" value="Name of your favorite Person">
 
+
+<script src="http://code.responsivevoice.org/responsivevoice.js"></script>
+
+<textarea id="text_input">bananananananabanabananabanannbanabanananbana and My sprinkler
+    goes like thisststststststststststststststststststststststststs</textarea>
+
+<button id="speak_bt" type="button">Say It!</button>
+
 <script>
 
+    let url = 'https://www.foaas.com/operations'
 
-    function smash_button() {
-        console.log(to_person.value)
+    function http_get(url, success) {
+        let xhttp = new XMLHttpRequest()
+        xhttp.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                let data = JSON.parse(xhttp.responseText)
+                success(data)
+                console.log(data)
+            }
+        }
+        xhttp.open("GET", url)
+        xhttp.send()
+    }
+
+    http_get(url, function (data) {
+        return (data[0].name)
+    })
+
+
+</script>
+
+
+<script>
+    let text_input = document.querySelector('#text_input')
+    let speak_bt = document.querySelector('#speak_bt')
+    speak_bt.onclick = function () {
+        let text = text_input.textContent
+        responsiveVoice.speak(text)
     }
 </script>
 
