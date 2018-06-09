@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+    <script src="../local_settings.js"></script>
+    <script>
+        function http_get(url, success) {
+            let xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState === 1) {
+                    xhttp.setRequestHeader('Authorization', 'Token token=' + favQ_api_key)
+                } else if (this.readyState === 4 && this.status === 200) {
+                    let data = JSON.parse(xhttp.responseText);
+                    success(data);
+                }
+            };
+            xhttp.open("GET", url);
+            xhttp.send();
+        }
+    </script>
+    <script>
+        function initMap() {
+            let directionsService = new google.maps.DirectionsService()
+            let directionsDisplay = new google.maps.DirectionsRenderer()
+            let north_detroit = new google.maps.LatLng(42.624470, -83.091716);
+            let mapOptions = {
+                zoom:7,
+                center: north_detroit
+            }
+            let map = new google.maps.Map(document.getElementById('map'), mapOptions);
+            directionsDisplay.setMap(map);
+
+            directionsDisplay.setPanel(document.getElementById('directionsPanel'));
+        }
+
+        function calcRoute(directionsService, directionsDisplay) {
+            let start = document.getElementById('start').value;
+            let end = document.getElementById('end').value;
+            let request = {
+                origin:start,
+                destination:end,
+
+
+
+                travelMode: 'DRIVING'
+            };
+
+            directionsService.route(request, function(response, status) {
+                if (status == 'OK') {
+                    directionsDisplay.setDirections(response);
+                }
+            });
+        }
+    </script>
+    <style>
+        body {
+            text-align: center;
+            font-family: 'Courier New', sans-serif;
+        }
+        #map {
+            height: 100%;
+        }
+        #input_div {
+            margin: 2em;
+        }
+        #address_span, #address_input, #search_bt {
+            font-size: 2em;
+        }
+        #address_not_found {
+            margin: 2em;
+            font-size: 2em;
+        }
+        #stores_container {
+            display: flex;
+            flex-direction: row;
+            align-items: stretch;
+            width: 80%;
+            transform: translateX(10%);
+        }
+        #stores_container > div {
+          flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div id="input_div">
+        <span id="address_span">Address:</span>
+        <input type="text" id="address_input"/>
+        <button id="search_bt">Search</button>
+    </div>
+
+    <div id="stores_container"></div>
+    <div id="address_not_found" style="color: red; display: none">Address not found</div>
+    <div id="map" style="float:left;width:70%; height:100%"></div>
+    <div id="directionsPanel" style="float:right;width:30%;height 100%"></div>
+
+    <script>
+        let search_bt = document.querySelector('#search_bt')
+        let address_not_found = document.querySelector('#address_not_found')
+        let address_input = document.querySelector('#address_input')
+        let stores_container = document.querySelector('#stores_container')
+
+        let stores = [{
+                short_name: 'cl',
+                long_name: 'Clinton',
+                street_address: '36845 Groesbeck Highway',
+                city: 'Clinton Township',
+                state: 'MI',
+                zip: 48035,
+                lat: 42.568425,
+                long: -82.913575
+            },{
+                short_name: 'nb',
+                long_name: 'New Baltimore',
+                street_address: '35611 Green St.',
+                city: 'New Baltimore',
+                state: 'MI',
+                zip: 48047,
+                lat: 42.676644,
+                long: -82.744112
+            },{
+                short_name: 'sh',
+                long_name: 'Shelby',
+                street_address: '6525 23 Mile Road',
+                city: 'Shelby Township',
+                state: 'MI',
+                zip: 48316,
+                lat: 42.669913,
+                long: -83.047171
+            },{
+                short_name: 'or',
+                long_name: 'Orion',
+                street_address: '3437 S. Baldwin Rd.',
+                city: 'Orion Township',
+                state: 'MI',
+                zip: 48359,
+                lat: 42.729982,
+                long: -83.307240
+        }]
+
+        for (i=0; i<stores.length; i++) {
+            let store_div = document.createElement('div')
+            let store_name = document.createElement('h2')
+            let store_address = document.createElement('p')
+            let store_city_state_zip = document.createElement('p')
+            let blank_results = document.createElement('p')
+
+            store_name.innerText = stores[i].long_name
+            store_address.innerText = stores[i].street_address
+            store_city_state_zip.innerText = stores[i].city + ', ' +
+                                             stores[i].state + ' ' +
+                                             stores[i].zip
+
+            stores[i].name_element = store_name
+            stores[i].results_element = blank_results
+            store_div.appendChild(store_name)
+            store_div.appendChild(store_address)
+            store_div.appendChild(store_city_state_zip)
+            store_div.appendChild(blank_results)
+            stores_container.appendChild(store_div)
+        }
+
+        search_bt.onclick = function() {
+            address_not_found.style.display = 'none'
+            if (address_input.value.trim() != '') {
+                let store_travel = []
+                for (i=0; i<stores.length; i++) {
+                    let full_address = stores[i].street_address + ', ' +
+                                       stores[i].city + ', ' +
+                                       stores[i].state + ' ' +
+                                       stores[i].zip
+                    let url = 'https://maps.googleapis.com/maps/api/directions/json?' +
+                              `origin=${full_address}&` +
+                              `destination=${address_input.value}&` +
+                              `key=${gMaps_api_key}`
+                    let store = stores[i]
+                    http_get(url, function(data) {
+                        console.log(data)
+                        let trip_minutes = Math.round(data.routes[0].legs[0].duration.value / 60)
+                        let trip_miles =Math.round(data.routes[0].legs[0].distance.value / 1609.344 * 10) / 10
+                        store_travel.push({
+                            name: store.name_element,
+                            result: store.results_element,
+                            time: trip_minutes,
+                            distance: trip_miles
+                        })
+                        if (store_travel.length === stores.length) {
+                            store_travel.sort(function(a, b) {
+                                return a.time - b.time
+                            })
+                            let color_order = ['green', 'black', 'black', 'red']
+                            for (let j=0; j<store_travel.length; ++j) {
+                                store_travel[j].name.style.color = color_order[j]
+                                store_travel[j].name.style.fontWeight = 'bolder'
+                                store_travel[j].result.style.color = color_order[j]
+                                store_travel[j].result.style.fontWeight = 'bolder'
+                                store_travel[j].result.innerText = store_travel[j].time + ' min' + '\xa0\xa0' + '-' + '\xa0\xa0' +
+                                                                   store_travel[j].distance + ' miles'
+                            }
+                        }
+                    })
+                }
+
+                let googles_response = true
+                if (!googles_response) {
+                    address_not_found.style.display = ''
+                    address_not_found.innerText = 'Address not found'
+                }
+
+            } else {
+                address_not_found.innerText = 'Enter an address'
+                address_not_found.style.display = ''
+            }
+        }
+
+        // https://maps.googleapis.com/maps/api/directions/json?origin=Toronto&destination=Montreal&key=YOUR_API_KEY
+    </script>
+</body>
+</html>

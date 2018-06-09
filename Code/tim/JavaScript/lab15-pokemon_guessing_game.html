@@ -1,0 +1,233 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Poke-Guess</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+    <script src="http://pokeapi.co/api/v2/language/9/"></script>
+    <style>
+        body {
+            margin: 20px;
+            background-color: black;
+            color: white;
+            text-align: center;
+        }
+        #reg_label, #hard_label{
+            margin-right: 50px;
+        }
+        #options_container {
+            margin-top: 50px;
+            margin-bottom: 50px;
+        }
+        #options_container > label {
+            font-size: 2em;
+        }
+        #play_container {
+            display: inline-flex;
+            margin-bottom: 20px;
+        }
+        #play_container div {
+            font-size: 3em;
+            margin-right: 20px;
+        }
+        #play_container input {
+            font-size: 2em;
+            width: 50px;
+            margin-right: 20px;
+            text-align: center;
+        }
+        button {
+            font-size: 2em;
+        }
+        img {
+            margin: 10px;
+            border: 1px solid white;
+        }
+        img:hover {
+            cursor: pointer;
+            border: 1px solid red;
+        }
+        #question_div {
+            margin-top: 1em;
+            font-size: 3em;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div id="options_container">
+            <input type="radio" name="mode" checked="checked" v-on:click="set_mode('regular')">
+            <label id="reg_label">Regular</label>
+            <input type="radio" name="mode" v-on:click="set_mode('hard')">
+            <label id="hard_label">Hard</label>
+            <input type="radio" name="mode" v-on:click="set_mode('abilities')">
+            <label>Ability</label>
+        </div>
+        <div id="play_container">
+            <div>how many pokemon</div>
+            <input type="text" v-model="game_count">
+            <button v-on:click="choose_play">play</button>
+        </div>
+        <br>
+        <div text-align="center" v-for="poke in pokemon" style="display: inline-flex">
+            <img v-bind:src="poke.img" v-on:click="select_pokemon(poke)"
+                height="200px" width="auto"/>
+        </div>
+        <div id="question_div" v-if="pokemon.length == game_count">{{question}}</div>
+    </div>
+    <script>
+        let app = new Vue({
+            el: '#app',
+            data: {
+                game_count: 3,
+                pokemon: [],
+                correct_index: 0,
+                poke_count: 0,
+                question: '',
+                correct_answer: {},
+                play_mode: 'regular',
+                num_of_types: 18
+            },
+            methods: {
+                set_mode (curr_mode) {
+                    this.play_mode = curr_mode
+                },
+                choose_play() {
+                    this.pokemon = []
+                    switch(this.play_mode) {
+                        case 'regular':
+                            this.play_regular()
+                            break
+                        case 'hard':
+                            this.play_hard()
+                            break
+                        case 'abilities':
+                            this.play_abilities()
+                    }
+                },
+                play_regular() {
+                    for (let i=0; i<this.game_count; i++) {
+                        let rand_index = Math.floor(Math.random() * this.poke_count)
+                        this.$http.get('http://pokeapi.co/api/v2/pokemon/' + rand_index).then(response => {
+                            let data = response.body
+                            let poke_obj = {
+                                name: data.name,
+                                img: data.sprites.front_shiny
+                            }
+                            this.pokemon.push(poke_obj)
+                            if (this.pokemon.length == this.game_count) {
+                                let random_poke = this.pokemon[Math.floor(Math.random() * this.game_count)]
+                                this.correct_answer = random_poke
+                                this.question = 'Which one is ' + random_poke.name + '?'
+                            }
+                        }, response => {
+                            alert('something went wrong')
+                        })
+                    }
+                },
+                play_hard() {
+                    let rand_type = Math.floor(Math.random() * this.num_of_types) + 1
+                    this.$http.get('http://pokeapi.co/api/v2/type/' + rand_type).then(response => {
+                        let type_data = response.body
+                        let num_of_pokemon = type_data.pokemon.length
+                        for (let i=0; i<this.game_count; i++) {
+                            let rand_url = type_data.pokemon[Math.floor(Math.random() * num_of_pokemon)].pokemon.url
+                            // console.log(type_data)
+                            this.$http.get(rand_url).then(response => {
+                                let poke_data = response.body
+                                let poke_obj = {
+                                    name: poke_data.name,
+                                    img: poke_data.sprites.front_shiny
+                                }
+                                this.pokemon.push(poke_obj)
+                                if (this.pokemon.length == this.game_count) {
+                                    let random_poke_index = Math.floor(Math.random() * this.game_count)
+                                    let random_poke = this.pokemon[random_poke_index]
+                                    this.correct_answer = random_poke
+                                    this.question = 'Which one is ' + random_poke.name + '?'
+                                }
+                            }, response => {
+                                alert('something went wrong')
+                            })
+                        }
+                    }, response => {
+                        alert('something went wrong')
+                    })
+                },
+                play_abilities() {
+                    for (let i=0; i<this.game_count; i++) {
+                        let rand_index = Math.floor(Math.random() * this.poke_count) + 1
+                        this.$http.get('http://pokeapi.co/api/v2/pokemon/' + rand_index).then(response => {
+                            let data = response.body
+                            let poke_moves = []
+                            for (let j=0; j<data.moves.length; j++) {
+                                poke_moves.push(data.moves[j].move.name)
+                            }
+                            let poke_obj = {
+                                name: data.name,
+                                img: data.sprites.front_shiny,
+                                moves: poke_moves
+                            }
+                            this.pokemon.push(poke_obj)
+                            if (this.pokemon.length == this.game_count) {
+                                let rand_index = Math.floor(Math.random() * this.game_count)
+                                let rand_poke = this.pokemon[rand_index]
+                                this.correct_answer = rand_poke
+                                for (let j=0; j<this.pokemon[rand_index].moves.length; j++) {
+                                    let unique_move = true
+                                    let t_move = this.pokemon[rand_index].moves[j]
+                                    for (let k=0; k<this.game_count; k++) {
+                                        if (rand_index === k) continue
+                                        if (this.pokemon[k].moves.indexOf(t_move) > -1) {
+                                            unique_move = false
+                                            break
+                                        }
+                                    }
+                                    if (unique_move) {
+                                        this.question = 'Which one has the move "' + t_move + '"?'
+                                        break
+                                    }
+                                }
+                            }
+                        }, response => {
+                            alert('something went wrong')
+                        })
+                    }
+                },
+                select_pokemon(poke) {
+                    if (this.play_mode != 'abilities') {
+                        if (poke.name === this.correct_answer.name) {
+                            alert('correct!')
+                            this.choose_play()
+                        } else {
+                            alert('no, that\'s ' + poke.name)
+                        }
+                    } else {
+                        if (poke.name === this.correct_answer.name) {
+                            let alert_txt = 'Correct! It\'s' + poke.name + ', it\'s abilities are...\n'
+                            for (let i=0; i<poke.moves.length; i++) {
+                                alert_txt += poke.moves[i] + ', '
+                            }
+                            alert(alert_txt)
+                            this.choose_play()
+                        } else {
+                            let alert_txt = 'no, that\'s ' + poke.name + ', it\'s abilities are...\n'
+                            for (let i=0; i<poke.moves.length; i++) {
+                                alert_txt += poke.moves[i] + ', '
+                            }
+                            alert(alert_txt.slice(0, alert_txt.length - 2))
+                        }
+                    }
+                }
+            },
+            created: function () {
+                this.$http.get('http://pokeapi.co/api/v2/pokemon-species/?limit=0').then(response => {
+                    this.poke_count = response.body.count
+                })
+            }
+        })
+    </script>
+</body>
+</html>

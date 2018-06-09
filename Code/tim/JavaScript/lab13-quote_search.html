@@ -35,40 +35,38 @@
                     return
                 }
                 http_get(my_url, function(data) {
-                    console.log(data)
                     let quotes = data.quotes
                     for (i=0; i<quotes.length; i++) {
                         let li = document.createElement('li')
-                        li.innerText = quotes[i].body
+                        li.innerHTML = '<em>' + quotes[i].body + '</em> - ' + quotes[i].author
                         quote_list.appendChild(li)
                     }
                 })
             }
 
-            function dualFilter(filter_value, filter_type) {
-                quote_list.innerText = ''
-                if (filter_value.length > 0) {
-                    my_url += filter_value + '' +
-                        '&type=' + filter_type
-                } else {
-                    alert('enter a value for ' + filter_type)
-                    return
-                }
-                http_get(my_url, function(data) {
-                    console.log(data)
-                    let quotes = data.quotes
-                    for (i=0; i<quotes.length; i++) {
-                        let li = document.createElement('li')
-                        li.innerText = quotes[i].body
-                        quote_list.appendChild(li)
-                    }
-                })
-            }
+            // function dualFilter(filter_value, filter_type) {
+            //     quote_list.innerText = ''
+            //     if (filter_value.length > 0) {
+            //         my_url += filter_value + '' +
+            //             '&type=' + filter_type
+            //     } else {
+            //         alert('enter a value for ' + filter_type)
+            //         return
+            //     }
+            //     http_get(my_url, function(data) {
+            //         let quotes = data.quotes
+            //         for (i=0; i<quotes.length; i++) {
+            //             let li = document.createElement('li')
+            //             li.innerText = quotes[i].body
+            //             quote_list.appendChild(li)
+            //         }
+            //     })
+            // }
 
             author_bt.onclick = function() {
-                if (author_input.length > 0 && tag_input.length > 0) {
-
-                }
+                // if (author_input.length > 0 && tag_input.length > 0) {
+                //
+                // }
                 singleFilter(author_input.value, 'author')
             }
             tag_bt.onclick = function() {
@@ -95,16 +93,19 @@
 </head>
 <body>
     <div id="input_div">
-        <div>Keyword</div>
         <div>Author</div>
-        <div>Type-Tag</div>
-        <div>Upvote Minimum</div>
-        <input type="text" id="keyword_input"/>
         <input type="text" id="author_input"/>
+        <button id="author_bt">Search</button>
+        <br>
+        <div>Type-Tag</div>
         <input type="text" id="tag_input"/>
-        <input type="text" id="upvote_input"/>
+        <button id="tag_bt">Search</button>
+        <!--<div>Keyword</div>-->
+        <!--<div>Upvote Minimum</div>-->
+        <!--<input type="text" id="keyword_input"/>-->
+        <!--<input type="text" id="upvote_input"/>-->
     </div>
-    <button id="search_bt">Search</button>
+
     <div id="list_container">
         <h3><u>Quotes</u></h3>
         <ul id="quote_list"></ul>
