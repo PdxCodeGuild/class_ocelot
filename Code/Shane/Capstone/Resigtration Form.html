@@ -6,13 +6,29 @@
 
     <style>
         body {
-            background-color: black;
+            background-color: whitesmoke;
         }
 
         #app {
-            color: white;
-            background-color: darkgrey;
+            padding: 10px;
+            align-self: stretch;
+            margin: auto;
+            width: 800px;
         }
+
+        #additional_info {
+            white-space: nowrap;
+            border: 8px solid #f7f7f7;
+        }
+
+        input:required {
+            border: 1px dashed red;
+        }
+
+        select {
+            padding-left: ;
+        }
+
     </style>
     <script src="https://unpkg.com/vue"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -23,10 +39,39 @@
 
 
 <div id="app">
+    <!--Not needed only for Mock-up-->
+    <div class="is-size-4 has-text-centered is-italic has-text-weight-semibold">
+        <span>Go to the bottom to see the data you fill in:</span><span style='background-color: yellow'>
+        <br>The Key is yellow: </span><span
+            style="background-color: green">The Data is Green</span>
+    </div>
+    <br>
 
+    <!--Dropdown Box for Overall Class Selection-->
     <div class="field is-horizontal">
-        <div class="field-label is-normal">
-            <label class="label">Last Name</label>
+        <!--Remove comment below to stretch the dropdown-->
+        <!--<div class="field is-horizontal has-addons">-->
+        <div class="field-label">
+            <label class="label">Schedule/ Class</label>
+        </div>
+        <div class="field-body">
+            <div class="control is-expanded">
+                <div class="select is-fullwidth">
+                    <select v-model='form.schedule_class' aria-required="true">
+                        <option disabled value=''>Select Schedule/Class</option>
+                        <option>Expert Schedule</option>
+                        <option>Amateur Schedule</option>
+                        <option>Class 60 and class 70 Riders</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--First Name-->
+    <div class="field is-horizontal">
+        <div class="field-label">
+            <label class="label">First Name</label>
         </div>
         <div class="field-body">
             <div class="field">
@@ -37,16 +82,58 @@
         </div>
     </div>
 
+    <!--Last Name-->
+    <div class="field is-horizontal">
+        <div class="field-label">
+            <label class="label">Last Name</label>
+        </div>
+        <div class="field-body">
+            <div class="field">
+                <div class="control">
+                    <input v-model="form.last_name" class="input" type="text" placeholder="Last Name">
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <div>
-        Last name: <input v-model="form.last_name" class="input" type="text" placeholder="Last name">
+    <!--Gender-->
+    <div class="field is-horizontal">
+        <div class="field-label">
+            <label class="label">Gender</label>
+        </div>
+        <div class="field-body">
+            <label class="radio">
+                <input v-model="form.gender" type="radio" name="question" value="Male">
+                Male
+            </label>
+            <label class="radio">
+                <input v-model="form.gender" type="radio" name="question" value="Female">
+                Female
+            </label>
+        </div>
     </div>
-    <div>
-        Gender: <input v-model="form.gender" class="input" type="text" placeholder="Gender">
+
+    <!--Date of Birth-->
+    <div class="field is-horizontal">
+        <div class="field-label">
+            <label class="label">Date of Birth e.g. 01/31/1980</label>
+        </div>
+        <div class="field-body">
+            <div class="field control columns">
+                <span class="column">
+                    <input v-model="form.birth_month" class="input" type="text" placeholder='Month e.g. 01'>
+                </span>
+                <span class="column">
+                    <input v-model="form.birth_day" class="input" type="text" placeholder='Day e.g. 31'>
+                </span>
+                <span class="column">
+                    <input v-model="form.birth_year" class="input" type="text" placeholder='Year e.g. 1980'>
+                </span>
+            </div>
+        </div>
     </div>
-    <div>
-        Date of birth: <input v-model="form.date_of_birth" class="input" type="text" placeholder="Date of birth">
-    </div>
+
+
     <div>
         Email: <input v-model="form.email" class="input" type="text" placeholder="Email">
     </div>
@@ -101,11 +188,47 @@
     <div>
         Ride Together: <input v-model="form.ride_together" class="input" type="text" placeholder="Ride Together">
     </div>
-
-    <div v-for="(value,key) of form">
-        {{key}}: {{ value }} </br><!--placed in data table-->
+    <br>
+    <div class="field">
+        <div class="control">
+            <label class="checkbox">
+                <input type="checkbox">
+                I agree to the <a href="#">Waiver Modal</a>
+            </label>
+        </div>
+        <br>
+        <div class="field is-grouped">
+            <div class="control">
+                <button class="button is-link">Submit</button>
+            </div>
+            <div class="control">
+                <button class="button is-text">Cancel</button>
+            </div>
+        </div>
     </div>
 
+    <br>-----------------------------------------------------------------------------------------------
+    <br><br>
+
+    <div id="additional_info"
+         class="tag is-info is-rounded is-size-5 has-text-centered is-italic has-text-weight-semibold">Below is an
+        example
+        of how the data can be loaded to the database...
+    </div>
+    <br>
+    <div id='additional_info'
+         class="tag is-info is-rounded is-size-5 has-text-centered is-italic has-text-weight-semibold">Currently it's an
+        object (dictionary)(in Key: value) format... See Below
+    </div>
+
+    <br>
+    <div style="font-size: 25px" v-for="(value,key) of form">
+
+        <span style='background-color: yellow'>{{key}}: </span><span style="background-color: green">{{ value }}</span>
+
+    </div>
+
+    {{form.birth_date}}
 </div>
 
 
@@ -117,7 +240,10 @@
                 first_name: '',
                 last_name: '',
                 gender: '',
-                date_of_birth: '',
+                birth_year: '',
+                birth_month: '',
+                birth_day: '',
+                birth_date: '',
                 email: '',
                 phone: '',
                 country: '',
@@ -134,9 +260,16 @@
                 omra_membership: '',
                 bike_make: '',
                 ride_together: '',
+                expert_schedule_class: '',
 
             }
+        },
+        computed: {
+            birth_date: function () {
+                return this.birth_year + this.birth_month + this.birth_day
+            }
         }
+
     });
 
 
