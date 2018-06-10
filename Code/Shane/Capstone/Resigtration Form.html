@@ -15,16 +15,29 @@
         }
     </style>
     <script src="https://unpkg.com/vue"></script>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.4/css/bulma.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
 </head>
 <body>
 
 
 <div id="app">
-    <div>
-        First Name: <input v-model="form.first_name" class="input" type="text" placeholder="First Name">
+
+    <div class="field is-horizontal">
+        <div class="field-label is-normal">
+            <label class="label">Last Name</label>
+        </div>
+        <div class="field-body">
+            <div class="field">
+                <div class="control">
+                    <input v-model="form.first_name" class="input" type="text" placeholder="First Name">
+                </div>
+            </div>
+        </div>
     </div>
+
+
     <div>
         Last name: <input v-model="form.last_name" class="input" type="text" placeholder="Last name">
     </div>
@@ -89,9 +102,9 @@
         Ride Together: <input v-model="form.ride_together" class="input" type="text" placeholder="Ride Together">
     </div>
 
-        <div v-for="(value,key) of form">
-            {{key}}: {{ value }} </br><!--placed in data table-->
-            </div>
+    <div v-for="(value,key) of form">
+        {{key}}: {{ value }} </br><!--placed in data table-->
+    </div>
 
 </div>
 
