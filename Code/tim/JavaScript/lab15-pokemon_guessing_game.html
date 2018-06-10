@@ -24,17 +24,17 @@
             margin-top: 50px;
             margin-bottom: 50px;
         }
-        #options_container > label {
+        #options_container label {
             font-size: 2em;
         }
         #play_container {
             display: inline-flex;
             margin-bottom: 20px;
         }
-        #play_container > div {
+        #play_container div {
             font-size: 3em;
         }
-        #play_container > input {
+        #play_container input {
             font-size: 2em;
             width: 50px;
             text-align: center;
@@ -56,11 +56,7 @@
             margin: 10px;
             border: 1px solid white;
         }
-        .model_img {
-            height: 50%;
-            width: auto;
-        }
-        img:hover {
+        .choice_img:hover {
             cursor: pointer;
             border: 1px solid red;
         }
@@ -79,44 +75,41 @@
             overflow: auto; /* Enable scroll if needed */
             background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
         }
-        #character_modal {
+        #modal_character {
             display: flex;
-            background-color: #fefefe;
+            background: url('https://vignette.wikia.nocookie.net/ssb/images/1/1f/SSBWU_Pok%C3%A9mon_Stadium_2.jpg/revision/latest?cb=20151113184256') ;
+            background-size: cover;
             margin: 10% auto; /* 15% from the top and centered */
             padding: 20px;
             border: 1px solid #888;
             width: 60%;
             height: 50%;
-            color: black;
+            font: 2em solid white;
+            font-weight: bold;
+            text-shadow: 0 0 5px black
         }
-        #picture_container {
+        #modal_character_pictures {
             flex: 3;
             display: flex;
             flex-direction: column;
-            border: 1px solid black;
+            border: 3px solid white;
             width: 10%;
             height: auto;
         }
-        #label_container {
-            flex: 1;
+        #modal_character_labels {
+            flex: 2;
             display: flex;
             flex-direction: column;
         }
-        #info_container {
+        #modal_character_info {
             flex: 10;
             display: flex;
             flex-direction: column;
             text-align: left;
         }
-        #picture_container * {
+        #modal_character_pictures * {
             flex: 2;
         }
-        /*#label_container *, #info_container * {*/
-            /*transform: translateY(50%)*/
-        /*}*/
-        /*#info_container *:not(:last-child) {*/
-            /*font-size: 3em;*/
-        /*}*/
         .row_0, .row_1, .row_2, .row_3 {
             flex: 1;
         }
@@ -142,8 +135,7 @@
             <input type="text" v-model="game_count">
             <button v-on:click="choose_play" style="background-color: limegreen"><b>play</b></button>
             <button v-on:click="show_hint" style="background-color: dodgerblue"><b>hint</b></button>
-        </div>
-        <br>
+        </div><br>
         <div text-align="center" v-for="poke in pokemon" style="display: inline-flex">
             <div style="display: inline-flex; flex-direction: column">
                 <img class="choice_img" width="200px" height="auto" v-bind:src="poke.img_front" v-on:click="show_modal(poke)"/>
@@ -152,24 +144,24 @@
         </div>
         <div id="question_div" v-if="pokemon.length == game_count">{{ question }}</div>
         <div id="modal_background" v-bind:style="style_obj" v-on:click="hide_modal">
-            <div id="character_modal">
-                <div id="picture_container">
+            <div id="modal_character">
+                <div id="modal_character_pictures">
                     <img class="modal_img" v-bind:src="modal_obj.img_front"/>
                     <img class="modal_img" v-bind:src="modal_obj.img_back"/>
                 </div>
-                <div id="label_container">
+                <div id="modal_character_labels">
                     <div class="row_0">Answer</div>
                     <div class="row_1">Name</div>
                     <div class="row_2">Types</div>
                     <div class="row_3">Abilities</div>
                     <div class="row_4">Moves</div>
                 </div>
-                <div id="info_container">
+                <div id="modal_character_info">
                     <div class="row_0">{{ modal_obj.correct }}</div>
                     <div class="row_1">{{ modal_obj.name }}</div>
                     <div class="row_2">{{ build_comma_list(modal_obj.types) }}</div>
                     <div class="row_3">{{ build_comma_list(modal_obj.abilities) }}</div>
-                    <div class="row_4">{{ build_comma_list(modal_obj.moves) }}</div>
+                    <div class="row_4" style="overflow-y:scroll">{{ build_comma_list(modal_obj.moves) }}</div>
                 </div>
             </div>
         </div>
@@ -246,21 +238,29 @@
                     }
                     return str_out.slice(0, str_out.length - 2)
                 },
+                to_title_case(str) {
+                    return str.replace(
+                        /\w\S*/g,
+                        function(txt) {
+                            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                        }
+                    );
+                },
                 build_poke_obj(data) {
                     let poke_types = []
                     for (let i=0; i<data.types.length; i++) {
-                        poke_types.push(data.types[i].type.name)
+                        poke_types.push(this.to_title_case(data.types[i].type.name))
                     }
                     let poke_abilities = []
                     for (let i=0; i<data.abilities.length; i++) {
-                        poke_abilities.push(data.abilities[i].ability.name)
+                        poke_abilities.push(this.to_title_case(data.abilities[i].ability.name))
                     }
                     let poke_moves = []
                     for (let i=0; i<data.moves.length; i++) {
-                        poke_moves.push(data.moves[i].move.name)
+                        poke_moves.push(this.to_title_case(data.moves[i].move.name))
                     }
                     return {
-                        name: data.name,
+                        name: this.to_title_case(data.name),
                         img_front: data.sprites.front_default,
                         img_back: data.sprites.back_default,
                         stats: data.stats,
@@ -386,7 +386,7 @@
                         })
                     }
                 },
-                hide_modal(poke) {
+                hide_modal() {
                     this.style_obj = {display: 'none'}
                     if (this.modal_obj.correct === 'Correct!') this.choose_play()
                 },
