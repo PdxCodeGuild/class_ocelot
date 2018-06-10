@@ -11,58 +11,79 @@
 
 
 </head>
+
+
+
+
 <body>
-
-
 <div id="main_div_1">
     <!--<input type="text" v-model=-->
     <!--<input type="text"/>-->
-    <pre> {{lyrics}} </pre>
+    <!--<pre> {{lyrics}} </pre>-->
+    <div> {{lyrics_par}}</div>
+    <!--<div v-for="para in lyrics_par"> {{lyrics_par}}</div>-->
+    <!--<div v-for="line in lyrics_lines"> {{lyrics_lines}}</div>-->
+    <!--<div v-for="word in lyrics_words"> {{lyrics_words}}</div>-->
+
+
+
 </div>
 
 
-<script>
+<!--<div id="display_out"></div>-->
 
+<script>
+    // const delim = '\r\n'
     let artist = 'LL Cool J'
     let  song = 'Rock the Bells'
-
-
     const lyric_api_url = `https://orion.apiseeds.com/api/music/lyric/${artist}/${song}?apikey=${lyrics_key}`
 
-    var app = new Vue({
-
-    // console.log(url)
-
-        el: '#main_div_1',
-        data: {
-            lyrics: ''
+    let app = new Vue({                     // the vue app
+        el: '#main_div_1',                  // the app manips this ELEMENT in the DOM
+        data: {                             // the app's data is stored here
+            lyrics: '',                     // defining arrays
+            lyrics_par: [],
+            lyrics_lines: [],
+            lyrics_words: [],
         },
 
         methods: {
             loadSongData() {
                 this.$http.get(lyric_api_url).then(response => {
-                    let data = response.body.result
-                    // let lyrics = response.body.bodyText
+                    let data = response.body.result;
+                    this.lyrics = data.track.text;
 
-                    console.log(data)
+                    // split full text into paragraphs, count thru them, put each para into array
+                    this.lyrics_para_split = this.lyrics.split('\r\n\r\n');
 
-                    this.lyrics = data.track.text
+                    for (let p_count = 0; p_count <= this.lyrics_para_split.length; p_count++) {
+                        // split paras into lines, count thru them, put each line into array
+                        let lines = this.lyrics_para_split[p_count].split('\r\n');
+                        console.log(lyrics_para_split)
 
-                    for (let x = 0; x <= lyrics.length(); x++) {
+                        let par = []  // need to reset par
+                        this.lyrics_lines.push(lines)
+                        for (let line_count = 0; line_count <= lines.length; line_count++) {
+                            console.log(line_count)
+                            let words = lines[line_count].split(' ');
+                            par.push(words);
+
+
+                        }
+                        this.lyrics_words.push(par);
 
                     }
-
-
+                    // console.log(this.lyrics_para_split)
                 }, response => {
                     // error callback
                 });
-            }
+            },
         },
 
         created: function () {
             this.loadSongData()
         }
-    })
+    });
 
 </script>
 
