@@ -2,9 +2,176 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>tts++</title>
+
+    <style>
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            display: none;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+        }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        #license {
+            font-size: 5px;
+        }
+    </style>
+
 </head>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="http://code.responsivevoice.org/responsivevoice.js"></script>
 <body>
+
+<div id="app">
+
+    <div>
+        <button v-on:click='foass'>Let the insults begin</button>
+    </div>
+    <div>
+        <p>From: <input v-model='name_from' placeholder='Your name'/></p>
+        <p>To: <input v-model='name_to' placeholder='name_to'/></p>
+        <p>Verb: <input v-model='action' placeholder='Action'/></p>
+        <p>Some Thing: <input v-model='something' placeholder='something'/></p>
+        <p>A Tool: <input v-model='tool' placeholder=tool'/></p>
+        <p>Do: <input v-model='doing' placeholder='doing'/></p>
+
+    </div>
+    {{message}}
+</div>
+
+
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            message: '',
+            message2: '',
+            name_to: 'Steve',
+            name_from: 'Shane',
+            language: 'English',
+            action: 'running',
+            something: "the thing",
+            company: 'Microsoft',
+            tool: 'a hammer',
+            doing: 'do',
+            thing: 'thing',
+        },
+        methods: {
+            foass() {
+                let app = this
+                let all_url = 'https://www.foaas.com/operations'
+                let name_to = this.name_to
+                let name_from = this.name_from
+                let full_url = 'https://www.foaas.com'
+                let base_url = 'https://www.foaas.com'
+                let language = this.language
+                let action = this.action
+                let something = this.something
+                let company = this.name_to
+                let tool = this.tool
+                let doing = this.doing
+                let thing = this.thing
+                console.log(base_url)
+
+                function getRandomInt(min, max) {
+                    return Math.floor(Math.random() * (max - min + 1)) + min
+                }
+
+                function http_get(url, success) {
+                    let xhttp = new XMLHttpRequest()
+                    xhttp.onreadystatechange = function () {
+                        if (this.readyState === 4 && this.status === 200) {
+                            let data = JSON.parse(xhttp.responseText)
+                            success(data)
+                        }
+                    }
+                    xhttp.open("GET", url)
+                    xhttp.setRequestHeader('Accept', 'application/json')
+                    xhttp.send()
+                }
+
+
+                http_get(all_url, function (data) {
+
+
+                    let r_full_url = ''
+
+                    full_url += data[getRandomInt(0, data.length - 1)].url
+
+
+                    full_url = full_url.replace(':from', name_from)
+                        .replace(':name', name_to)
+
+                    http_get(full_url, function (data) {
+                        //Clean Version
+                        responsiveVoice.setDefaultVoice("US English Female");
+                        responsiveVoice.speak(data.message.replace('fuck', 'beep')
+                                                        .replace('Fuck', 'beep')
+                                                        .replace('fucking', 'beeping')
+                        .replace('fucking', 'beeping')
+                        .replace('fucks', 'beeping'))
+
+
+
+
+                        // The real version
+                        // responsiveVoice.speak(data.message)
+                        app.message = data.message
+                    })
+                })
+            }
+        },
+        // mounted: function () {
+        //     this.foass()
+        // }
+    })
+</script>
 
 </body>
 </html>
