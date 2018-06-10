@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Random Redirecter</title>
+    <style>
+        @font-face {
+            font-family: 'Segment7Standard';
+            src: url(Segment7Standard.otf);
+            font-weight: normal;
+        }
+
+        @font-face {
+            font-family: 'Segment14';
+            src: url(Segment14.otf);
+            font-weight: normal;
+        }
+
+        .html
+
+
+        #countdown {
+            text-align: center;
+            background-color: black;
+            margin: none;
+            width: 100%;
+            font-family: 'Segment7Standard';
+            color: rgba(255, 255, 0, .4);
+            font-size:400px;
+        }
+
+
+        #countdown_msg {
+            text-align: center;
+            background-color: black;
+            margin: none;
+            width: 100%;
+            font-family: 'Segment14';
+            color: rgba(255, 255, 0, .4);
+            font-size:30px;
+        }
+
+                * {
+            box-sizing: border-box;
+        }
+
+    </style>
+
+
+</head>
+<body>
+<div id="countdown_msg"></div>
+
+<div id="countdown"></div>
+
+<script>
+        document.getElementById("countdown_msg").innerHTML = "\nBROWSER  REDIRECT IN...";
+
+        let countdown = document.querySelector('#countdown');
+        let c = 5;
+        let interval = setInterval(function () {
+            countdown.innerText = c;
+            if (c === 0) {
+                clearInterval(interval)
+                let urls = ['http://www.wikipedia.org',
+                    'http://www.reddit.com',
+                    'http://digg.com'];
+                let index = Math.floor(Math.random() * urls.length);
+                window.location = urls[index];
+            }
+            c -= 1;
+
+        }, 1000);
+
+    </script>
+
+</body>
+</html>
+
+
+
+
+

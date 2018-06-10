@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8"/>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <style>
+        body {
+            background-color:black;
+        }
+    </style>
+
+
+</head>
+<body>
+
+<!-- basic Vue -->
+
+
+<div id="main_div_1">
+
+</div>
+
+
+
+<div id="demo">
+    <demo-component name="Eirik"></demo-component>
+    <demo-component name="Jack"></demo-component>
+</div>
+
+
+
+
+<script type="text/x-template" id="test-template">
+    <div class="rootelement">
+        <p><strong>{{ caption }}:</strong> {{ name }}</p>
+        <p>This is a part of the component</p>
+        <other-component></other-component>
+    </div>
+</script>
+
+
+<script>
+
+    //  basic Vue
+    Vue.component('demo-component', {
+        props: ['name'],
+        template: '#test-template',
+        data: function () {
+            return {
+                caption: 'First name'
+            }
+        }
+    });
+
+    Vue.component('other-component', {
+        template: '<p>This is a vue komponent<p>'
+    });
+
+    new Vue({
+        el: '#demo'
+    })
+
+
+
+    //  Vue JSON call
+    {
+        // GET /someUrl
+        this.$http.get('https://favqs.com/api/qotd').then(response => {
+
+            // get body data
+            this.someData = response.body;
+
+        }, response => {
+            // error callback
+        });
+    }
+
+
+</script>
+
+
+
+
+</body>
+</html>
+

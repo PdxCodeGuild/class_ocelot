@@ -42,9 +42,13 @@
         #play_container *:not(:last-child) {
             margin-right: 20px;
         }
-        button{
+        button {
             font-size: 2em;
             width: 100px;
+        }
+        button:hover {
+            cursor: pointer;
+            color: white;
         }
         p {
             font-size: 2em;
@@ -81,34 +85,53 @@
             background-size: cover;
             margin: 10% auto; /* 15% from the top and centered */
             padding: 20px;
-            border: 1px solid #888;
+            border: 5px solid #888;
+            border-radius: 5pt;
             width: 60%;
             height: 50%;
             font: 2em solid white;
             font-weight: bold;
-            text-shadow: 0 0 5px black
+            text-shadow: 0 0 5px black;
+        }
+        #modal_character * {
+            margin: 5px
         }
         #modal_character_pictures {
             flex: 3;
             display: flex;
             flex-direction: column;
             border: 3px solid white;
+            border-radius: 5pt;
             width: 10%;
             height: auto;
         }
+        #modal_character_details {
+            flex: 12;
+            display: flex;
+            flex-direction: row;
+            border: 3px solid white;
+            border-radius: 5pt;
+        }
         #modal_character_labels {
-            flex: 2;
+            flex: 1;
             display: flex;
             flex-direction: column;
+            margin-right: 0;
         }
         #modal_character_info {
-            flex: 10;
+            flex: 5;
             display: flex;
             flex-direction: column;
             text-align: left;
+            margin-left: 0;
         }
         #modal_character_pictures * {
             flex: 2;
+        }
+        #modal_character_labels *, #modal_character_info * {
+            border: 3px solid lightgrey;
+            border-radius: 3px;
+            padding: 10px;
         }
         .row_0, .row_1, .row_2, .row_3 {
             flex: 1;
@@ -136,7 +159,7 @@
             <button v-on:click="choose_play" style="background-color: limegreen"><b>play</b></button>
             <button v-on:click="show_hint" style="background-color: dodgerblue"><b>hint</b></button>
         </div><br>
-        <div text-align="center" v-for="poke in pokemon" style="display: inline-flex">
+        <div v-for="poke in pokemon" style="display: inline-flex">
             <div style="display: inline-flex; flex-direction: column">
                 <img class="choice_img" width="200px" height="auto" v-bind:src="poke.img_front" v-on:click="show_modal(poke)"/>
                 <p>{{ poke.hint }}</p>
@@ -144,24 +167,26 @@
         </div>
         <div id="question_div" v-if="pokemon.length == game_count">{{ question }}</div>
         <div id="modal_background" v-bind:style="style_obj" v-on:click="hide_modal">
-            <div id="modal_character">
+            <div id="modal_character" v-bind:style="accent_color">
                 <div id="modal_character_pictures">
                     <img class="modal_img" v-bind:src="modal_obj.img_front"/>
                     <img class="modal_img" v-bind:src="modal_obj.img_back"/>
                 </div>
-                <div id="modal_character_labels">
-                    <div class="row_0">Answer</div>
-                    <div class="row_1">Name</div>
-                    <div class="row_2">Types</div>
-                    <div class="row_3">Abilities</div>
-                    <div class="row_4">Moves</div>
-                </div>
-                <div id="modal_character_info">
-                    <div class="row_0">{{ modal_obj.correct }}</div>
-                    <div class="row_1">{{ modal_obj.name }}</div>
-                    <div class="row_2">{{ build_comma_list(modal_obj.types) }}</div>
-                    <div class="row_3">{{ build_comma_list(modal_obj.abilities) }}</div>
-                    <div class="row_4" style="overflow-y:scroll">{{ build_comma_list(modal_obj.moves) }}</div>
+                <div id="modal_character_details">
+                    <div id="modal_character_labels">
+                        <div class="row_0">Answer</div>
+                        <div class="row_1">Name</div>
+                        <div class="row_2">Types</div>
+                        <div class="row_3">Abilities</div>
+                        <div class="row_4">Moves</div>
+                    </div>
+                    <div id="modal_character_info">
+                        <div class="row_0">{{ modal_obj.correct }}</div>
+                        <div class="row_1">{{ modal_obj.name }}</div>
+                        <div class="row_2">{{ build_comma_list(modal_obj.types) }}</div>
+                        <div class="row_3">{{ build_comma_list(modal_obj.abilities) }}</div>
+                        <div class="row_4" style="overflow-y:scroll">{{ build_comma_list(modal_obj.moves) }}</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -189,6 +214,30 @@
                     moves: [],
                     hint: '',
                     correct: ''
+                },
+                color_obj: {
+                    normal: ['white', 'black'],
+                    fighting: ['orange', 'black'],
+                    flying: ['yellow', 'black'],
+                    poison: ['lime', 'black'],
+                    ground: ['brown', 'white'],
+                    rock: ['lightgrey', 'black'],
+                    bug: ['blueviolet', 'white'],
+                    ghost: ['white', 'black'],
+                    steel: ['lightgrey', 'black'],
+                    fire: ['red', 'white'],
+                    water: ['blue', 'white'],
+                    grass: ['lime', 'black'],
+                    electric: ['yellow', 'black'],
+                    psychic: ['deeppink', 'white'],
+                    ice: ['blue', 'white'],
+                    dragon: ['red', 'white'],
+                    dark: ['black', 'white'],
+                    fairy: ['blueviolet', 'white']
+                },
+                accent_color: {
+                    color: 'white',
+                    textShadow: '0 0 5px black'
                 }
             },
             methods: {
@@ -231,10 +280,10 @@
                         }
                     }
                 },
-                build_comma_list(arr_in) {
+                build_comma_list(arr) {
                     let str_out = ''
-                    for (let i=0; i<arr_in.length; i++) {
-                        str_out += arr_in[i] + ', '
+                    for (let i=0; i<arr.length; i++) {
+                        str_out += arr[i] + ', '
                     }
                     return str_out.slice(0, str_out.length - 2)
                 },
@@ -246,29 +295,33 @@
                         }
                     );
                 },
-                build_poke_obj(data) {
+                build_poke_obj(data_in) {
                     let poke_types = []
-                    for (let i=0; i<data.types.length; i++) {
-                        poke_types.push(this.to_title_case(data.types[i].type.name))
+                    for (let i=0; i<data_in.types.length; i++) {
+                        poke_types.push(this.to_title_case(data_in.types[i].type.name))
                     }
                     let poke_abilities = []
-                    for (let i=0; i<data.abilities.length; i++) {
-                        poke_abilities.push(this.to_title_case(data.abilities[i].ability.name))
+                    for (let i=0; i<data_in.abilities.length; i++) {
+                        poke_abilities.push(this.to_title_case(data_in.abilities[i].ability.name))
                     }
                     let poke_moves = []
-                    for (let i=0; i<data.moves.length; i++) {
-                        poke_moves.push(this.to_title_case(data.moves[i].move.name))
+                    for (let i=0; i<data_in.moves.length; i++) {
+                        poke_moves.push(this.to_title_case(data_in.moves[i].move.name))
                     }
                     return {
-                        name: this.to_title_case(data.name),
-                        img_front: data.sprites.front_default,
-                        img_back: data.sprites.back_default,
-                        stats: data.stats,
+                        name: this.to_title_case(data_in.name),
+                        img_front: data_in.sprites.front_default,
+                        img_back: data_in.sprites.back_default,
+                        stats: data_in.stats,
                         types: poke_types,
                         abilities: poke_abilities,
                         moves: poke_moves,
                         hint: '',
-                        correct: ''
+                        correct: '',
+                        accent_color: {
+                            color: this.color_obj[poke_types[0].toLowerCase()][0],
+                            textShadow: '0 0 5px ' + this.color_obj[poke_types[0].toLowerCase()][1],
+                        }
                     }
                 },
                 play_regular() {
@@ -280,6 +333,7 @@
                             if (this.pokemon.length == this.game_count) {
                                 let random_poke = this.pokemon[Math.floor(Math.random() * this.game_count)]
                                 this.correct_answer = random_poke
+                                this.accent_color = random_poke.accent_color
                                 this.question = 'Which one is ' + random_poke.name + '?'
                             }
                         }, response => {
@@ -310,6 +364,7 @@
                                                 let random_poke_index = Math.floor(Math.random() * this.game_count)
                                                 let random_poke = this.pokemon[random_poke_index]
                                                 this.correct_answer = random_poke
+                                                this.accent_color = random_poke.accent_color
                                                 this.question = 'Which one is ' + random_poke.name + '?'
                                                 return
                                             }
@@ -333,6 +388,7 @@
                             if (this.pokemon.length == this.game_count) {
                                 let rand_index = Math.floor(Math.random() * this.game_count)
                                 let rand_poke = this.pokemon[rand_index]
+                                this.accent_color = rand_poke.accent_color
                                 this.correct_answer = rand_poke
                                 for (let j=0; j<this.pokemon[rand_index].abilities.length; j++) {
                                     let unique_ability = true
@@ -391,6 +447,7 @@
                     if (this.modal_obj.correct === 'Correct!') this.choose_play()
                 },
                 show_modal(poke) {
+                    this.accent_color = poke.accent_color
                     if (this.correct_answer.name === poke.name) {
                         poke.correct = 'Correct!'
                     } else {

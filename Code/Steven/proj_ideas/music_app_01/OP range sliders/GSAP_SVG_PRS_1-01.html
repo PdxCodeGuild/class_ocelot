@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body{  background-color: #333; }
+        #slider{
+            position:absolute;
+            left:50%;
+            top:50%;
+            transform: translate(-50%,-50%);
+            overflow:visible;
+        }
+
+
+        #textS{
+            color:#000;
+            position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+            font-family:'Oswald', tahoma; font-size:40vw;
+            text-align:center; white-space: nowrap;
+            opacity:0.2;
+        }
+
+
+
+
+        #DiacoDesignLink,#pens{
+            color: #fff;
+        }
+
+
+    </style>
+
+
+</head>
+<body>
+<span id="textS">GSAP</span>
+
+<svg version="1.1" id="slider"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+	 x="0px" y="0px" width="213px" height="54.524px" viewBox="0 0 213 54.524" enable-background="new 0 0 213 54.524"
+	 xml:space="preserve">
+<path id="rail" fill="none" stroke="#000000" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="
+	M10.167,44.024c55.366-55.366,144.968-55.366,200.333,0"/>
+<circle id="knob" fill="#7CFC00" cx="10" cy="44.524" r="20"/>
+</svg>
+
+<script>
+    /* a Pen by Diaco m.lotfollahi  : https://diacodesign.com */
+    var rail = document.getElementById("rail"),
+        knob = document.getElementById("knob"),
+        W = rail.getBBox().width,
+        railLength = rail.getTotalLength();
+
+    Draggable.create(document.createElement('div'),{
+        type:'x',throwProps:true,bounds:{minX:0,maxX:W},
+        trigger:knob,overshootTolerance:0,onDrag:update,onThrowUpdate:update
+    });
+
+    function update(){
+        var P = rail.getPointAtLength(this.x/W*railLength);
+        TweenLite.set(knob,{attr:{cx:P.x,cy:P.y}})
+    };
+    /* a Pen by Diaco m.lotfollahi  : https://diacodesign.com */
+
+
+</script>
+
+
+</body>
+</html>

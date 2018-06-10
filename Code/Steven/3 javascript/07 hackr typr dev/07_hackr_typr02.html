@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .body =
+
+        .item1 { grid-area: header; }
+        .item2 { grid-area: menu; }
+        .item3 { grid-area: main; }
+        .item4 { grid-area: right; }
+        .item5 { grid-area: gauge01; }
+        .item6 { grid-area: gauge02; }
+        .item7 { grid-area: guage03; }
+        .item5 { grid-area: gauge04; }
+        .item6 { grid-area: gauge05; }
+        .item7 { grid-area: guage06; }
+
+
+
+        .grid-container {
+            display: grid;
+            grid-template-areas:
+                    'header header header header header header'
+                    'menu main main main right right'
+                    'menu footer footer footer footer footer'
+                    'gauge01, gauge02, gauge03, gauge04, gauge05, gauge06';
+            grid-gap: 10px;
+            background-color: black;
+            /*background-color: rgba(124, 252, 0, .6);*/
+            padding: 5px;
+        }
+        .grid-container > div {
+            /*background-color: black;*/
+            background-color: rgba(124, 252, 0, .6);
+            text-align: center;
+            padding: 5px 0;
+            font-size: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Grid Layout</h1>
+
+<p>This grid layout contains six columns and 4 rows:</p>
+
+<div class="grid-container">
+    <div class="item1">Header</div>
+    <div class="item2">Menu</div>
+    <div class="item3">Main</div>
+    <div class="item4">Right</div>
+    <div class="item5">Footer</div>
+    <div class="item6">gauge01</div>
+    <div class="item7">gauge02</div>
+    <div class="item8">gauge03</div>
+    <div class="item9">gauge04</div>
+    <div class="item10">gauge05</div>
+    <div class="item11">gauge06</div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,78 @@
+<html>
+<head>
+    <style>
+
+    </style>
+</head>
+
+
+<body>
+
+<div id="clock_div"></div>
+
+<div id="some_other_div"></div>
+
+<script>
+
+    // var button_clock = document.getElementById('button_clock')
+
+    var clock_div = document.getElementById('clock_div')
+
+    function add0(n) {
+        return (n < 10)? '0'+n: n
+    }
+    function add00(n) {
+        return (n < 10)? '00'+n:
+            (n < 100)? '0'+n: n
+    }
+
+    function time_str(date) {
+        // var hh = add0(date.getHours())
+        // var mm = add0(date.getMinutes())
+        // var ss = add0(date.getSeconds())
+        // return hh+':'+mm+':'+ss
+    }
+
+
+    function to_binary(n) {
+        var r = ''
+        while (n > 0) {
+            r = (n%2) + r
+            n = Math.floor(n / 2)
+        }
+        return r
+    }
+    function get_datetime_precise() {
+        var now = new Date()
+        var dd = add0(now.getDate())
+        var MM = add0(now.getMonth()+1)
+        var yyyy = now.getFullYear()
+        var hh = add0(now.getHours())
+        var mm = add0(now.getMinutes())
+        var ss = add0(now.getSeconds())
+        var ms = add00(now.getMilliseconds())
+        var now_str = yyyy+':'+MM+':'+dd+' '+hh+':'+mm+':'+ss+':'+ms
+        clock_div.innerHTML = now_str
+    }
+
+    function get_datetime_pretty() {
+        // var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+        // var days_of_week = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+        var now = new Date()
+        // var week_day = days_of_week[now.getDay()]
+    }
+
+    var clock_interval = setInterval(get_datetime_precise, 1)
+
+
+
+
+    // stopwatch -------------------------------------------------------------------------
+
+    // var get23414 = document.getElementById
+
+
+</script>
+</body>
+</html>
+

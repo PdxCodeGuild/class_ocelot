@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <style>
+        body {
+            background-color:black;
+        }
+    </style>
+</head>
+<body>
+
+
+
+
+
+<div id="app">
+    <input type="text" v-model="message"/>
+    <span v-for="char in message" v-bind:style="{color:randomColor()}">-{{char}}-</span>
+</div>
+
+
+
+<script>
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            message: 'Hello Vue!!!!!!',
+        },
+        methods: {
+
+
+
+
+            // randomColor: function() {
+            //     let h = Math.floor(Math.random()*360)
+            //     return `hsl(${h},100%,60%)`
+            // }
+        }
+    })
+
+
+
+    let i = 0
+    setInterval(function() {
+        i += 1
+        app.message = 'hello ' + i
+    }, 1000)
+
+
+</script>
+
+</body>
+</html>
