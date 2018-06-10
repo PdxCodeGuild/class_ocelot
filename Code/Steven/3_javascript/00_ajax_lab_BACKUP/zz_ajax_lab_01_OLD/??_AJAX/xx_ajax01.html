@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <style>
+        * {
+            font-family: "Palatino Linoype", "Book Antiqua", Palatino, serif;
+        }
+
+        .btn-shape-1 {
+            width: 50%;
+            height: 100%;
+            text-align: center;
+            font-family: sans-serif;
+        }
+
+        .container-fluid {
+            width: 100%;
+            height: 100%;
+            font-style: italic;
+        }
+
+        .container-big {
+            width: 50%;
+            height: 50%;
+            background-color: white;
+            margin-left: 20%;
+            margin-top: 15%;
+        }
+
+    </style>
+
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="container-big">
+        <div id="mainQuote"></div>
+            <div
+        <blockquote>
+
+        </blockquote>
+    </div>
+    <button id="showQuote" type="button" class="btn-shape-1">show quote</button>
+
+</div>
+
+
+<script>
+    let the_quote = document.querySelector('showQuote');
+    let show_bt = document.querySelector('show_bt');
+
+    function http_get(url, success) {
+        let xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            //
+            if (this.readyState === 4 && this.status === 200) {
+                let data = JSON.parse(xhttp.responseText);
+                sucess(data);
+            }
+        };
+        xhttp.open("GET", url);
+        xhttp.send();
+    }
+
+    http_get("https://favqs.com/api/qotd", function (data) {
+        let li = document.createElement('li');
+        li.innerText = data.quote.body +
+    });
+
+
+
+</script>
+
+</body>
+</html>

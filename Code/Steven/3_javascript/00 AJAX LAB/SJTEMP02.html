@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+
+</body>
+
+<canvas id="cnv" width="500" height="500"></canvas>
+
+<div id="coordDisplay"></div>
+
+<!--<div id="angleDisplay"></div>-->
+
+<script>
+    class Bounds {
+        constructor(shape_x, shape_y, shape_width, shape_height) {
+            this.x = shape_x;
+            this.y = shape_y;
+            this.w = shape_width;
+            this.h = shape_height;
+        }
+
+        collide(r2) {
+            let r1 = this;
+            let dist_x = r1.x + r1.w / 2 - (r2.x + r2.w / 2);
+            let dist_y = r1.y + r1.h / 2 - (r2.y + r2.h / 2);
+            let width = (r1.w + r2.w) / 2;
+            let height = (r1.h + r2.h) / 2;
+            let crossWidth = width * dist_y;
+            let crossHeight = height * dist_x;
+            let collision = "none";
+            if (Math.abs(dist_x) <= width && Math.abs(dist_y) <= height) {
+                if (crossWidth > crossHeight) {
+                    collision = crossWidth > -crossHeight ? "bottom" : "left";
+                } else {
+                    collision = crossWidth > -crossHeight ? "right" : "top";
+                }
+            }
+            return collision;
+        }
+        left() {
+            return this.x
+        }
+        right() {
+            return this.x + this.w
+        }
+        top() {
+            return this.y
+        }
+        bottom() {
+            return this.y + this.h
+        }
+
+        getAngle(mouse_x, mouse_y) {
+            let cent_x = this.x + this.w / 2
+            let cent_y = this.y + this.h / 2
+            let dist_x = mouse_x - cent_x
+            let dist_y = mouse_y - cent_y
+            let angle_degrees = Math.atan2(dist_y, dist_x) * 180 / Math.PI
+            if (angle_degrees < 0) {
+                angle_degrees += 360
+            }
+            return angle_degrees
+        }
+    }
+
+    // Rectangle class (actual command is 'fillRect'
+    class Rectangle {
+        constructor(rec_x, rec_y, width, height, color) {
+            this.x = rec_x;
+            this.y = rec_y;
+            this.width = width;
+            this.height = height;
+            this.color = color;
+        }
+        draw(ctx) {
+            ctx.fillStyle = this.color;
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+        }
+
+        setLeft(x) {
+            this.x = x
+        }
+        setRight(x) {
+            this.x = x - this.width
+        }
+        setTop(y) {
+            this.y = y
+        }
+        setBottom(y) {
+            this.y = y - this.height
+        }
+        getBounds() {
+            return new Bounds(this.x, this.y, this.width, this.height)
+        }
+    }
+
+
+    // let cnv = document.querySelector("" +
+    //     "#cnv");
+    // let ctx = cnv.getContext("2d");
+
+    let cnv = document.querySelector("#cnv");
+    let ctx = cnv.getContext("2d");
+
+
+
+    // CREATE RANDOM SHAPES
+    let shapes = []
+    for (let shape_count = 0; shape_count < 10; ++shape_count) {
+        let x = Math.random() * cnv.width;
+        let y = Math.random() * cnv.height;
+
+        let color = `green`;
+
+        let shape = new Rectangle(x, y, radius, radius, color);
+
+
+        shapes.push(shape);
+    }
+
+    let color_normal = "rgba(0,0,255,0.5)";
+    let color_overlap = "rgba(255,0,0,0.5)";
+    let mouse_shape = new Rectangle(0, 0, 10, 10, color_normal);
+    let output_text = "hello";
+
+
+    // MAIN DRAWING LOOP
+    function draw() {
+        ctx.clearRect(0, 0, cnv.width, cnv.height);
+        for (let i = 0; i < shapes.length; ++i) {
+            shapes[i].draw(ctx);
+        }
+        mouse_shape.draw(ctx);
+        ctx.fillStyle = "white";
+        ctx.font = "30px Arial";
+        ctx.fillText(output_text, 10, 30);
+    }
+    document.body.onmousemove = function(evt) {
+        let rect = cnv.getBoundingClientRect();
+        let mx = evt.clientX - rect.left;
+        let my = evt.clientY - rect.top;
+
+        mouse_shape.x = mx;
+        mouse_shape.y = my;
+
+
+        // NEW
+        displayCursorCoords(mx, my)
+        displayCursorAngle(mx, my)
+
+        // NEW
+        function displayCursorAngle(mx, my) {
+            let angleDisplay = document.getElementById('angleDisplay');
+            angleDisplay.innerText = `Cursor Angle: ${angle}`
+            // displayCoords.appendChild(document.createElement("br"));
+            // displayCoords.innerText =
+
+            // displayCoords.appendChild(document.createTextNode(`Cursor vector: ${vx}, ${vy}`));
+        }
+
+        let bounds_mouse_shape = mouse_shape.getBounds();
+        for (let i = 0; i < shapes.length; ++i) {
+            let shape_bounds = shapes[i].getBounds()
+            let collision = bounds_mouse_shape.collide(shape_bounds);
+            if (collision !== "none") {
+
+                let angle = shape_bounds.getAngle(mx, my)
+
+
+                output_text = collision + '  ' + Math.round(angle) + '°';
+                if (collision === 'left') {
+                    mouse_shape.setRight(shape_bounds.left())
+                } else if (collision === 'right') {
+                    mouse_shape.setLeft(shape_bounds.right())
+                } else if (collision === 'top') {
+                    mouse_shape.setBottom(shape_bounds.top())
+                } else if (collision === 'bottom') {
+                    mouse_shape.setTop(shape_bounds.bottom())
+                }
+
+            }
+
+
+        }
+
+        draw();
+    };
+
+
+
+</script>
+
+
+</body>
+</html>
+
+
+
+
+</html>
