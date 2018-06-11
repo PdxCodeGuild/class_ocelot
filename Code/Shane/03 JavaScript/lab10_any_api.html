@@ -93,7 +93,7 @@
                         }
                     }
                     xhttp.open("GET", url)
-                    xhttp.setRequestHeader('Accept', 'application/json')
+                    xhttp.setRequestHeader('Accept', 'application/json',)
                     xhttp.send()
                 }
 
@@ -103,7 +103,6 @@
                     return res
                 }
 
-
                 http_get(all_url, function (data) {
 
                     let r_full_url = ''
@@ -111,28 +110,38 @@
                     full_url += data[getRandomInt(0, data.length - 1)].url
 
                     full_url = full_url.replace(':from', name_from)
-                                        .replace(':name', name_to)
-                                        .replace(':company', name_to)
-                                        .replace(':language', language)
-
-
-
-
-
+                        .replace(':name', name_to)
+                        .replace(':company', name_to)
+                        .replace(':language', language)
 
                     http_get(full_url, function (data) {
 
-                        let final_output = urlencoding(data.message.replace('fuck', 'beep')
-                                                        .replace('Fuck', 'beep')
-                                                        .replace('fucking', 'beeping')
-                                                        .replace('fucking', 'beeping')
-                                                        .replace('fucks', 'beeping')
-                                                        .replace('pussy', 'beepie'))
-                        http_get(full_url, function (data) {
 
+
+                        let final_output = urlencoding(data.message
+                            .replace('fuck', 'beep')
+                            .replace('Fuck', 'beep')
+                            .replace('fucking', 'beeping')
+                            .replace('fucking', 'beeping')
+                            .replace('fucks', 'beeping')
+                            .replace('pussy', 'beepie'))
+
+
+                        full_url = 'http://yoda-api.appspot.com/api/v1/yodish?text=' + final_output
+
+                        http_get(full_url, function (data) {
+                            alert('111')
+                            console.log(data.yodish)
                             //Clean Version
-                            responsiveVoice.setDefaultVoice("US English Female");
-                            responsiveVoice.speak(final_output)
+
+                            var voicelist = responsiveVoice.getVoices()
+                            console.log(voicelist[4].name)
+                            // for (let i = 20; i<25; i++) {
+
+                                responsiveVoice.setDefaultVoice()
+                                responsiveVoice.speak(data.yodish)
+                                console.log(i)
+                            // }
 
                             // The real version
                             // responsiveVoice.speak(data.message)
