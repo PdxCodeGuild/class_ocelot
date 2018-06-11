@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div id="app">
+        <button v-on:click="counter++">Increase</button>
+        <button v-on:click="counter--">Decrease</button>
+        <button v-on:click="secondCounter++">Increase Second</button>
+        <p>Counter: {{ counter }}</p>
+        <p>Result: {{ results() }} | {{ output }}</p>
+    </div>
+    <script>
+        new Vue({
+            el: '#app',
+            //data is not reactive aka this.results
+            data: {
+                counter: 0,
+                secondCounter: 0,
+            },
+            computed: {
+                output: function(){
+                    return this.counter > 5 ? 'Greater than 5' : 'Smaller than 5';
+                }
+            },
+            //has to match a property in data field
+            watch: {
+                counter: function(value){
+                    var vm = this;
+                    setTimeout(function() {
+                        vm.counter = 0;
+                    }, 2000);
+
+                }
+            },
+            methods: {
+                results() {
+                    return this.counter > 5 ? 'Greater than 5' : 'Smaller than 5';
+                },
+            //     increase: function(){
+            //         this.counter++;
+            //         this.result = this.counter > 5 ? 'Greater than 5': 'Smaller than 5'
+            //     },
+            //     decrease: function(){
+            //         this.counter--;
+            //         this.result = this.counter > 5 ? 'Greater than 5': 'Smaller than 5'
+            //     }
+            }
+        });
+    </script>
+</body>
+</html>

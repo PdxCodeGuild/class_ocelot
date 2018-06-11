@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <title>Title</title>
+</head>
+<body>
+    <div id="excercise">
+        <p>VueJS is pretty cool - {{ name }}, {{ age }}</p>
+        <p>{{ age*3 }}</p>
+        <p>{{ zeroToOne() }}</p>
+        <div>
+            <img v-bind:src="image">
+        </div>
+        <div>
+            <input type="text" v-bind:value="name">
+        </div>
+    </div>
+<script>
+    new Vue({
+        el: '#excercise',
+        data:{
+            name: 'Nathan',
+            age: '27',
+            image: 'https://static-cdn.jtvnw.net/jtv_user_pictures/hsdogdog-profile_image-5550ade194780dfc-300x300.jpeg'
+        },
+        methods:{
+            zeroToOne: function(){
+                return Math.random();
+            }
+        }
+    });
+</script>
+</body>
+</html>

@@ -5,37 +5,9 @@
     <title>tts++</title>
 
     <style>
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 60px;
-            height: 34px;
-        }
 
         .switch input {
             display: none;
-        }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 26px;
-            width: 26px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
         }
 
         input:checked + .slider {
@@ -50,17 +22,6 @@
             transform: translateX(26px);
         }
 
-        .slider.round {
-            border-radius: 34px;
-        }
-
-        .slider.round:before {
-            border-radius: 50%;
-        }
-
-        #license {
-            font-size: 5px;
-        }
     </style>
 
 </head>
@@ -132,37 +93,60 @@
                         }
                     }
                     xhttp.open("GET", url)
-                    xhttp.setRequestHeader('Accept', 'application/json')
+                    xhttp.setRequestHeader('Accept', 'application/json',)
                     xhttp.send()
                 }
 
+                function urlencoding(data) {
+                    var uri = data
+                    var res = encodeURI(uri)
+                    return res
+                }
 
                 http_get(all_url, function (data) {
-
 
                     let r_full_url = ''
 
                     full_url += data[getRandomInt(0, data.length - 1)].url
 
-
                     full_url = full_url.replace(':from', name_from)
                         .replace(':name', name_to)
+                        .replace(':company', name_to)
+                        .replace(':language', language)
 
                     http_get(full_url, function (data) {
-                        //Clean Version
-                        responsiveVoice.setDefaultVoice("US English Female");
-                        responsiveVoice.speak(data.message.replace('fuck', 'beep')
-                                                        .replace('Fuck', 'beep')
-                                                        .replace('fucking', 'beeping')
-                        .replace('fucking', 'beeping')
-                        .replace('fucks', 'beeping'))
 
 
 
+                        let final_output = urlencoding(data.message
+                            .replace('fuck', 'beep')
+                            .replace('Fuck', 'beep')
+                            .replace('fucking', 'beeping')
+                            .replace('fucking', 'beeping')
+                            .replace('fucks', 'beeping')
+                            .replace('pussy', 'beepie'))
 
-                        // The real version
-                        // responsiveVoice.speak(data.message)
-                        app.message = data.message
+
+                        full_url = 'http://yoda-api.appspot.com/api/v1/yodish?text=' + final_output
+
+                        http_get(full_url, function (data) {
+                            alert('111')
+                            console.log(data.yodish)
+                            //Clean Version
+
+                            var voicelist = responsiveVoice.getVoices()
+                            console.log(voicelist[4].name)
+                            // for (let i = 20; i<25; i++) {
+
+                                responsiveVoice.setDefaultVoice()
+                                responsiveVoice.speak(data.yodish)
+                                console.log(i)
+                            // }
+
+                            // The real version
+                            // responsiveVoice.speak(data.message)
+                            app.message = data.message
+                        })
                     })
                 })
             }

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div id="excercise">
+        <!--show an alert when the button is clicked-->
+        <div>
+            <button v-on:click="alertMe">Show Alert</button>
+        </div>
+        <!--listen to the 'keydown' event and store the value in a data property
+            event.target.value-->
+        <div>
+            <input type="text" v-on:keydown="value = $event.target.value">
+            <p>{{ value }}</p>
+        </div>
+        <!--adjust input to only key down with ENTER KEY-->
+        <div>
+            <input type="text" v-on:keydown.enter="$event.target.value.doubleValue()">
+            <p>{{ value }}</p>
+        </div>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#excercise',
+            data:{
+                value: '5'
+            },
+            methods:{
+                alertMe: function(){
+                    alert('You can do it');
+                },
+                doubleValue: function(){
+                    alert(this.value*2)
+                }
+            }
+        })
+    </script>
+</body>
+</html>
