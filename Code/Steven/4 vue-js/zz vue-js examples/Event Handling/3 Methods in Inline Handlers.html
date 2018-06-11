@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Method Event Handlers</title>
+    <title>Methods in Inline Handlers</title>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 </head>
 <body>
@@ -13,17 +13,20 @@
 </div>
 
 <div id="example-1">
-    <button v-on:click="counter += 1">Add 1</button>
-    <p>The button above has been clicked {{ counter }} times.</p> (
+    <button v-on:click="say('hi')">Say hi</button>
+    <button v-on:click="say('what')">Say what</button>
+    (
     <a href="https://vuejs.org/v2/guide/events.html#Listening-to-Events">(Link</a> to source.)
 
 </div>
 
 <script>
-    var example1 = new Vue({
-        el: '#example-1',
-        data: {
-            counter: 0
+    new Vue({
+        el: '#example-3',
+        methods: {
+            say: function (message) {
+                alert(message)
+            }
         }
     })
 
