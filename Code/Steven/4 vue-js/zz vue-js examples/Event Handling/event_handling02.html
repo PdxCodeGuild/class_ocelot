@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+
+
+
+
+</div>
+
+<div id="example-1">
+  <!-- `greet` is the name of a method defined below -->
+  <button v-on:click="greet">Greet</button> (
+    <a href="https://vuejs.org/v2/guide/events.html#Method-Event-Handlers">(Link</a> to source.)
+
+</div>
+
+<script>
+    var example2 = new Vue({
+        el: '#example-2',
+        data: {
+            name: 'Vue.js'
+        },
+        // define methods under the `methods` object
+        methods: {
+            greet: function (event) {
+                // `this` inside methods points to the Vue instance
+                alert('Hello ' + this.name + '!')
+                // `event` is the native DOM event
+                if (event) {
+                    alert(event.target.tagName)
+                }
+            }
+        }
+    })
+
+    // you can invoke methods in JavaScript too
+    example2.greet() // => 'Hello Vue.js!'
+
+</script>
+
+
+</body>
+</html>

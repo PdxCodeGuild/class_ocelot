@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Title</title>
+    <title>v5</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8"/>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
-
     <script src="local_settings.js"></script>
 
 
@@ -20,7 +19,7 @@
     <!--<input type="text" v-model=-->
     <!--<input type="text"/>-->
     <!--<pre> {{lyrics}} </pre>-->
-    <div> {{lyrics_par}}</div>
+    <!--<div> {{lyrics_par}}</div>-->
     <!--<div v-for="para in lyrics_par"> {{lyrics_par}}</div>-->
     <!--<div v-for="line in lyrics_lines"> {{lyrics_lines}}</div>-->
     <!--<div v-for="word in lyrics_words"> {{lyrics_words}}</div>-->
@@ -59,7 +58,8 @@
                     for (let p_count = 0; p_count <= this.lyrics_para_split.length; p_count++) {
                         // split paras into lines, count thru them, put each line into array
                         let lines = this.lyrics_para_split[p_count].split('\r\n');
-                        console.log(lyrics_para_split)
+                        // console.log(p_count)
+                        // console.log(lyrics_para_split)
 
                         let par = []  // need to reset par
                         this.lyrics_lines.push(lines)
