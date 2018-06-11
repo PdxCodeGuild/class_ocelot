@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div id="app">
+        <!--outouts name in the uinout field and changes the name within app-->
+        <input type="text" v-model="name">
+        <p>{{ name }}</p>
+    </div>
+    <script>
+        new Vue({
+            el: '#app',
+            data:{
+                name: 'Nathan'
+            }
+        });
+    </script>
+</body>
+</html>

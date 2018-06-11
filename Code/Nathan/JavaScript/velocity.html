@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body {
+            color:white;
+            background-color:black;
+        }
+        canvas {
+            border: 1px solid white;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="cnv" width="500" height="500"></canvas>
+<script>
+
+    function random(lower, upper) {
+      return lower + Math.random()*(upper-lower)
+    }
+
+
+    class Image {
+      constructor(path, x, y) {
+        this.element = document.createElement('img')
+        this.element.src = path
+        this.x = x
+        this.y = y
+      }
+      draw(ctx) {
+        ctx.drawImage(this.element, this.x, this.y)
+      }
+    }
+
+
+    // KEY TRACKER STUFF ==============================================
+
+    class KeyTracker {
+      constructor() {
+        this.keys = [];
+      }
+      keyDown(key) {
+        this.keys.push(key);
+      }
+      keyUp(key) {
+        this.keys = this.keys.filter(function(e) {
+          return e !== key;
+        });
+      }
+      isKeyDown(key) {
+        return this.keys.indexOf(key) > -1;
+      }
+    }
+
+    let key_tracker = new KeyTracker()
+    document.addEventListener('keydown', (evt) => {
+      key_tracker.keyDown(evt.key);
+    });
+
+    document.addEventListener('keyup', (evt) => {
+      key_tracker.keyUp(evt.key);
+    });
+
+
+
+
+    // WORLD STUFF ==============================================
+
+
+    class Rectangle {
+      constructor(x, y, width, height, color) {
+        this.x = x
+        this.y = y
+        this.vx = 0
+        this.vy = 0
+        this.width = width
+        this.height = height
+        this.color = color
+      }
+      draw(ctx) {
+        ctx.fillStyle = this.color
+        ctx.fillRect(this.x ,this.y, this.width, this.height)
+      }
+      update() {
+        this.x += this.vx
+        this.y += this.vy
+      }
+      left() {
+        return this.x
+      }
+      right() {
+        return this.x + this.width
+      }
+      top() {
+        return this.y
+      }
+      bottom() {
+        return this.y + this.height
+      }
+      overlaps(r) {
+        return this.left() < r.right()
+                && this.right() > r.left()
+                && this.top() < r.bottom()
+                && this.bottom() > r.top()
+      }
+    }
+
+
+    class World {
+      constructor(width, height, cnv) {
+
+        this.cnv = cnv
+        this.ctx = this.cnv.getContext('2d')
+
+        let ground_height = 20
+        let star_size = 4
+        let player_size = 10
+
+        this.width = width
+        this.height = height
+        this.view = 0
+
+        this.platforms = []
+        let ground = new Rectangle(0, this.height-ground_height, this.width, ground_height, 'darkgreen')
+        this.platforms.push(ground)
+
+        this.player = new Rectangle(cnv.width/2-player_size/2,
+                                     cnv.height-ground_height-player_size,
+                                     player_size, player_size, 'blue')
+        this.player_on_platform = true
+
+        this.background_elements = []
+        for (let i=0; i<200; ++i) {
+          let x = random(10, this.width-10)
+          let y = random(10, this.height-ground_height-star_size-10)
+          let star = new Rectangle(x, y, 4, 4, 'white')
+          this.platforms.push(star)
+        }
+
+      }
+      draw() {
+
+        this.ctx.clearRect(0, 0, this.cnv.width, this.cnv.height)
+        this.ctx.translate(-this.player.x+this.cnv.width/2, 0)
+        for (let i=0; i<this.background_elements.length; ++i) {
+          this.background_elements[i].draw(this.ctx)
+        }
+        for (let i=0; i<this.platforms.length; ++i) {
+          this.platforms[i].draw(this.ctx)
+        }
+        this.player.draw(this.ctx)
+        this.ctx.resetTransform()
+      }
+      update() {
+        if (key_tracker.isKeyDown('ArrowLeft')) {
+          this.player.x -= 2
+        } else if (key_tracker.isKeyDown('ArrowRight')) {
+          this.player.x += 2
+        }
+        if (key_tracker.isKeyDown('ArrowUp') && this.player_on_platform) {
+          this.player.vy = -6
+          this.player.y -= 0.1
+          this.player_on_platform = false
+        }
+        this.player.y += this.player.vy
+        this.player.vy += 0.2
+
+        for (let i=0; i<this.platforms.length; ++i) {
+          if (this.player.overlaps(this.platforms[i])) {
+            // take player center and platform center
+            //
+            this.player.y = this.platforms[i].y-this.player.height
+            this.player.vy = 0
+            this.player_on_platform = true
+          }
+        }
+
+      }
+    }
+
+
+
+
+    let cnv = document.querySelector('#cnv')
+    let world = new World(cnv.width*3, cnv.height, cnv)
+
+    function animation_loop() {
+      window.requestAnimationFrame(animation_loop)
+
+      world.update()
+      world.draw()
+
+
+    }
+    window.requestAnimationFrame(animation_loop)
+
+
+</script>
+</body>
+</html>
