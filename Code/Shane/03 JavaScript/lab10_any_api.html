@@ -5,37 +5,9 @@
     <title>tts++</title>
 
     <style>
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 60px;
-            height: 34px;
-        }
 
         .switch input {
             display: none;
-        }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 26px;
-            width: 26px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
         }
 
         input:checked + .slider {
@@ -50,17 +22,6 @@
             transform: translateX(26px);
         }
 
-        .slider.round {
-            border-radius: 34px;
-        }
-
-        .slider.round:before {
-            border-radius: 50%;
-        }
-
-        #license {
-            font-size: 5px;
-        }
     </style>
 
 </head>
@@ -136,33 +97,46 @@
                     xhttp.send()
                 }
 
+                function urlencoding(data) {
+                    var uri = data
+                    var res = encodeURI(uri)
+                    return res
+                }
+
 
                 http_get(all_url, function (data) {
-
 
                     let r_full_url = ''
 
                     full_url += data[getRandomInt(0, data.length - 1)].url
 
-
                     full_url = full_url.replace(':from', name_from)
-                        .replace(':name', name_to)
+                                        .replace(':name', name_to)
+                                        .replace(':company', name_to)
+                                        .replace(':language', language)
+
+
+
+
 
                     http_get(full_url, function (data) {
-                        //Clean Version
-                        responsiveVoice.setDefaultVoice("US English Female");
-                        responsiveVoice.speak(data.message.replace('fuck', 'beep')
+
+                        let final_output = urlencoding(data.message.replace('fuck', 'beep')
                                                         .replace('Fuck', 'beep')
                                                         .replace('fucking', 'beeping')
-                        .replace('fucking', 'beeping')
-                        .replace('fucks', 'beeping'))
+                                                        .replace('fucking', 'beeping')
+                                                        .replace('fucks', 'beeping')
+                                                        .replace('pussy', 'beepie'))
+                        http_get(full_url, function (data) {
 
+                            //Clean Version
+                            responsiveVoice.setDefaultVoice("US English Female");
+                            responsiveVoice.speak(final_output)
 
-
-
-                        // The real version
-                        // responsiveVoice.speak(data.message)
-                        app.message = data.message
+                            // The real version
+                            // responsiveVoice.speak(data.message)
+                            app.message = data.message
+                        })
                     })
                 })
             }
