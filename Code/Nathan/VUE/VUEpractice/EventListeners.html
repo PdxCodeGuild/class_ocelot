@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div id="app">
+        <!--(2) increases the counter by 2/ $event is a protected name-->
+        <button v-on:click="increase(2, $event)">Click Me</button>
+        <button v-on:click="counter++">Click Me(2)</button>
+        <!--example of turinary within {{ }}-->
+        <p>{{ counter *2>10 ? 'Greater than 10' : 'Smaller than 10' }}</p>
+        <p v-on:mousemove="updateCoordinates">
+            Coordinates: {{ x }} / {{ y }}
+            <!-- orignally the dummy function | execute nothing-->
+            - <span v-on:mousemove.stop>DEAD SPOT</span>
+        </p>
+        <!--                         |name of key|-->
+        <input type="text" v-on:keyup.enter.space="alertMe">
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                counter: 0,
+                x: 0,
+                y: 0,
+            },
+            methods:{
+              increase: function(step, event){
+                  this.counter+= step;
+              },
+              updateCoordinates: function(event){
+                  this.x = event.clientX;
+                  this.y = event.clientY;
+              },
+            //   dummy: function(event){
+            //       event.stopPropagation();
+               alertMe: function(){
+                  alert('Alert');
+               }
+            }
+        })
+    </script>
+</body>
+</html>
