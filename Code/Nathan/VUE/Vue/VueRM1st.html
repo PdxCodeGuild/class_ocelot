@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .main_display{
+            display:flex;
+            flex-direction: column;
+            height: 100%;
+            left: 15%;
+        }
+        .characters {
+            background-size: contain;
+            display: flex;
+            height: 100%;
+            flex-direction: column;
+            background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT58Wf9mfvVnKfoKQRudkFgVlfbJat0VfX6_9ikJ69M8-_WpGZh");
+        }
+        .characters > div{
+            /*background-size: auto;*/
+            /*background-image: url("")*/
+            width: 15%;
+            border-right: solid black;
+            background-repeat: no-repeat;
+        }
+        button{
+            width: 200px;
+            opacity: 0.8;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .button:hover{
+            ;
+        }
+        ul{
+            list-style-type: none;
+        }
+        h1{
+            text-align: center;
+            font-style: normal;
+        }
+    </style>
+</head>
+<body>
+<!--things to add
+    display: grid left 30%; right 70%
+    **1.)display only name in list initially
+    2.)onclick event display various facts about character in main_display div
+        a. episode appearances
+        b. picture
+        c. species
+        d. traits
+        e. dead or alive-->
+
+<div class="characters" id="characters">
+    <h1>Rick & Morty</h1>
+    <div >
+        <ul>
+            <li v-for="character in characters">
+                <button v-on:click="displayInfo(index)">{{character.name}}</button>
+            </li>
+        </ul>
+        <!--<span v-if="current_character">{{current_character.name}}</span>-->
+    </div>
+</div>
+<div id="main_display">
+    <span v-if="current_character">{{current_character.name}}</span>
+</div>
+
+
+<script>
+    var url = "https://rickandmortyapi.com/api/character"
+    var app = new Vue({
+        el: '#app',
+        data: {
+            characters: [],
+            current_character: null,
+        },
+        //vue json call
+        methods: {
+            loadCharacters() {
+                this.$http.get(url).then(response => {
+                    let data = response.body
+                    //console.log(data)
+                    for (let i = 0; i < data.results.length; ++i) {
+                        //console.log(data.results[i].name)
+                        this.characters.push(data.results[i])
+                    }
+                    console.log(this.characters)
+                }, response => {
+                    //console.log(data.results.name)
+                })
+            }
+        },
+        created: function() {
+            this.loadCharacters()
+        }
+    })
+</script>
+</body>
+</html>
