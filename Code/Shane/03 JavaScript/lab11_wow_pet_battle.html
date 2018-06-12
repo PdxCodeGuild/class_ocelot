@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WoW Pet Battle</title>
+    <style>
+
+
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+
+<body>
+<div id="app">
+    {{hero}}
+
+
+
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                message: 'message',
+                hero: ''
+            },
+
+            methods: {
+                pet_battle() {
+                    let app = this
+                    let base_url = 'https://us.api.battle.net/wow/pet/'
+                    let app_key_eng = 'locale=en_US&apikey=nd9wwacvsp4rrmfpcasn4gd3r5dhjeqx'
+                    let get_all_url = 'https://us.api.battle.net/wow/pet/?locale=en_US&apikey=nd9wwacvsp4rrmfpcasn4gd3r5dhjeqx'
+
+                    this.http_get(get_all_url, function (data) {
+                        app.hero = data
+                    })
+
+                },
+
+                http_get(get_all_url, success) {
+
+                    let xhttp = new XMLHttpRequest()
+                    xhttp.onreadystatechange = function () {
+                        console.log(this.readyState)
+                        if (this.readyState === 4) {
+                            if (this.status === 200) {
+                                let data = JSON.parse(xhttp.responseText)
+                                success(data)
+                            } else {
+                                console.log(this.status + ' ' + this.statusText)
+                            }
+                        }
+                    }
+                    xhttp.open("GET", get_all_url)
+                    xhttp.send()
+                },
+
+
+                getRandomInt(min, max) {
+                    return Math.floor(Math.random() * (max - min + 1)) + min
+                },
+            },
+
+            mounted: function () {
+                this.pet_battle()
+            }
+        })
+
+    </script>
+</div>
+</body>
+</html>
