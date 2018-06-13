@@ -16,7 +16,7 @@
     </style>
 </head>
 <body id="body">
-<canvas id="cnv" width="500" height="500"></canvas>
+<canvas id="cnv" width='1900' height="800"></canvas>
 
 
 <script>
@@ -39,7 +39,6 @@
             ctx.drawImage(this.element, this.x, this.y)
         }
     }
-
 
 
     // KEY TRACKER STUFF ==============================================
@@ -126,9 +125,12 @@
             this.cnv = cnv
             this.ctx = this.cnv.getContext('2d')
 
+            let star_count = 10
+
             let ground_height = 20
-            let star_size = 4
+            let star_size = 5
             let player_size = 10
+
 
             this.width = width
             this.height = height
@@ -144,7 +146,7 @@
             this.player_on_platform = true
 
             this.background_elements = []
-            for (let i = 0; i < 200; ++i) {
+            for (let i = 0; i < 50; ++i) {
                 let x = random(10, this.width - 10)
                 let y = random(10, this.height - ground_height - star_size - 10)
                 let star = new Rectangle(x, y, 4, 4, 'white')
@@ -169,23 +171,27 @@
 
 
         update() {
+            let player_speed = 1
+            let gravity = .038
+
             if (key_tracker.isKeyDown('ArrowLeft')) {
-                this.player.x -= 2
+                this.player.x -= player_speed
             } else if (key_tracker.isKeyDown('ArrowRight')) {
-                this.player.x += 2
+                this.player.x += player_speed
             }
             if (key_tracker.isKeyDown('ArrowUp') && this.player_on_platform) {
-                this.player.vy = -6
-                this.player.y -= 0.1
-                this.player_on_platform = false
+                this.player.vy += -.074
+                // this.player.y -= 1
+                // this.player_on_platform = false
             }
             this.player.y += this.player.vy
-            this.player.vy += 0.2
+            this.player.vy += gravity
 
             for (let i = 0; i < this.platforms.length; ++i) {
                 if (this.player.overlaps(this.platforms[i])) {
                     // take player center and platform center
                     //
+
                     this.player.y = this.platforms[i].y - this.player.height
                     this.player.vy = 0
                     this.player_on_platform = true
