@@ -21,9 +21,9 @@
             <tr>
                 <th v-for="each in headers">{{each}}</th>
             </tr>
-            <tr v-for="rows in headers">
+            <tr v-for="rows in data_rows">
                 <!--how do I increment the count.. in a for loop... after 3 hours of trying. I'm guessing I can't-->
-                <td v-for="(obj_ele, index) in data_rows[count]">{{index}}{{obj_ele}}</td>
+                <td v-for="(element, index) in headers">{{data_rows[index].element}}</td>
             </tr>
 
         </table>
@@ -61,8 +61,10 @@
                     this.http_get(get_all_url, function (data) {
                         console.log(data)
                         app.all_data = Object.keys(data.pets[0])
-                        app.headers = app.create_headers(Object.keys(data.pets[0]))
+                        app.headers = Object.keys(data.pets[0])
                         app.data_rows = data.pets
+                        console.log(app.headers)
+                        console.log(data.pets[0].canBattle)
 
                     })
                 },
@@ -71,16 +73,7 @@
                 create_headers(array) {
                     let header_array = []
                     array.forEach(function (header) {
-                        let temp_header = header.toUpperCase()
-                        header_array.push(temp_header)
-                    })
-                    return header_array
-                },
-
-                create_obj_rows(array) {
-                    let header_array = []
-                    array.forEach(function (header) {
-                        let temp_header = header.toUpperCase()
+                        // let temp_header = header.toUpperCase()
                         header_array.push(temp_header)
                     })
                     return header_array
