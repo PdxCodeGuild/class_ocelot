@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <title>WoW Pet Battle</title>
     <style>
-
+        td {
+            padding: 10px;
+            border: 1px solid black;
+        }
 
     </style>
 
@@ -13,14 +16,16 @@
 
 <body>
 <div id="app">
-    {{all_data}}
     <div>
         <table>
             <tr>
-                <th>
-
-                </th>
+                <th v-for="each in headers">{{each}}</th>
             </tr>
+            <tr v-for="rows in headers">
+                <!--how do I increment the count.. in a for loop... after 3 hours of trying. I'm guessing I can't-->
+                <td v-for="(obj_ele, index) in data_rows[count]">{{index}}{{obj_ele}}</td>
+            </tr>
+
         </table>
     </div>
 
@@ -29,8 +34,21 @@
         var app = new Vue({
             el: '#app',
             data: {
-                message: 'message',
+                message: '0',
                 all_data: '',
+                headers: '',
+                data_rows: '',
+                obj_in_rows: '',
+                count: 0,
+            },
+            watch: {
+                counter(index) {
+                    this.count++
+                    console.log(count)
+                    alert("11")
+                    return count
+                },
+
             },
 
             methods: {
@@ -42,12 +60,32 @@
 
                     this.http_get(get_all_url, function (data) {
                         console.log(data)
-                        app.all_data = data.pets[0].stats.health
-
+                        app.all_data = Object.keys(data.pets[0])
+                        app.headers = app.create_headers(Object.keys(data.pets[0]))
+                        app.data_rows = data.pets
 
                     })
-
                 },
+
+
+                create_headers(array) {
+                    let header_array = []
+                    array.forEach(function (header) {
+                        let temp_header = header.toUpperCase()
+                        header_array.push(temp_header)
+                    })
+                    return header_array
+                },
+
+                create_obj_rows(array) {
+                    let header_array = []
+                    array.forEach(function (header) {
+                        let temp_header = header.toUpperCase()
+                        header_array.push(temp_header)
+                    })
+                    return header_array
+                },
+
 
                 http_get(get_all_url, success) {
 
