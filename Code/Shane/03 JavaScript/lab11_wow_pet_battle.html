@@ -22,7 +22,6 @@
                 <th v-for="each in headers">{{each}}</th>
             </tr>
             <tr v-for="rows in data_rows">
-                <!--ugh-->
                 <td v-for="element in rows">{{element}}</td>
             </tr>
 
@@ -38,17 +37,6 @@
                 all_data: '',
                 headers: '',
                 data_rows: '',
-                obj_in_rows: '',
-                count: 0,
-            },
-            watch: {
-                counter(index) {
-                    this.count++
-                    console.log(count)
-                    alert("11")
-                    return count
-                },
-
             },
 
             methods: {
