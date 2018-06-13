@@ -13,8 +13,16 @@
 
 <body>
 <div id="app">
-    {{hero}}
+    {{all_data}}
+    <div>
+        <table>
+            <tr>
+                <th>
 
+                </th>
+            </tr>
+        </table>
+    </div>
 
 
     <script>
@@ -22,7 +30,7 @@
             el: '#app',
             data: {
                 message: 'message',
-                hero: ''
+                all_data: '',
             },
 
             methods: {
@@ -33,7 +41,10 @@
                     let get_all_url = 'https://us.api.battle.net/wow/pet/?locale=en_US&apikey=nd9wwacvsp4rrmfpcasn4gd3r5dhjeqx'
 
                     this.http_get(get_all_url, function (data) {
-                        app.hero = data
+                        console.log(data)
+                        app.all_data = data.pets[0].stats.health
+
+
                     })
 
                 },
