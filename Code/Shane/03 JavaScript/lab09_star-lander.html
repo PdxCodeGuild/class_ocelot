@@ -8,22 +8,14 @@
         body {
             color: white;
             background-color: black;
-
         }
-
-        canvas {
-
-        }
-
 
     </style>
 </head>
 <body id="body">
-<canvas id="cnv" width='1900' height="500"></canvas>
-
+<canvas id="cnv" width='900' height="500"></canvas>
 
 <script>
-
 
     function random(lower, upper) {
         return lower + Math.random() * (upper - lower)
@@ -42,7 +34,6 @@
             ctx.drawImage(this.element, this.x, this.y)
         }
     }
-
 
     // KEY TRACKER STUFF ==============================================
 
@@ -132,8 +123,7 @@
             let star_count = 10
             let ground_height = 20
             let star_size = 5
-            let player_size = 10
-
+            let player_size = 30
 
             this.cnv = cnv
             this.ctx = this.cnv.getContext('2d')
@@ -150,7 +140,6 @@
                 cnv.height - ground_height - player_size,
                 player_size, player_size, 'blue')
             this.player_on_platform = true
-
 
             this.background_elements = []
             for (let i = 0; i < 50; ++i) {
@@ -169,33 +158,63 @@
             let w = this.player.width
             let h = this.player.height
             this.ctx.fillStyle = 'orange'
-
-            //this.ctx.fillRect(x+w/2-4/2, y+h+1, 2, 2)
-            this.ctx.fillRect(10, 10, 100, 100)
             this.ctx.beginPath()
-            this.ctx.moveTo(x+2, y+h)
-            this.ctx.lineTo(x+w-2, y+h)
-            this.ctx.lineTo(x+Math.random()*w, y+h+Math.random()*10)
-            //this.ctx.lineTo(x+Math.random()*w, y+h+Math.random()*10)
+            this.ctx.moveTo(x + 2, y + h)
+            this.ctx.lineTo(x + w - 2, y + h)
+            this.ctx.lineTo(x + Math.random() * w, y + h + Math.random() * 10 * 2)
             this.ctx.closePath()
             this.ctx.fill()
+            this.ctx.fillStyle = 'red'
+            this.ctx.beginPath()
+            this.ctx.moveTo(x + 2, y + h)
+            this.ctx.lineTo(x + w - 2, y + h)
+            this.ctx.lineTo(x + Math.random() * w, y + h + Math.random() * 10 * 2)
+            this.ctx.closePath()
+            this.ctx.fill()
+        }
 
-
-
+        left_flame() {
+            let x = this.player.x
+            let y = this.player.y
+            let w = this.player.width
+            let h = this.player.height
+            this.ctx.fillStyle = 'orange'
+            this.ctx.beginPath()
+            this.ctx.moveTo(x+2, y+3)
+            this.ctx.lineTo(x + h - 5, y + w/2)
+            this.ctx.lineTo(x + Math.random() * -w, y  + Math.random() * 3)
+            this.ctx.closePath()
+            this.ctx.fill()
 
             this.ctx.fillStyle = 'red'
-
-            //this.ctx.fillRect(x+w/2-4/2, y+h+1, 2, 2)
-            this.ctx.fillRect(10, 10, 100, 100)
             this.ctx.beginPath()
-            this.ctx.moveTo(x+2, y+h)
-            this.ctx.lineTo(x+w-2, y+h)
-            this.ctx.lineTo(x+Math.random()*w, y+h+Math.random()*10)
-            //this.ctx.lineTo(x+Math.random()*w, y+h+Math.random()*10)
+            this.ctx.moveTo(x+2, y+3)
+            this.ctx.lineTo(x + w - 5, y + w/2)
+            this.ctx.lineTo(x + Math.random() * -w, y  + Math.random() * 3)
+            this.ctx.closePath()
+            this.ctx.fill()
+        }
+
+        right_flame() {
+            let x = this.player.x
+            let y = this.player.y
+            let w = this.player.width
+            let h = this.player.height
+            this.ctx.fillStyle = 'orange'
+            this.ctx.beginPath()
+            this.ctx.moveTo(x+2, y+3)
+            this.ctx.lineTo(x + h - 5, y + w/2)
+            this.ctx.lineTo(x + Math.random() * -w, y  + Math.random() * 3)
             this.ctx.closePath()
             this.ctx.fill()
 
-
+            this.ctx.fillStyle = 'red'
+            this.ctx.beginPath()
+            this.ctx.moveTo(x+2, y+3)
+            this.ctx.lineTo(x + w - 5, y + w/2)
+            this.ctx.lineTo(x + Math.random() * -w, y  + Math.random() * 3)
+            this.ctx.closePath()
+            this.ctx.fill()
         }
 
         draw() {
@@ -204,14 +223,19 @@
 
             this.ctx.clearRect(0, 0, this.cnv.width, this.cnv.height)
             // draw score
-                 //Player Info...
+            //Player Info...
             this.ctx.fillText(score, 100, 100)
             this.ctx.translate(-this.player.x + this.cnv.width / 2, 0)
 
 
-
             if (key_tracker.isKeyDown('ArrowUp')) {
                 this.flame()
+            }
+            if (key_tracker.isKeyDown('ArrowLeft')) {
+                this.flame()
+            }
+            if (key_tracker.isKeyDown('ArrowRight')) {
+                this.left_flame()
             }
 
 
@@ -268,7 +292,6 @@
     }
 
     window.requestAnimationFrame(animation_loop)
-
 
 </script>
 </body>
