@@ -1,0 +1,488 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Poke-Guess</title>
+    <link href="https://fonts.googleapis.com/css?family=Jua" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+    <script src="http://pokeapi.co/api/v2/language/9/"></script>
+    <style>
+        body {
+            margin: 20px;
+            background-color: black;
+            color: white;
+            text-align: center;
+            font-size: 1em;
+            font-family: 'Jua', sans-serif;
+        }
+        #reg_label, #hard_label, #ability_label {
+            margin-right: 50px;
+        }
+        #options_container {
+            margin-top: 50px;
+            margin-bottom: 50px;
+        }
+        #options_container label {
+            font-size: 2em;
+        }
+        #play_container {
+            display: inline-flex;
+            margin-bottom: 20px;
+        }
+        #play_container div {
+            font-size: 3em;
+        }
+        #play_container input {
+            font-size: 2em;
+            width: 50px;
+            text-align: center;
+        }
+        #play_container *:not(:last-child) {
+            margin-right: 20px;
+        }
+        button {
+            font-size: 2em;
+            width: 100px;
+        }
+        button:hover {
+            cursor: pointer;
+            color: white;
+        }
+        p {
+            font-size: 2em;
+            word-break: break-word;
+            white-space: normal;
+            width: 200px;
+        }
+        .choice_img {
+            margin: 10px;
+            border: 1px solid white;
+        }
+        .choice_img:hover {
+            cursor: pointer;
+            border: 1px solid red;
+        }
+        #question_div {
+            margin-top: 1em;
+            font-size: 3em;
+        }
+        #modal_background {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+        #modal_character {
+            position: fixed;
+            display: flex;
+            background: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ),
+                        url('https://liquipedia.net/commons/images/thumb/d/d4/PS.jpg/600px-PS.jpg');
+            background-size: cover;
+            padding: 20px;
+            border: 5px solid #888;
+            border-radius: 5pt;
+            width: 70%;
+            height: 70%;
+            font: 2em solid white;
+            font-weight: bold;
+            text-shadow: -1px 1px 1px black;
+            margin: 5% auto auto -150%;
+            transition: margin 2s;
+        }
+        #modal_character * {
+            margin: 5px
+        }
+        #modal_character_pictures {
+            flex: 3;
+            display: flex;
+            flex-direction: column;
+            width: 10%;
+            height: auto;
+        }
+        #modal_character_details {
+            flex: 12;
+            display: flex;
+            flex-direction: row;
+            border: 3px solid white;
+            border-radius: 5pt;
+        }
+        #modal_character_labels {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin-right: 0;
+        }
+        #modal_character_info {
+            flex: 5;
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            margin-left: 0;
+        }
+        #modal_character_pictures * {
+            flex: 2;
+        }
+        #modal_character_labels *, #modal_character_info * {
+            border: 3px solid lightgrey;
+            border-radius: 3px;
+            padding: 10px;
+        }
+        .row_0, .row_1, .row_2, .row_3 {
+            flex: 1;
+        }
+        .row_4 {
+            flex: 6;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div id="options_container">
+            <input type="radio" name="mode" checked="checked" v-on:click="setPlayMode('regular')">
+            <label id="reg_label">Regular</label>
+            <input type="radio" name="mode" v-on:click="setPlayMode('hard')">
+            <label id="hard_label">Hard</label>
+            <input type="radio" name="mode" v-on:click="setPlayMode('abilities')">
+            <label id="ability_label">Ability</label>
+            <input type="radio" name="mode" v-on:click="setPlayMode('moves')">
+            <label>Move</label>
+        </div>
+        <div id="play_container">
+            <div>how many pokemon</div>
+            <input type="text" v-model="game_count">
+            <button v-on:click="choosePlay" style="background-color: limegreen"><b>play</b></button>
+            <button v-on:click="showHint" style="background-color: dodgerblue"><b>hint</b></button>
+        </div><br>
+        <div v-for="poke in pokemon" style="display: inline-flex">
+            <div style="display: inline-flex; flex-direction: column">
+                <img class="choice_img" width="200px" height="auto" v-bind:src="poke.img_front" v-on:click="showModal(poke)"/>
+                <p>{{ poke.hint }}</p>
+            </div>
+        </div>
+        <div id="question_div" v-if="pokemon.length == game_count">{{ question }}</div>
+        <div id="modal_background" v-bind:style="display_toggle" v-on:click="hideModal">
+            <div id="modal_character" v-bind:style="modal_obj.accent_color">
+                <div id="modal_character_pictures" v-bind:style="modal_obj.modal_frame_style">
+                    <img class="modal_img" v-bind:src="modal_obj.img_front"/>
+                    <img class="modal_img" v-bind:src="modal_obj.img_back"/>
+                </div>
+                <div id="modal_character_details" v-bind:style="modal_obj.modal_frame_style">
+                    <div id="modal_character_labels">
+                        <div class="row_0">Answer</div>
+                        <div class="row_1">Name</div>
+                        <div class="row_2">Types</div>
+                        <div class="row_3">Abilities</div>
+                        <div class="row_4">Moves</div>
+                    </div>
+                    <div id="modal_character_info">
+                        <div class="row_0">{{ modal_obj.correct }}</div>
+                        <div class="row_1">{{ modal_obj.name }}</div>
+                        <div class="row_2">{{ buildCommaList(modal_obj.types) }}</div>
+                        <div class="row_3">{{ buildCommaList(modal_obj.abilities) }}</div>
+                        <div class="row_4" style="overflow-y:scroll">{{ buildCommaList(modal_obj.moves) }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        let app = new Vue({
+            el: '#app',
+            data: {
+                game_count: 3,                              /* How many pokemon in game, ===> pokemon.length */
+                pokemon: [],                                /* Pokemon in current game */
+                poke_count: 0,                              /* Total # of pokemon, GET hooked to creation */
+                correct_answer: {},                         /* Store whole obj, excessive yet convenient */
+                play_mode: 'regular',                       /* Corresponds to radio button */
+                question: '',                               /* Varies based on play_mode */
+                num_of_types: 18,                           /* Counted manually */
+                display_toggle: {display: 'none'},          /* Modal toggle marginLeft: '-70% */
+                // modal_obj: {                                /* Obj properties bound to HTML elements, thus blanks needed to load */
+                //     name: '',
+                //     img_front: '',
+                //     img_back: '',
+                //     stats: [],
+                //     types: [],
+                //     abilities: [],
+                //     moves: [],
+                //     hint: '',
+                //     correct: '',
+                //     accent_color: {},
+                //     modal_frame_style: {}
+                // },
+                color_obj: {                                /* color combos for modal, [0]=text/frame [1]=textShadow */
+                    normal: ['white', 'black'],
+                    fighting: ['orange', 'black'],
+                    flying: ['yellow', 'black'],
+                    poison: ['lime', 'black'],
+                    ground: ['brown', 'white'],
+                    rock: ['lightgrey', 'black'],
+                    bug: ['blueviolet', 'white'],
+                    ghost: ['white', 'black'],
+                    steel: ['lightgrey', 'black'],
+                    fire: ['red', 'white'],
+                    water: ['blue', 'white'],
+                    grass: ['lime', 'black'],
+                    electric: ['yellow', 'black'],
+                    psychic: ['deeppink', 'white'],
+                    ice: ['blue', 'white'],
+                    dragon: ['red', 'white'],
+                    dark: ['black', 'white'],
+                    fairy: ['blueviolet', 'white']
+                }
+            },
+            methods: {
+                choosePlay() {
+                    this.pokemon = []
+                    switch(this.play_mode) {
+                        case 'regular':
+                            this.playRegular()
+                            break
+                        case 'hard':
+                            this.playHard()
+                            break
+                        case 'abilities':
+                            this.playAbilities()
+                            break
+                        case 'moves':
+                            this.playMoves()
+                            break
+                    }
+                },
+                toTitleCase(str) {
+                    return str.replace(
+                        /\w\S*/g,
+                        function(txt) {
+                            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                        }
+                    );
+                },
+                buildPokeObj(data_in) {
+                    let poke_types = []
+                    for (let i=0; i<data_in.types.length; i++) {
+                        poke_types.push(this.toTitleCase(data_in.types[i].type.name))
+                    }
+                    let poke_abilities = []
+                    for (let i=0; i<data_in.abilities.length; i++) {
+                        poke_abilities.push(this.toTitleCase(data_in.abilities[i].ability.name))
+                    }
+                    let poke_moves = []
+                    for (let i=0; i<data_in.moves.length; i++) {
+                        poke_moves.push(this.toTitleCase(data_in.moves[i].move.name))
+                    }
+                    return {
+                        name: this.toTitleCase(data_in.name),
+                        img_front: data_in.sprites.front_default,
+                        img_back: data_in.sprites.back_default,
+                        stats: data_in.stats,
+                        types: poke_types,
+                        abilities: poke_abilities,
+                        moves: poke_moves,
+                        hint: '',
+                        correct: '',
+                        accent_color: {
+                            color: this.color_obj[poke_types[0].toLowerCase()][0],
+                            textShadow: '-1px 1px 1px ' + this.color_obj[poke_types[0].toLowerCase()][1],
+                            margin: '5% auto',
+                        },
+                        modal_frame_style: {
+                            border: '3px solid ' + this.color_obj[poke_types[0].toLowerCase()][0],
+                            borderRadius: '5pt'
+                        }
+                    }
+                },
+                playRegular() {
+                    for (let i=0; i<this.game_count; i++) {
+                        let rand_index = Math.floor(Math.random() * this.poke_count) + 1
+                        this.$http.get('http://pokeapi.co/api/v2/pokemon/' + rand_index).then(response => {
+                            let poke_obj = this.buildPokeObj(response.body)
+                            this.pokemon.push(poke_obj)
+                            if (this.pokemon.length == this.game_count) {
+                                let random_poke = this.pokemon[Math.floor(Math.random() * this.game_count)]
+                                this.correct_answer = random_poke
+                                this.accent_color = random_poke.accent_color
+                                this.question = 'Which one is ' + random_poke.name + '?'
+                            }
+                        }, response => {
+                            alert('something went wrong')
+                        })
+                    }
+                },
+                playHard() {
+                    let rand_type = Math.floor(Math.random() * this.num_of_types) + 1
+                    this.$http.get('http://pokeapi.co/api/v2/type/' + rand_type).then(response => {
+                        let type_data = response.body
+                        let num_of_pokemon = type_data.pokemon.length
+                        let url_list = []
+                        for (let i=0; i<this.game_count*2+5; i++) {
+                            let rand_url = type_data.pokemon[Math.floor(Math.random() * num_of_pokemon)].pokemon.url
+                            url_list.push(rand_url)
+                        }
+                        let image_checker = []
+                        for (let i=0; i<url_list.length; i++) {
+                            this.$http.get(url_list[i]).then(response => {
+                                let poke_obj = this.buildPokeObj(response.body)
+                                image_checker.push(poke_obj)
+                                if (image_checker.length === url_list.length) {
+                                    for (let j=0; j<image_checker.length; j++) {
+                                        if (image_checker[j].img_front) {
+                                            this.pokemon.push(image_checker[j])
+                                            if (this.pokemon.length == this.game_count) {
+                                                let random_poke_index = Math.floor(Math.random() * this.game_count)
+                                                let random_poke = this.pokemon[random_poke_index]
+                                                this.correct_answer = random_poke
+                                                this.accent_color = random_poke.accent_color
+                                                this.question = 'Which one is ' + random_poke.name + '?'
+                                                return
+                                            }
+                                        }
+                                    }
+                                }
+                            }, response => {
+                                alert('something went wrong')
+                            })
+                        }
+                    }, response => {
+                        alert('something went wrong')
+                    })
+                },
+                playAbilities() {
+                    for (let i=0; i<this.game_count; i++) {
+                        let rand_index = Math.floor(Math.random() * this.poke_count) + 1
+                        this.$http.get('http://pokeapi.co/api/v2/pokemon/' + rand_index).then(response => {
+                            let poke_obj = this.buildPokeObj(response.body)
+                            this.pokemon.push(poke_obj)
+                            if (this.pokemon.length == this.game_count) {
+                                let rand_index = Math.floor(Math.random() * this.game_count)
+                                let rand_poke = this.pokemon[rand_index]
+                                this.accent_color = rand_poke.accent_color
+                                this.correct_answer = rand_poke
+                                for (let j=0; j<this.pokemon[rand_index].abilities.length; j++) {
+                                    let unique_ability = true
+                                    let t_ability = this.pokemon[rand_index].abilities[j]
+                                    for (let k=0; k<this.game_count; k++) {
+                                        if (rand_index === k) continue
+                                        if (this.pokemon[k].abilities.indexOf(t_ability) > -1) {
+                                            unique_ability = false
+                                            break
+                                        }
+                                    }
+                                    if (unique_ability) {
+                                        this.question = 'Which one has the ability "' + t_ability + '"?'
+                                        break
+                                    }
+                                }
+                            }
+                        }, response => {
+                            alert('something went wrong')
+                        })
+                    }
+                },
+                playMoves() {
+                    for (let i=0; i<this.game_count; i++) {
+                        let rand_index = Math.floor(Math.random() * this.poke_count) + 1
+                        this.$http.get('http://pokeapi.co/api/v2/pokemon/' + rand_index).then(response => {
+                            let poke_obj = this.buildPokeObj(response.body)
+                            this.pokemon.push(poke_obj)
+                            if (this.pokemon.length == this.game_count) {
+                                let rand_index = Math.floor(Math.random() * this.game_count)
+                                let rand_poke = this.pokemon[rand_index]
+                                this.correct_answer = rand_poke
+                                for (let j=0; j<this.pokemon[rand_index].moves.length; j++) {
+                                    let unique_move = true
+                                    let t_move = this.pokemon[rand_index].moves[j]
+                                    for (let k=0; k<this.game_count; k++) {
+                                        if (rand_index === k) continue
+                                        if (this.pokemon[k].moves.indexOf(t_move) > -1) {
+                                            unique_move = false
+                                            break
+                                        }
+                                    }
+                                    if (unique_move) {
+                                        this.question = 'Which one has the move "' + t_move + '"?'
+                                        break
+                                    }
+                                }
+                            }
+                        }, response => {
+                            alert('something went wrong')
+                        })
+                    }
+                },
+                setPlayMode (curr_mode) {
+                    this.play_mode = curr_mode
+                },
+                hideModal() {
+                    this.display_toggle = {display: 'none'}
+                    this.resetModalObject()
+                    if (this.modal_obj.correct === 'Correct!') this.choosePlay()
+                },
+                showModal(poke) {
+                    this.accent_color = poke.accent_color
+                    if (this.correct_answer.name === poke.name) {
+                        poke.correct = 'Correct!'
+                    } else {
+                        poke.correct= 'Wrong!'
+                    }
+                    this.modal_obj = poke
+                    this.display_toggle = {display: 'flex'}
+                },
+                showHint() {
+                    for (let i=0; i<this.pokemon.length; i++) {
+                        let poke = this.pokemon[i]
+                        switch (this.play_mode) {
+                            case 'regular':
+                                poke.hint = 'types: ' + this.buildCommaList(poke.types)
+                                break
+                            case 'hard':
+                                poke.hint = 'types: ' + this.buildCommaList(poke.types)
+                                break
+                            case 'abilities':
+                                poke.hint = 'name: ' + poke.name
+                                break
+                            case 'moves':
+                                poke.hint = 'name: ' + poke.name
+                                break
+                        }
+                    }
+                },
+                buildCommaList(arr) {
+                    let str_out = ''
+                    for (let i=0; i<arr.length; i++) {
+                        str_out += arr[i] + ', '
+                    }
+                    return str_out.slice(0, str_out.length - 2)
+                },
+                resetModalObject() {
+                    this.modal_obj = {
+                        name: '',
+                        img_front: '',
+                        img_back: '',
+                        stats: [],
+                        types: [],
+                        abilities: [],
+                        moves: [],
+                        hint: '',
+                        correct: '',
+                        accent_color: {},
+                        modal_frame_style: {},
+                    }
+                }
+            },
+            created: function () {
+                this.$http.get('http://pokeapi.co/api/v2/pokemon-species/?limit=0').then(response => {
+                    this.poke_count = response.body.count
+                })
+                this.resetModalObject()
+            }
+        })
+    </script>
+</body>
+</html>
