@@ -10,16 +10,13 @@
             background-color: black;
         }
 
-        canvas {
-            border: 1px solid white;
-        }
     </style>
 </head>
 <body id="body">
-<canvas id="cnv" width="500" height="500"></canvas>
-
+<canvas id="cnv" width='900' height="500"></canvas>
 
 <script>
+
 
 
     function random(lower, upper) {
@@ -39,8 +36,6 @@
             ctx.drawImage(this.element, this.x, this.y)
         }
     }
-
-
 
     // KEY TRACKER STUFF ==============================================
 
@@ -88,6 +83,7 @@
         draw(ctx) {
             ctx.fillStyle = this.color
             ctx.fillRect(this.x, this.y, this.width, this.height)
+
         }
 
         update() {
@@ -121,15 +117,18 @@
 
 
     class World {
+
         constructor(width, height, cnv) {
+            let fuel = 3000
+            let score = 0
+            let location = ""
+            let star_count = 10
+            let ground_height = 20
+            let star_size = 5
+            let player_size = 30
 
             this.cnv = cnv
             this.ctx = this.cnv.getContext('2d')
-
-            let ground_height = 20
-            let star_size = 4
-            let player_size = 10
-
             this.width = width
             this.height = height
             this.view = 0
@@ -138,13 +137,14 @@
             let ground = new Rectangle(0, this.height - ground_height, this.width, ground_height, 'darkgreen')
             this.platforms.push(ground)
 
+
             this.player = new Rectangle(cnv.width / 2 - player_size / 2,
                 cnv.height - ground_height - player_size,
-                player_size, player_size, 'blue')
+                player_size, player_size, 'rgba(255, 155, 30, .1)')
             this.player_on_platform = true
 
             this.background_elements = []
-            for (let i = 0; i < 200; ++i) {
+            for (let i = 0; i < 50; ++i) {
                 let x = random(10, this.width - 10)
                 let y = random(10, this.height - ground_height - star_size - 10)
                 let star = new Rectangle(x, y, 4, 4, 'white')
@@ -153,10 +153,109 @@
 
         }
 
+
+        flame() {
+            let x = this.player.x
+            let y = this.player.y
+            let w = this.player.width
+            let h = this.player.height
+            this.ctx.fillStyle = 'orange'
+            this.ctx.beginPath()
+            this.ctx.moveTo(x + w/3, y + h)
+            this.ctx.lineTo(x + w - w/3, y + h)
+            this.ctx.lineTo(x + Math.random() * w, y + h + Math.random() * 10 * 2)
+            this.ctx.closePath()
+            this.ctx.fill()
+            this.ctx.fillStyle = 'red'
+            this.ctx.beginPath()
+            this.ctx.moveTo(x + w/3, y + h)
+            this.ctx.lineTo(x + w - w/3, y + h)
+            this.ctx.lineTo(x + Math.random() * w, y + h + Math.random() * 10 * 2)
+            this.ctx.closePath()
+            this.ctx.fill()
+        }
+
+
+        left_flame() {
+            let x = this.player.x
+            let y = this.player.y
+            let w = this.player.width
+            let h = this.player.height
+
+            this.ctx.fillStyle = 'red'
+            this.ctx.beginPath()
+            //top right for this.player
+            this.ctx.moveTo(x, y+ h/1.5)
+            //Middle point with random movement
+            this.ctx.lineTo(x - Math.random()*10, y + h + Math.random()*10)
+            //bottom right for this.player
+            this.ctx.lineTo(x , y + h)
+            this.ctx.closePath()
+            this.ctx.fill()
+
+            this.ctx.fillStyle = 'orange'
+            this.ctx.beginPath()
+            //top right for this.player
+            this.ctx.moveTo(x, y+ h/1.5)
+            //Middle point with random movement
+            this.ctx.lineTo(x - Math.random()*10, y + h + Math.random()*10)
+            //bottom right for this.player
+            this.ctx.lineTo(x , y + h)
+            this.ctx.closePath()
+            this.ctx.fill()
+        }
+
+        right_flame() {
+            let w = this.player.width
+            let h = this.player.height
+            let x = this.player.x
+            let y = this.player.y
+
+            this.ctx.fillStyle = 'red'
+            this.ctx.beginPath()
+            //top right for this.player
+            this.ctx.moveTo(x + w, y + h)
+            //Middle point with random movement
+            this.ctx.lineTo(x + w + Math.random()*10, y + h + Math.random()*10)
+            //bottom right for this.player
+            this.ctx.lineTo(x + w , y + h/1.5)
+            this.ctx.closePath()
+            this.ctx.fill()
+
+            this.ctx.fillStyle = 'orange'
+            this.ctx.beginPath()
+            //top right for this.player
+            this.ctx.moveTo(x + w, y + h)
+            //Middle point with random movement
+            this.ctx.lineTo(x + w + Math.random()*10, y + h + Math.random()*10)
+            //bottom right for this.player
+            this.ctx.lineTo(x + w , y + h/1.5)
+            this.ctx.closePath()
+            this.ctx.fill()
+        }
+
         draw() {
+            let score = 0
+
 
             this.ctx.clearRect(0, 0, this.cnv.width, this.cnv.height)
+            // draw score
+            //Player Info...
+            this.ctx.fillText(score, 100, 100)
             this.ctx.translate(-this.player.x + this.cnv.width / 2, 0)
+
+
+            if (key_tracker.isKeyDown('ArrowUp')) {
+                this.flame()
+            }
+            if (key_tracker.isKeyDown('ArrowLeft')) {
+                this.right_flame()
+            }
+            if (key_tracker.isKeyDown('ArrowRight')) {
+                this.left_flame()
+            }
+
+
             for (let i = 0; i < this.background_elements.length; ++i) {
                 this.background_elements[i].draw(this.ctx)
             }
@@ -169,23 +268,26 @@
 
 
         update() {
+
+            let player_speed = 1
+            let gravity = .036
+
             if (key_tracker.isKeyDown('ArrowLeft')) {
-                this.player.x -= 2
+                this.player.x -= player_speed
             } else if (key_tracker.isKeyDown('ArrowRight')) {
-                this.player.x += 2
+                this.player.x += player_speed
             }
             if (key_tracker.isKeyDown('ArrowUp') && this.player_on_platform) {
-                this.player.vy = -6
-                this.player.y -= 0.1
-                this.player_on_platform = false
+                this.player.vy += -.057
             }
             this.player.y += this.player.vy
-            this.player.vy += 0.2
+            this.player.vy += gravity
 
             for (let i = 0; i < this.platforms.length; ++i) {
                 if (this.player.overlaps(this.platforms[i])) {
                     // take player center and platform center
                     //
+
                     this.player.y = this.platforms[i].y - this.player.height
                     this.player.vy = 0
                     this.player_on_platform = true
@@ -207,7 +309,6 @@
     }
 
     window.requestAnimationFrame(animation_loop)
-
 
 </script>
 </body>

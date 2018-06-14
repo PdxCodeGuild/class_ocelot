@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WoW Pet Battle</title>
+    <style>
+        td {
+            padding: 10px;
+            border: 1px solid black;
+        }
+
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+
+<body>
+<div id="app">
+    <div>
+        <table>
+            <tr>
+                <th v-for="each in headers">{{each}}</th>
+            </tr>
+            <tr v-for="rows in data_rows">
+                <td v-for="element in rows">{{element}}</td>
+            </tr>
+
+        </table>
+    </div>
+
+
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                message: '0',
+                all_data: '',
+                headers: '',
+                data_rows: '',
+            },
+
+            methods: {
+                pet_battle() {
+                    let app = this
+                    let base_url = 'https://us.api.battle.net/wow/pet/'
+                    let app_key_eng = 'locale=en_US&apikey=nd9wwacvsp4rrmfpcasn4gd3r5dhjeqx'
+                    let get_all_url = 'https://us.api.battle.net/wow/pet/?locale=en_US&apikey=nd9wwacvsp4rrmfpcasn4gd3r5dhjeqx'
+
+                    this.http_get(get_all_url, function (data) {
+                        console.log(data)
+                        app.all_data = Object.keys(data.pets[0])
+                        app.headers = Object.keys(data.pets[0])
+                        app.data_rows = data.pets
+                        console.log(app.headers)
+                        console.log(data.pets[0].canBattle)
+
+                    })
+                },
+
+
+                create_headers(array) {
+                    let header_array = []
+                    array.forEach(function (header) {
+                        // let temp_header = header.toUpperCase()
+                        header_array.push(temp_header)
+                    })
+                    return header_array
+                },
+
+
+                http_get(get_all_url, success) {
+
+                    let xhttp = new XMLHttpRequest()
+                    xhttp.onreadystatechange = function () {
+                        console.log(this.readyState)
+                        if (this.readyState === 4) {
+                            if (this.status === 200) {
+                                let data = JSON.parse(xhttp.responseText)
+                                success(data)
+                            } else {
+                                console.log(this.status + ' ' + this.statusText)
+                            }
+                        }
+                    }
+                    xhttp.open("GET", get_all_url)
+                    xhttp.send()
+                },
+
+
+                getRandomInt(min, max) {
+                    return Math.floor(Math.random() * (max - min + 1)) + min
+                },
+            },
+
+            mounted: function () {
+                this.pet_battle()
+            }
+        })
+
+    </script>
+</div>
+</body>
+</html>
