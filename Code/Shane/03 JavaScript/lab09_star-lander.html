@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Star Jumper</title>
-
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tone/13.1.31/Tone.min.js"></script>
     <style>
         body {
             color: white;
@@ -16,6 +16,10 @@
 <canvas id="cnv" width='900' height="500"></canvas>
 
 <script>
+
+    function getRandomInt(max) {
+        return Math.floor(Math.random() * Math.floor(max));
+    }
 
 
     function random(lower, upper) {
@@ -70,6 +74,7 @@
 
     class Rectangle {
         constructor(x, y, width, height, color) {
+
             this.x = x
             this.y = y
             this.vx = 0
@@ -77,6 +82,9 @@
             this.width = width
             this.height = height
             this.color = color
+            this.volume = 4 / 3 * Math.random() * 15 * 3.14159265359 ** 3 // in cm**3
+            this.density = 7.86 // kg/cm**3 (iron)
+            this.mass = this.density * this.volume //kg
         }
 
         draw(ctx) {
@@ -117,19 +125,37 @@
     class World {
 
         constructor(width, height, cnv) {
-            let fuel = 3000
-            let score = 0
             let location = ""
             let star_count = 10
             let ground_height = 20
             let star_size = 5
             let player_size = 15
+            let r = getRandomInt(255)
+            let g = getRandomInt(255)
+            let b = getRandomInt(255)
+            this.noise = new Tone.Noise("brown").start();
+            this.white_noise = new Tone.Noise("pink").start();
+
+            let autoFilter = new Tone.AutoFilter({
+                "frequency": "8m",
+                "min": 800,
+                "max": 5000
+            }).connect(Tone.Master);
+            this.noise.connect(autoFilter);
+            this.white_noise.connect(autoFilter);
+
 
             this.cnv = cnv
             this.ctx = this.cnv.getContext('2d')
             this.width = width
             this.height = height
             this.view = 0
+            this.fuel = 1000000
+            this.score = 0
+
+            this.volume = 4 / 3 * Math.random() * 15 * 3.14159265359 ** 3 // in cm**3
+            this.density = 7.86 // kg/cm**3 (iron)
+            this.mass = 10 //kg
 
             this.platforms = []
             let ground = new Rectangle(0, this.height - ground_height, this.width, ground_height, 'darkgreen')
@@ -148,8 +174,8 @@
                 this.platforms.push(star)
             }
 
-        }
 
+        }
 
         flame() {
             let x = this.player.x
@@ -159,21 +185,20 @@
 
             this.ctx.fillStyle = 'orange'
             this.ctx.beginPath()
-            this.ctx.moveTo(x + w / 3, y + h)
-            this.ctx.lineTo(x + w - w / 3, y + h)
-            this.ctx.lineTo(x + Math.random() *w, y + h + Math.random() * 10 * 2)
+            this.ctx.moveTo(x + 2, y + h)
+            this.ctx.lineTo(x + Math.random() * w, y + h + Math.random() * 20)
+            this.ctx.lineTo(x + w - 2, y + h)
             this.ctx.closePath()
             this.ctx.fill()
 
             this.ctx.fillStyle = 'red'
             this.ctx.beginPath()
-            this.ctx.moveTo(x + w / 3, y + h)
-            this.ctx.lineTo(x + w - w / 3, y + h)
-            this.ctx.lineTo(x + Math.random() * w, y + h + Math.random() * 10 * 2)
+            this.ctx.moveTo(x + 2, y + h)
+            this.ctx.lineTo(x + Math.random() * w, y + h + Math.random() * 20)
+            this.ctx.lineTo(x + w - 2, y + h)
             this.ctx.closePath()
             this.ctx.fill()
         }
-
 
         left_flame() {
             let x = this.player.x
@@ -186,7 +211,7 @@
             //top right for this.player
             this.ctx.moveTo(x, y + h / 1.5)
             //Middle point with random movement
-            this.ctx.lineTo(x - Math.random() * 10, y + h*1.1 + Math.random() * 10)
+            this.ctx.lineTo(x - Math.random() * 10, y + h * 1.1 + Math.random() * 10)
             //bottom right for this.player
             this.ctx.lineTo(x, y + h)
             this.ctx.closePath()
@@ -197,7 +222,7 @@
             //top right for this.player
             this.ctx.moveTo(x, y + h / 1.5)
             //Middle point with random movement
-            this.ctx.lineTo(x - Math.random() * 10, y + h*1.1 + Math.random() * 10)
+            this.ctx.lineTo(x - Math.random() * 10, y + h * 1.1 + Math.random() * 10)
             //bottom right for this.player
             this.ctx.lineTo(x, y + h)
             this.ctx.closePath()
@@ -215,7 +240,7 @@
             //top right for this.player
             this.ctx.moveTo(x + w, y + h)
             //Middle point with random movement
-            this.ctx.lineTo(x + w + Math.random() * 10, y + h*1.1 + Math.random() * 10)
+            this.ctx.lineTo(x + w + Math.random() * 10, y + h * 1.1 + Math.random() * 10)
             //bottom right for this.player
             this.ctx.lineTo(x + w, y + h / 1.5)
             this.ctx.closePath()
@@ -226,7 +251,7 @@
             //top right for this.player
             this.ctx.moveTo(x + w, y + h)
             //Middle point with random movement
-            this.ctx.lineTo(x + w + Math.random() * 10, y + h*1.1 + Math.random() * 10)
+            this.ctx.lineTo(x + w + Math.random() * 10, y + h * 1.1 + Math.random() * 10)
             //bottom right for this.player
             this.ctx.lineTo(x + w, y + h / 1.5)
             this.ctx.closePath()
@@ -234,50 +259,66 @@
         }
 
         draw() {
-            let score = 0
+
 
             this.ctx.clearRect(0, 0, this.cnv.width, this.cnv.height)
             // draw score
             //Player Info...
-            this.ctx.fillText(score, 100, 100)
+
+            this.ctx.fillText(this.fuel, 100, 100)
             this.ctx.translate(-this.player.x + this.cnv.width / 2, 0)
 
+            this.noise.mute = true
+            this.white_noise.mute = true
 
-            if (key_tracker.isKeyDown('ArrowUp')) {
-                //this.flame()
-                this.right_flame()
-                this.left_flame()
-            }
-            if (key_tracker.isKeyDown('ArrowLeft')) {
-                this.right_flame()
-            }
-            if (key_tracker.isKeyDown('ArrowRight')) {
-                this.left_flame()
-            }
+            if (key_tracker.isKeyDown('ArrowUp') && this.fuel > 0) {
+                this.flame()
+                this.fuel--
+                this.noise.mute = false
 
+            }
+            if (key_tracker.isKeyDown('ArrowLeft') && this.fuel > 0) {
+                this.right_flame()
+                this.fuel--
+                this.white_noise.mute = false
+            }
+            if (key_tracker.isKeyDown('ArrowRight') && this.fuel > 0) {
+                this.left_flame()
+                this.fuel--
+                this.white_noise.mute = false
+
+            }
 
             for (let i = 0; i < this.background_elements.length; ++i) {
                 this.background_elements[i].draw(this.ctx)
+                for (let j = i + 1; j < this.background_elements.length; j++) {
+                    ////////////////////////////
+                }
+
             }
             for (let i = 0; i < this.platforms.length; ++i) {
                 this.platforms[i].draw(this.ctx)
             }
+
+
             this.player.draw(this.ctx)
             this.ctx.resetTransform()
         }
-
 
         update() {
 
             let player_speed = 1
             let gravity = .030
 
-            if (key_tracker.isKeyDown('ArrowLeft')) {
+            if (key_tracker.isKeyDown('ArrowLeft') && this.fuel > 0 && this.player_on_platform === true) {
                 this.player.x -= player_speed
+
+
             } else if (key_tracker.isKeyDown('ArrowRight')) {
                 this.player.x += player_speed
             }
-            if (key_tracker.isKeyDown('ArrowUp') && this.player_on_platform) {
+            if (key_tracker.isKeyDown('ArrowUp') && this.fuel > 0) {
+
                 this.player.vy += -.048
             }
             this.player.y += this.player.vy
@@ -292,6 +333,7 @@
                     this.player.vy = 0
                     this.player_on_platform = true
                 }
+
             }
 
         }
