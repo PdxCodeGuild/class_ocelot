@@ -18,7 +18,6 @@
 <script>
 
 
-
     function random(lower, upper) {
         return lower + Math.random() * (upper - lower)
     }
@@ -83,7 +82,6 @@
         draw(ctx) {
             ctx.fillStyle = this.color
             ctx.fillRect(this.x, this.y, this.width, this.height)
-
         }
 
         update() {
@@ -125,7 +123,7 @@
             let star_count = 10
             let ground_height = 20
             let star_size = 5
-            let player_size = 30
+            let player_size = 15
 
             this.cnv = cnv
             this.ctx = this.cnv.getContext('2d')
@@ -137,10 +135,9 @@
             let ground = new Rectangle(0, this.height - ground_height, this.width, ground_height, 'darkgreen')
             this.platforms.push(ground)
 
-
             this.player = new Rectangle(cnv.width / 2 - player_size / 2,
                 cnv.height - ground_height - player_size,
-                player_size, player_size, 'rgba(255, 155, 30, .1)')
+                player_size, player_size, 'rgba(255, 155, 30, .8)')
             this.player_on_platform = true
 
             this.background_elements = []
@@ -159,17 +156,19 @@
             let y = this.player.y
             let w = this.player.width
             let h = this.player.height
+
             this.ctx.fillStyle = 'orange'
             this.ctx.beginPath()
-            this.ctx.moveTo(x + w/3, y + h)
-            this.ctx.lineTo(x + w - w/3, y + h)
-            this.ctx.lineTo(x + Math.random() * w, y + h + Math.random() * 10 * 2)
+            this.ctx.moveTo(x + w / 3, y + h)
+            this.ctx.lineTo(x + w - w / 3, y + h)
+            this.ctx.lineTo(x + Math.random() *w, y + h + Math.random() * 10 * 2)
             this.ctx.closePath()
             this.ctx.fill()
+
             this.ctx.fillStyle = 'red'
             this.ctx.beginPath()
-            this.ctx.moveTo(x + w/3, y + h)
-            this.ctx.lineTo(x + w - w/3, y + h)
+            this.ctx.moveTo(x + w / 3, y + h)
+            this.ctx.lineTo(x + w - w / 3, y + h)
             this.ctx.lineTo(x + Math.random() * w, y + h + Math.random() * 10 * 2)
             this.ctx.closePath()
             this.ctx.fill()
@@ -185,22 +184,22 @@
             this.ctx.fillStyle = 'red'
             this.ctx.beginPath()
             //top right for this.player
-            this.ctx.moveTo(x, y+ h/1.5)
+            this.ctx.moveTo(x, y + h / 1.5)
             //Middle point with random movement
-            this.ctx.lineTo(x - Math.random()*10, y + h + Math.random()*10)
+            this.ctx.lineTo(x - Math.random() * 10, y + h*1.1 + Math.random() * 10)
             //bottom right for this.player
-            this.ctx.lineTo(x , y + h)
+            this.ctx.lineTo(x, y + h)
             this.ctx.closePath()
             this.ctx.fill()
 
             this.ctx.fillStyle = 'orange'
             this.ctx.beginPath()
             //top right for this.player
-            this.ctx.moveTo(x, y+ h/1.5)
+            this.ctx.moveTo(x, y + h / 1.5)
             //Middle point with random movement
-            this.ctx.lineTo(x - Math.random()*10, y + h + Math.random()*10)
+            this.ctx.lineTo(x - Math.random() * 10, y + h*1.1 + Math.random() * 10)
             //bottom right for this.player
-            this.ctx.lineTo(x , y + h)
+            this.ctx.lineTo(x, y + h)
             this.ctx.closePath()
             this.ctx.fill()
         }
@@ -216,9 +215,9 @@
             //top right for this.player
             this.ctx.moveTo(x + w, y + h)
             //Middle point with random movement
-            this.ctx.lineTo(x + w + Math.random()*10, y + h + Math.random()*10)
+            this.ctx.lineTo(x + w + Math.random() * 10, y + h*1.1 + Math.random() * 10)
             //bottom right for this.player
-            this.ctx.lineTo(x + w , y + h/1.5)
+            this.ctx.lineTo(x + w, y + h / 1.5)
             this.ctx.closePath()
             this.ctx.fill()
 
@@ -227,16 +226,15 @@
             //top right for this.player
             this.ctx.moveTo(x + w, y + h)
             //Middle point with random movement
-            this.ctx.lineTo(x + w + Math.random()*10, y + h + Math.random()*10)
+            this.ctx.lineTo(x + w + Math.random() * 10, y + h*1.1 + Math.random() * 10)
             //bottom right for this.player
-            this.ctx.lineTo(x + w , y + h/1.5)
+            this.ctx.lineTo(x + w, y + h / 1.5)
             this.ctx.closePath()
             this.ctx.fill()
         }
 
         draw() {
             let score = 0
-
 
             this.ctx.clearRect(0, 0, this.cnv.width, this.cnv.height)
             // draw score
@@ -246,7 +244,9 @@
 
 
             if (key_tracker.isKeyDown('ArrowUp')) {
-                this.flame()
+                //this.flame()
+                this.right_flame()
+                this.left_flame()
             }
             if (key_tracker.isKeyDown('ArrowLeft')) {
                 this.right_flame()
@@ -270,7 +270,7 @@
         update() {
 
             let player_speed = 1
-            let gravity = .036
+            let gravity = .030
 
             if (key_tracker.isKeyDown('ArrowLeft')) {
                 this.player.x -= player_speed
@@ -278,7 +278,7 @@
                 this.player.x += player_speed
             }
             if (key_tracker.isKeyDown('ArrowUp') && this.player_on_platform) {
-                this.player.vy += -.057
+                this.player.vy += -.048
             }
             this.player.y += this.player.vy
             this.player.vy += gravity
