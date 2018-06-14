@@ -14,7 +14,7 @@
     </style>
 </head>
 <body>
-    <canvas id="cnv" width="500" height="500"></canvas>
+    <canvas id="cnv" width="1200" height="500"></canvas>
     <script>
         function random(lower, upper) {
             return lower + Math.random()*(upper-lower)
@@ -65,20 +65,13 @@
             constructor(x, y, width, height, color) {
                 this.x = x
                 this.y = y
-                this.vx = 0
-                this.vy = 0
-                this.mx = 2
                 this.width = width
                 this.height = height
                 this.color = color
             }
             draw(ctx) {
                 ctx.fillStyle = this.color
-                ctx.fillRect(this.x ,this.y, this.width, this.height)
-            }
-            update() {
-                this.x += this.vx
-                this.y += this.vy
+                ctx.fillRect(this.x, this.y, this.width, this.height)
             }
             left() {
                 return this.x
@@ -91,6 +84,22 @@
             }
             bottom() {
                 return this.y + this.height
+            }
+        }
+
+        class StarJumper extends Rectangle {
+            constructor(x, y, width, height, color) {
+                super(x, y, width, height, color);
+                this.vx = 0
+                this.vy = 0
+                this.mx = 2
+                this.star_count = 0
+                this.star_cooldown = 0
+                this.hurt_count = 0
+            }
+            update() {
+                this.x += this.vx
+                this.y += this.vy
             }
             withinVert(r) {
                 return this.top() < r.bottom()
@@ -107,9 +116,9 @@
                     && this.withinVert(r)
             }
             landed(r) {
-                return this.left() < r.right()
-                    && this.right() > r.left()
-                    && this.bottom() <= r.top()
+                return this.left() <= r.right()
+                    && this.right() >= r.left()
+                    && this.bottom() - this.vy <= r.top()
                     && this.bottom() + this.vy >= r.top()
             }
             hitHead(r) {
@@ -118,86 +127,289 @@
                     && this.bottom() >= r.top()
                     && this.top() + this.vy <= r.bottom()
             }
-
+            starGrab() {
+                this.color = 'red'
+                this.star_count += 1
+            }
         }
+
+        class Circle {
+            constructor(x, y, radius, color, vx=0, vy=0) {
+                this.x = x
+                this.y = y
+                this.vx = vx
+                this.vy = vy
+                this.rad = radius
+                this.color = color
+            }
+            draw(ctx) {
+                ctx.beginPath()
+                ctx.arc(this.x, this.y, this.rad, 0, 2 * Math.PI, false)
+                ctx.fillStyle = this.color
+                ctx.fill()
+            }
+            update() {
+                this.x += this.vx
+                this.y += this.vy
+            }
+            checkCollideRec(rec) {
+                let dx = this.x - (rec.x + rec.width / 2)
+                let dy = this.y - (rec.y + rec.height / 2)
+                let width = (this.rad*2 + rec.width) / 2
+                let height = (this.rad*2 + rec.height) / 2
+                if (Math.abs(dx) <= width && Math.abs(dy) <= height) {
+                    return true
+                }
+                return false
+            }
+            checkCollideCir(cir) {
+                let change_in_x = this.x - cir.x
+                let change_in_y = this.y - cir.y
+                let separation = Math.sqrt(change_in_x ** 2 + change_in_y ** 2)
+                let combo_len = this.rad + cir.rad
+                if (separation <= combo_len) {
+                    // YOUR BALLS ARE TOUCHING, SEPARATE THEM
+                    let diff = combo_len - separation
+                    let nudge = diff / 2
+                    let x_part_of_separation = (change_in_x / separation) ** 2
+                    let y_part_of_separation = (change_in_y / separation) ** 2
+                    let nudge_x = nudge * x_part_of_separation
+                    let nudge_y = nudge * y_part_of_separation
+                    // NUDGE YOUR BALLS BACK TO TOUCHING EDGES
+                    this.x -= nudge_x
+                    this.y -= nudge_y
+                    cir.x += nudge_x
+                    cir.y += nudge_y
+                    // CALCULATE NEW VELOCITIES
+                    let collision_angle = Math.atan2(cir.y - this.y, cir.x - this.x)
+                    let vel_vect_len_i = this.getVelVectLen()
+                    let vel_vect_len_j = cir.getVelVectLen()
+                    if (vel_vect_len_i + vel_vect_len_j > 0) {
+                        let direction_i = Math.atan2(this.vy, this.vx)
+                        let direction_j = Math.atan2(cir.vy, cir.vx)
+                        let vx_new_plane_i = vel_vect_len_i * Math.cos(direction_i - collision_angle)
+                        let vy_new_plane_i = vel_vect_len_i * Math.sin(direction_i - collision_angle)
+                        let vx_new_plane_j = vel_vect_len_j * Math.cos(direction_j - collision_angle)
+                        let vy_new_plane_j = vel_vect_len_j * Math.sin(direction_j - collision_angle)
+                        let vx_final_i = ((this.rad - cir.rad) * vx_new_plane_i + (cir.rad + cir.rad) * vx_new_plane_j) / (this.rad + cir.rad)
+                        let vx_final_j = ((this.rad + this.rad) * vx_new_plane_i + (cir.rad - this.rad) * vx_new_plane_j) / (this.rad + cir.rad)
+                        let vy_final_i = vy_new_plane_i
+                        let vy_final_j = vy_new_plane_j
+                        let cosAngle = Math.cos(collision_angle)
+                        let sinAngle = Math.sin(collision_angle)
+                        this.vx = cosAngle * vx_final_i - sinAngle * vy_final_i
+                        this.vy = sinAngle * vx_final_i + cosAngle * vy_final_i
+                        cir.vx = cosAngle * vx_final_j - sinAngle * vy_final_j
+                        cir.vy = sinAngle * vx_final_j + cosAngle * vy_final_j
+                        // MOVE IN NEW DIRECTION ONE TICK
+                        this.x += this.vx
+                        this.y += this.vy
+                        cir.x += cir.vx
+                        cir.y += cir.vy
+                    }
+                    return true
+                }
+            }
+            getVelVectLen() {
+                return Math.sqrt(this.vx ** 2 + this.vy ** 2)
+            }
+            setLeft(x) {
+                this.x = x + this.rad
+            }
+            setRight(x) {
+                this.x = x - this.rad
+            }
+            setTop(y) {
+                this.y = y + this.rad
+            }
+            setBottom(y) {
+                this.y = y - this.rad
+            }
+            Left() {
+                return this.x
+            }
+            Right() {
+                return this.x + this.rad
+            }
+            Top() {
+                return this.y
+            }
+            Bottom() {
+                return this.y + this.rad
+            }
+        }
+
+        class Star extends Rectangle {
+            constructor(x, y, width, height, color) {
+                super(x, y, width, height, color);
+            }
+        }
+
 
         class World {
             constructor(width, height, cnv) {
                 this.cnv = cnv
                 this.ctx = this.cnv.getContext('2d')
-                let ground_height = 20
-                let star_size = 4
-                let player_size = 10
                 this.width = width
-
                 this.height = height
-                this.view = 0
-                this.platforms = []
-                let ground = new Rectangle(0, this.height-ground_height, this.width, ground_height, 'darkgreen')
-                this.platforms.push(ground)
-                this.player = new Rectangle(cnv.width/2-player_size/2,
-                                            cnv.height-ground_height-player_size,
-                                            player_size, player_size, 'blue')
+                this.star_size = 4
                 this.player_on_platform = true
-                this.background_elements = []
-                for (let i=0; i<300; ++i) {
+                this.ground_height = 20
+                let player_size = 10
+                
+                this.platforms = []
+                this.ground = new Rectangle(0, this.height - this.ground_height,
+                                            this.width, this.ground_height, 'darkgreen')
+                this.platforms.push(this.ground)
+                this.player = new StarJumper(cnv.width/2-player_size/2,
+                                            cnv.height-this.ground_height-player_size,
+                                            player_size, player_size, 'blue')
+                for (let i=0; i<100; i++) {
                       let x = random(10, this.width-10)
-                      let y = random(10, this.height-ground_height-star_size-10)
-                      let star = new Rectangle(x, y, 4, 4, 'white')
+                      let y = random(10, this.height-this.ground_height-this.star_size-10)
+                      let star = new Rectangle(x, y, this.star_size, this.star_size, 'white')
                       this.platforms.push(star)
                 }
+
+                this.circles = []
+                for (let i = 0; i < 10; i++) {
+                    let radius = 10 + Math.random() * 10;
+                    let rand_color = Math.floor(Math.random() * 360 + 1)
+                    let color = `hsl(${rand_color}, 100%, 50%)`
+                    let x = Math.random() * (cnv.width - radius)
+                    let y = Math.random() * cnv.height / 2
+                    this.circles.push(new Circle(x, y, radius, color, ((Math.random()+.2)-.5), ((Math.random()+.2)-.5)))
+                }
+            }
+            getTransX() {
+                let trans_x = -this.player.x + this.cnv.width/2
+                if (trans_x > 0) {
+                    return  0
+                } else if (trans_x < -this.width + this.cnv.width) {
+                    return -this.width + this.cnv.width
+                }
+                return trans_x
             }
             draw() {
                 this.ctx.clearRect(0, 0, this.cnv.width, this.cnv.height)
-                this.ctx.translate(-this.player.x+this.cnv.width/2, 0)
-                for (let i=0; i<this.background_elements.length; ++i) {
-                    this.background_elements[i].draw(this.ctx)
-                }
-                for (let i=0; i<this.platforms.length; ++i) {
+                let trans_x = this.getTransX()
+                this.ctx.translate(trans_x, 0)
+                for (let i=0; i<this.platforms.length; i++) {
                     this.platforms[i].draw(this.ctx)
                 }
-                this.player.draw(this.ctx)
+                for (let i=0; i<this.circles.length; i++) {
+                    this.circles[i].draw(this.ctx)
+                }
+                if (this.player.hurt_count < 0 || this.player.hurt_count % 8 < 4) {
+                    this.player.draw(this.ctx)
+                }
                 this.ctx.resetTransform()
             }
             update() {
+                let trans_x = this.getTransX()
+                for (let i=0; i<this.circles.length; i++) {
+                    this.circles[i].update(this.player.x)
+                    if (this.circles[i].x + this.circles[i].rad > this.cnv.width - trans_x) {
+                        this.circles[i].setRight(this.cnv.width - trans_x)
+                        this.circles[i].vx *= -1
+                        this.circles[i].x += this.circles[i].vx
+                    } else if (this.circles[i].x - this.circles[i].rad < -trans_x) {
+                        this.circles[i].setLeft(0 - trans_x)
+                        this.circles[i].vx *= -1
+                        this.circles[i].x += this.circles[i].vx
+                    } else if (this.circles[i].y + this.circles[i].rad > this.cnv.height - this.ground_height) {
+                        this.circles[i].setBottom(this.cnv.height - this.ground_height)
+                        this.circles[i].vy *= -1
+                        this.circles[i].y += this.circles[i].vy
+                    } else if (this.circles[i].y - this.circles[i].rad < 0) {
+                        this.circles[i].setTop(0)
+                        this.circles[i].vy *= -1
+                        this.circles[i].y += this.circles[i].vy
+                    }
+                    for (let j = 0; j < this.circles.length; ++j) {
+                        if (i === j) continue
+                        this.circles[i].checkCollideCir(this.circles[j])
+                    }
+                    let hit_player = this.circles[i].checkCollideRec(this.player)
+                    if (hit_player) {
+                        this.player.hurt_count = 180
+                    }
+
+                    this.circles[i].vy > 0 ? this.circles[i].vy += .0001 : this.circles[i].vy -= .0001
+                    this.circles[i].vx > 0 ? this.circles[i].vx += .0001 : this.circles[i].vx -= .0001
+
+                }
+
+                if (key_tracker.isKeyDown('ArrowUp') && this.player_on_platform) {
+                    this.player.vy = -6
+                    this.player.y -= 0.3
+                }
+
+                this.player_on_platform = false
+                this.player.star_cooldown -= 1
+                this.player.hurt_count -= 1
+                let rubbing = false
+
                 if (key_tracker.isKeyDown('ArrowLeft')) {
-                    let rubbing = false
-                    for (let i=0; i<this.platforms.length; ++i) {
+                    for (let i = 0; i < this.platforms.length; i++) {
                         if (this.player.rubLeft(this.platforms[i])) {
                             rubbing = true
+                            break
                         }
                     }
                     if (!rubbing) this.player.x -= this.player.mx
+                    if (this.player.x < 0) this.player.x = 0
                 } else if (key_tracker.isKeyDown('ArrowRight')) {
-                    let rubbing = false
-                    for (let i=0; i<this.platforms.length; ++i) {
+                    for (let i = 0; i < this.platforms.length; i++) {
                         if (this.player.rubRight(this.platforms[i])) {
                             rubbing = true
+                            break
                         }
                     }
                     if (!rubbing) this.player.x += this.player.mx
-                }
-                if (key_tracker.isKeyDown('ArrowUp') && this.player_on_platform) {
-                    this.player.vy = -6
-                    this.player.y -= 0.1
-                    this.player_on_platform = false
-                }
-                this.player.y += this.player.vy
-                for (let i=0; i<this.platforms.length; ++i) {
-                    if (this.player.landed(this.platforms[i])) {
-                        this.player.y = this.platforms[i].y - this.player.height
-                        this.player.vy = 0
-                        this.player_on_platform = true
-                    } else if (this.player.hitHead(this.platforms[i])) {
-                        this.player.vy = 0
+                    if (this.player.x + this.player.width > world.width) {
+                        this.player.x = world.width - this.player.width
                     }
                 }
-                this.player.vy += 0.2
+
+                for (let i=0; i<this.platforms.length; i++) {
+                    if (this.player.landed(this.platforms[i])) {
+                        this.player.color = 'blue'
+                        this.player.y = this.platforms[i].top() - this.player.height
+                        this.player.vy = 0
+                        this.player_on_platform = true
+                        if (key_tracker.isKeyDown('ArrowDown') && this.platforms[i] != this.ground && this.player.star_cooldown < 0) {
+                            this.player.star_cooldown = 10
+                            this.player.starGrab()
+                            this.platforms.splice(i,1)
+                        }
+                        break
+                    } else if (this.player.hitHead(this.platforms[i]) && this.player.vy < 0 && !rubbing) {
+                        this.player.y = this.platforms[i].bottom() + .001
+                        this.player.vy = -.015
+                        break
+                    }
+                }
+
+                if (!this.player_on_platform) {
+                    this.player.vy += 0.2
+                    this.player.y += this.player.vy
+                    if (key_tracker.isKeyDown(' ') && this.player.star_count > 0 && this.player.star_cooldown < 0) {
+                        let new_star_x = this.player.x + (this.player.height - this.star_size)/2
+                        let new_star_y = this.player.y + this.player.height
+                        let star = new Rectangle(new_star_x, new_star_y, this.star_size, this.star_size, 'white')
+                        this.platforms.push(star)
+                        this.player.vy = 0
+                        this.player.star_cooldown = 10
+                        this.player_on_platform = true
+                        this.player.star_count -= 1
+                    }
+                }
             }
         }
 
         let cnv = document.querySelector('#cnv')
-        let world = new World(cnv.width*10, cnv.height, cnv)
+        let world = new World(cnv.width * 2, cnv.height, cnv)
 
         function animation_loop() {
             window.requestAnimationFrame(animation_loop)
