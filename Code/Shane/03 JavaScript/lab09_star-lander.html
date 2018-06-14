@@ -17,6 +17,8 @@
 
 <script>
 
+
+
     function random(lower, upper) {
         return lower + Math.random() * (upper - lower)
     }
@@ -138,7 +140,7 @@
 
             this.player = new Rectangle(cnv.width / 2 - player_size / 2,
                 cnv.height - ground_height - player_size,
-                player_size, player_size, 'blue')
+                player_size, player_size, 'rgba(255, 155, 30, .1)')
             this.player_on_platform = true
 
             this.background_elements = []
@@ -159,60 +161,75 @@
             let h = this.player.height
             this.ctx.fillStyle = 'orange'
             this.ctx.beginPath()
-            this.ctx.moveTo(x + 2, y + h)
-            this.ctx.lineTo(x + w - 2, y + h)
+            this.ctx.moveTo(x + w/3, y + h)
+            this.ctx.lineTo(x + w - w/3, y + h)
             this.ctx.lineTo(x + Math.random() * w, y + h + Math.random() * 10 * 2)
             this.ctx.closePath()
             this.ctx.fill()
             this.ctx.fillStyle = 'red'
             this.ctx.beginPath()
-            this.ctx.moveTo(x + 2, y + h)
-            this.ctx.lineTo(x + w - 2, y + h)
+            this.ctx.moveTo(x + w/3, y + h)
+            this.ctx.lineTo(x + w - w/3, y + h)
             this.ctx.lineTo(x + Math.random() * w, y + h + Math.random() * 10 * 2)
             this.ctx.closePath()
             this.ctx.fill()
         }
+
 
         left_flame() {
             let x = this.player.x
             let y = this.player.y
             let w = this.player.width
             let h = this.player.height
-            this.ctx.fillStyle = 'orange'
-            this.ctx.beginPath()
-            this.ctx.moveTo(x+2, y+3)
-            this.ctx.lineTo(x + h - 5, y + w/2)
-            this.ctx.lineTo(x + Math.random() * -w, y  + Math.random() * 3)
-            this.ctx.closePath()
-            this.ctx.fill()
 
             this.ctx.fillStyle = 'red'
             this.ctx.beginPath()
-            this.ctx.moveTo(x+2, y+3)
-            this.ctx.lineTo(x + w - 5, y + w/2)
-            this.ctx.lineTo(x + Math.random() * -w, y  + Math.random() * 3)
+            //top right for this.player
+            this.ctx.moveTo(x, y+ h/1.5)
+            //Middle point with random movement
+            this.ctx.lineTo(x - Math.random()*10, y + h + Math.random()*10)
+            //bottom right for this.player
+            this.ctx.lineTo(x , y + h)
+            this.ctx.closePath()
+            this.ctx.fill()
+
+            this.ctx.fillStyle = 'orange'
+            this.ctx.beginPath()
+            //top right for this.player
+            this.ctx.moveTo(x, y+ h/1.5)
+            //Middle point with random movement
+            this.ctx.lineTo(x - Math.random()*10, y + h + Math.random()*10)
+            //bottom right for this.player
+            this.ctx.lineTo(x , y + h)
             this.ctx.closePath()
             this.ctx.fill()
         }
 
         right_flame() {
-            let x = this.player.x
-            let y = this.player.y
             let w = this.player.width
             let h = this.player.height
-            this.ctx.fillStyle = 'orange'
-            this.ctx.beginPath()
-            this.ctx.moveTo(x+2, y+3)
-            this.ctx.lineTo(x + h - 5, y + w/2)
-            this.ctx.lineTo(x + Math.random() * -w, y  + Math.random() * 3)
-            this.ctx.closePath()
-            this.ctx.fill()
+            let x = this.player.x
+            let y = this.player.y
 
             this.ctx.fillStyle = 'red'
             this.ctx.beginPath()
-            this.ctx.moveTo(x+2, y+3)
-            this.ctx.lineTo(x + w - 5, y + w/2)
-            this.ctx.lineTo(x + Math.random() * -w, y  + Math.random() * 3)
+            //top right for this.player
+            this.ctx.moveTo(x + w, y + h)
+            //Middle point with random movement
+            this.ctx.lineTo(x + w + Math.random()*10, y + h + Math.random()*10)
+            //bottom right for this.player
+            this.ctx.lineTo(x + w , y + h/1.5)
+            this.ctx.closePath()
+            this.ctx.fill()
+
+            this.ctx.fillStyle = 'orange'
+            this.ctx.beginPath()
+            //top right for this.player
+            this.ctx.moveTo(x + w, y + h)
+            //Middle point with random movement
+            this.ctx.lineTo(x + w + Math.random()*10, y + h + Math.random()*10)
+            //bottom right for this.player
+            this.ctx.lineTo(x + w , y + h/1.5)
             this.ctx.closePath()
             this.ctx.fill()
         }
@@ -232,7 +249,7 @@
                 this.flame()
             }
             if (key_tracker.isKeyDown('ArrowLeft')) {
-                this.flame()
+                this.right_flame()
             }
             if (key_tracker.isKeyDown('ArrowRight')) {
                 this.left_flame()
@@ -261,7 +278,7 @@
                 this.player.x += player_speed
             }
             if (key_tracker.isKeyDown('ArrowUp') && this.player_on_platform) {
-                this.player.vy += -.072
+                this.player.vy += -.057
             }
             this.player.y += this.player.vy
             this.player.vy += gravity
