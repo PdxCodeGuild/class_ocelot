@@ -45,6 +45,7 @@
     class KeyTracker {
         constructor() {
             this.keys = [];
+
         }
 
         keyDown(key) {
@@ -65,10 +66,13 @@
     let key_tracker = new KeyTracker()
     document.addEventListener('keydown', (evt) => {
         key_tracker.keyDown(evt.key);
+
+
     });
 
     document.addEventListener('keyup', (evt) => {
         key_tracker.keyUp(evt.key);
+
     });
 
 
@@ -133,6 +137,7 @@
             let r = getRandomInt(255)
             let g = getRandomInt(255)
             let b = getRandomInt(255)
+
             this.noise = new Tone.Noise("brown").start();
             this.white_noise = new Tone.Noise("pink").start();
 
@@ -144,13 +149,12 @@
             this.noise.connect(autoFilter);
             this.white_noise.connect(autoFilter);
 
-
             this.cnv = cnv
             this.ctx = this.cnv.getContext('2d')
             this.width = width
             this.height = height
             this.view = 0
-            this.fuel = 1000000
+            this.fuel = 5000
             this.score = 0
 
             this.volume = 4 / 3 * Math.random() * 15 * 3.14159265359 ** 3 // in cm**3
@@ -262,10 +266,11 @@
 
 
             this.ctx.clearRect(0, 0, this.cnv.width, this.cnv.height)
+
             // draw score
             //Player Info...
-
-            this.ctx.fillText(this.fuel, 100, 100)
+            this.ctx.font = "20px Arial"
+            this.ctx.fillText('FUEL: ' + this.fuel, 100, 100)
             this.ctx.translate(-this.player.x + this.cnv.width / 2, 0)
 
             this.noise.mute = true
@@ -310,24 +315,34 @@
             let player_speed = 1
             let gravity = .030
 
-            if (key_tracker.isKeyDown('ArrowLeft') && this.fuel > 0 && this.player_on_platform === true) {
+            if (key_tracker.isKeyDown('ArrowLeft') && this.fuel > 0 && this.player_on_platform === false) {
                 this.player.x -= player_speed
+            }
+            if (this.player_on_platform === false) {
+                this.player.x -= this.player.vx
+            }
 
-
-            } else if (key_tracker.isKeyDown('ArrowRight')) {
+            if (key_tracker.isKeyDown('ArrowRight') && this.fuel > 0 && this.player_on_platform === false) {
                 this.player.x += player_speed
             }
-            if (key_tracker.isKeyDown('ArrowUp') && this.fuel > 0) {
+            if (this.player_on_platform === false) {
+                this.player.x += this.player.vx - gravity
+            }
 
+            if (key_tracker.isKeyDown('ArrowUp') && this.fuel > 0) {
+                this.player_on_platform = false
                 this.player.vy += -.048
             }
             this.player.y += this.player.vy
             this.player.vy += gravity
 
+
+
             for (let i = 0; i < this.platforms.length; ++i) {
                 if (this.player.overlaps(this.platforms[i])) {
                     // take player center and platform center
                     //
+                    //function to draw this.ctx.font = "20px Arial" this.ctx.fillText('FAIL Resetting', cnv.width / 2, 130)
 
                     this.player.y = this.platforms[i].y - this.player.height
                     this.player.vy = 0
@@ -338,7 +353,6 @@
 
         }
     }
-
 
     let cnv = document.querySelector('#cnv')
     let world = new World(cnv.width * 3, cnv.height, cnv)
