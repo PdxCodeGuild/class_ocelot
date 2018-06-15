@@ -156,7 +156,7 @@
             this.width = width
             this.height = height
             this.view = 0
-            this.fuel = 3000
+            this.fuel = 3000                   //474
             this.score = 0
             this.last_player_vx = 0
 
@@ -277,7 +277,7 @@
             // draw score
             //Player Info...
             this.ctx.font = "20px Arial"
-            this.ctx.fillText('FUEL: ' + this.fuel, 100, 100)
+
             this.ctx.translate(-this.player.x + this.cnv.width / 2, 0)
 
             this.noise.mute = true
@@ -314,8 +314,6 @@
 
             this.player.draw(this.ctx)
             this.ctx.resetTransform()
-
-
         }
 
         update() {
