@@ -2,18 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Star Jumper</title>
+    <title>Star Lander</title>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tone/13.1.31/Tone.min.js"></script>
     <style>
         body {
             color: white;
             background-color: black;
         }
-
+        canvas{
+            width: 100%;
+        }
     </style>
 </head>
 <body id="body">
-<canvas id="cnv" width='900' height="500"></canvas>
+<canvas id="cnv" width="1200" height="500"></canvas>
 
 <script>
 
@@ -72,7 +74,7 @@
 
     document.addEventListener('keyup', (evt) => {
         key_tracker.keyUp(evt.key);
-        
+
     });
 
 
@@ -154,7 +156,7 @@
             this.width = width
             this.height = height
             this.view = 0
-            this.fuel = 5000
+            this.fuel = 3000
             this.score = 0
             this.last_player_vx = 0
 
@@ -163,10 +165,14 @@
             this.mass = 10 //kg
 
             this.platforms = []
-            let ground = new Rectangle(0, this.height - ground_height, this.width, ground_height, 'darkgreen')
-            this.platforms.push(ground)
 
-            this.player = new Rectangle(cnv.width / 2 - player_size / 2,
+            let ground_left = new Rectangle(0, this.height - ground_height, player_size/2, ground_height, 'darkgreen')
+            this.platforms.push(ground_left)
+
+            let ground_right = new Rectangle(this.width, this.height - ground_height, player_size/2, ground_height, 'darkgreen')
+            this.platforms.push(ground_right)
+
+            this.player = new Rectangle(0,
                 cnv.height - ground_height - player_size,
                 player_size, player_size, 'rgba(255, 155, 30, .8)')
             this.player_on_platform = true
@@ -176,7 +182,7 @@
                 let x = random(10, this.width - 10)
                 let y = random(10, this.height - ground_height - star_size - 10)
                 let star = new Rectangle(x, y, 4, 4, 'white')
-                this.platforms.push(star)
+                this.background_elements.push(star)
             }
 
 
@@ -265,8 +271,8 @@
 
 
         draw() {
-
             this.ctx.clearRect(0, 0, this.cnv.width, this.cnv.height)
+
 
             // draw score
             //Player Info...
@@ -306,35 +312,36 @@
                 this.platforms[i].draw(this.ctx)
             }
 
-
             this.player.draw(this.ctx)
             this.ctx.resetTransform()
+
+
         }
 
         update() {
 
             let player_speed = .04
             let gravity = .030
-            let last_player_vx = 0
+            let last_player_vx = this.player.vx
 
             if (key_tracker.isKeyDown('ArrowLeft') && this.fuel > 0 && this.player_on_platform === false) {
                 this.player.vx += player_speed
                 last_player_vx = this.player.vx
                 console.log(this.player.vx)
-
             }
 
             if (key_tracker.isKeyDown('ArrowRight') && this.fuel > 0 && this.player_on_platform === false) {
                 this.player.vx -= player_speed
                 last_player_vx = this.player.vx
                 console.log(this.player.vx)
-                if (key_tracker.keyUp()) {
-                    this.player.vx = last_player_vx
-                    alert('111')
-                }
             }
+
             if (this.player_on_platform === false) {
                 this.player.vx = last_player_vx
+            }
+
+            if (this.player_on_platform === true) {
+                this.player.vx = 0
             }
 
 
@@ -364,6 +371,8 @@
     }
 
     let cnv = document.querySelector('#cnv')
+    // cnv.style.width = window.innerWidth
+    // cnv.style.height = window.innerHeight
     let world = new World(cnv.width * 3, cnv.height, cnv)
 
     function animation_loop() {
