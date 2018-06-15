@@ -90,12 +90,15 @@
         class StarJumper extends Rectangle {
             constructor(x, y, width, height, color) {
                 super(x, y, width, height, color);
-                this.vx = 0
                 this.vy = 0
+                this.vx = 0
                 this.mx = 2
-                this.star_count = 0
+                this.star_count = 50
                 this.star_cooldown = 0
+                this.gold_cooldown = 0
+                this.star_riding = false
                 this.hurt_count = 0
+                this.last_teleport = {}
             }
             update() {
                 this.x += this.vx
@@ -124,7 +127,7 @@
             hitHead(r) {
                 return this.left() < r.right()
                     && this.right() > r.left()
-                    && this.bottom() >= r.top()
+                    && this.top() - this.vy >= r.bottom()
                     && this.top() + this.vy <= r.bottom()
             }
             starGrab() {
@@ -133,7 +136,7 @@
             }
         }
 
-        class Circle {
+        class Portal {
             constructor(x, y, radius, color, vx=0, vy=0) {
                 this.x = x
                 this.y = y
@@ -145,8 +148,8 @@
             draw(ctx) {
                 ctx.beginPath()
                 ctx.arc(this.x, this.y, this.rad, 0, 2 * Math.PI, false)
-                ctx.fillStyle = this.color
-                ctx.fill()
+                ctx.strokeStyle = this.color
+                ctx.stroke();
             }
             update() {
                 this.x += this.vx
@@ -239,12 +242,23 @@
             }
         }
 
-        class Star extends Rectangle {
+        class GoldenStar extends Rectangle {
             constructor(x, y, width, height, color) {
                 super(x, y, width, height, color);
+                this.setRandomVelocities()
+                this.last_teleport = {}
+            }
+            setRandomVelocities() {
+                let rand_vx = random(.5, 1) * (Math.random < .5 ? -1 : 1)
+                let rand_vy = random(.5, 1) * (Math.random < .5 ? -1 : 1)
+                this.vx = rand_vx
+                this.vy = rand_vy
+            }
+            update() {
+                this.x += this.vx
+                this.y += this.vy
             }
         }
-
 
         class World {
             constructor(width, height, cnv) {
@@ -255,15 +269,19 @@
                 this.star_size = 4
                 this.player_on_platform = true
                 this.ground_height = 20
-                let player_size = 10
-                
+                let player_size = 20
+
                 this.platforms = []
                 this.ground = new Rectangle(0, this.height - this.ground_height,
-                                            this.width, this.ground_height, 'darkgreen')
+                                            this.width, this.ground_height, 'green')
                 this.platforms.push(this.ground)
                 this.player = new StarJumper(cnv.width/2-player_size/2,
                                             cnv.height-this.ground_height-player_size,
-                                            player_size, player_size, 'blue')
+                                            player_size, player_size, 'goldenrod')
+                this.golden_star = new GoldenStar(random(100, this.width - 100),
+                                                  random(0, this.height * .8),
+                                                  this.star_size, this.star_size, 'yellow')
+
                 for (let i=0; i<100; i++) {
                       let x = random(10, this.width-10)
                       let y = random(10, this.height-this.ground_height-this.star_size-10)
@@ -272,15 +290,26 @@
                 }
 
                 this.circles = []
-                for (let i = 0; i < 10; i++) {
+                for (let i=0; i<12; i++) {
+                    let x, y
                     let radius = 10 + Math.random() * 10;
-                    let rand_color = Math.floor(Math.random() * 360 + 1)
-                    let color = `hsl(${rand_color}, 100%, 50%)`
-                    let x = Math.random() * (cnv.width - radius)
-                    let y = Math.random() * cnv.height / 2
-                    this.circles.push(new Circle(x, y, radius, color, ((Math.random()+.2)-.5), ((Math.random()+.2)-.5)))
+                    let color = `hsl(${i*30}, 100%, 50%)`
+
+                    x = random(radius, width - radius)
+                    y = random(radius, height * .8)
+                    let p1 = new Portal(x, y, radius, color, Math.random()-.5, Math.random()-.5)
+
+                    x = random(radius, width - radius)
+                    y = random(radius, height * .8)
+                    let p2 = new Portal(x, y, radius, color, Math.random()-.5, Math.random()-.5)
+
+                    this.circles.push(p1)
+                    this.circles[this.circles.length - 1].portal_pair = p2
+                    this.circles.push(p2)
+                    this.circles[this.circles.length - 1].portal_pair = p1
                 }
             }
+
             getTransX() {
                 let trans_x = -this.player.x + this.cnv.width/2
                 if (trans_x > 0) {
@@ -303,22 +332,25 @@
                 if (this.player.hurt_count < 0 || this.player.hurt_count % 8 < 4) {
                     this.player.draw(this.ctx)
                 }
+                this.golden_star.draw(this.ctx)
                 this.ctx.resetTransform()
+                this.ctx.fillStyle = "white"
+                this.ctx.font = "30px Arial"
+                this.ctx.fillText('Star Pouch: ' + this.player.star_count, 10, 30)
             }
             update() {
-                let trans_x = this.getTransX()
-                for (let i=0; i<this.circles.length; i++) {
+                for (let i = 0; i < this.circles.length; i++) {
                     this.circles[i].update(this.player.x)
-                    if (this.circles[i].x + this.circles[i].rad > this.cnv.width - trans_x) {
-                        this.circles[i].setRight(this.cnv.width - trans_x)
+                    if (this.circles[i].x + this.circles[i].rad > this.width) {
+                        this.circles[i].setRight(this.width)
                         this.circles[i].vx *= -1
                         this.circles[i].x += this.circles[i].vx
-                    } else if (this.circles[i].x - this.circles[i].rad < -trans_x) {
-                        this.circles[i].setLeft(0 - trans_x)
+                    } else if (this.circles[i].x - this.circles[i].rad < 0) {
+                        this.circles[i].setLeft(0)
                         this.circles[i].vx *= -1
                         this.circles[i].x += this.circles[i].vx
-                    } else if (this.circles[i].y + this.circles[i].rad > this.cnv.height - this.ground_height) {
-                        this.circles[i].setBottom(this.cnv.height - this.ground_height)
+                    } else if (this.circles[i].y + this.circles[i].rad > this.height - this.ground_height) {
+                        this.circles[i].setBottom(this.height - this.ground_height)
                         this.circles[i].vy *= -1
                         this.circles[i].y += this.circles[i].vy
                     } else if (this.circles[i].y - this.circles[i].rad < 0) {
@@ -330,68 +362,111 @@
                         if (i === j) continue
                         this.circles[i].checkCollideCir(this.circles[j])
                     }
-                    let hit_player = this.circles[i].checkCollideRec(this.player)
-                    if (hit_player) {
-                        this.player.hurt_count = 180
+                    if (this.circles[i] != this.player.last_teleport) {
+                        let hit_player = this.circles[i].checkCollideRec(this.player)
+                        if (hit_player) {
+                            this.player.vy = 0
+                            this.player.last_teleport = this.circles[i].portal_pair
+                            this.player.x = this.circles[i].portal_pair.x
+                            this.player.y = this.circles[i].portal_pair.y
+                        }
                     }
-
+                    if (this.circles[i] != this.golden_star.last_teleport) {
+                        let hit_golden_star = this.circles[i].checkCollideRec(this.golden_star)
+                        if (hit_golden_star) {
+                            this.golden_star.last_teleport = this.circles[i].portal_pair
+                            this.golden_star.x = this.circles[i].portal_pair.x
+                            this.golden_star.y = this.circles[i].portal_pair.y
+                            if (this.circles[i].portal_pair.vx > 0) {
+                                this.golden_star.vx = -Math.abs(this.golden_star.vx)
+                            } else {
+                                this.golden_star.vx = Math.abs(this.golden_star.vx)
+                            }
+                            if (this.circles[i].portal_pair.vy > 0) {
+                                this.golden_star.vy = -Math.abs(this.golden_star.vy)
+                            } else {
+                                this.golden_star.vy = Math.abs(this.golden_star.vy)
+                            }
+                        }
+                    }
                     this.circles[i].vy > 0 ? this.circles[i].vy += .0001 : this.circles[i].vy -= .0001
                     this.circles[i].vx > 0 ? this.circles[i].vx += .0001 : this.circles[i].vx -= .0001
-
                 }
+                let is_ob_right = this.golden_star.x > this.width
+                let is_ob_left = this.golden_star.x < 0
+                let is_ob_top = this.golden_star.y > this.height - this.ground.height - this.star_size
+                let is_ob_bottom = this.golden_star.y < 0
+
+                if (is_ob_right || is_ob_left) this.golden_star.vx *= -1
+                if (is_ob_top || is_ob_bottom) this.golden_star.vy *= -1
 
                 if (key_tracker.isKeyDown('ArrowUp') && this.player_on_platform) {
                     this.player.vy = -6
                     this.player.y -= 0.3
+                    this.player.star_riding = false
                 }
 
                 this.player_on_platform = false
                 this.player.star_cooldown -= 1
+                this.player.gold_cooldown -= 1
                 this.player.hurt_count -= 1
                 let rubbing = false
 
-                if (key_tracker.isKeyDown('ArrowLeft')) {
-                    for (let i = 0; i < this.platforms.length; i++) {
-                        if (this.player.rubLeft(this.platforms[i])) {
-                            rubbing = true
-                            break
+                if (this.player.gold_cooldown < 0) {
+                    this.player.star_riding = false
+                    if (key_tracker.isKeyDown('ArrowLeft')) {
+                        for (let i = 0; i < this.platforms.length; i++) {
+                            if (this.player.rubLeft(this.platforms[i])) {
+                                rubbing = true
+                                break
+                            }
                         }
-                    }
-                    if (!rubbing) this.player.x -= this.player.mx
-                    if (this.player.x < 0) this.player.x = 0
-                } else if (key_tracker.isKeyDown('ArrowRight')) {
-                    for (let i = 0; i < this.platforms.length; i++) {
-                        if (this.player.rubRight(this.platforms[i])) {
-                            rubbing = true
-                            break
+                        if (!rubbing) this.player.x -= this.player.mx
+                        if (this.player.x < 0) this.player.x = 0
+                    } else if (key_tracker.isKeyDown('ArrowRight')) {
+                        for (let i = 0; i < this.platforms.length; i++) {
+                            if (this.player.rubRight(this.platforms[i])) {
+                                rubbing = true
+                                break
+                            }
                         }
-                    }
-                    if (!rubbing) this.player.x += this.player.mx
-                    if (this.player.x + this.player.width > world.width) {
-                        this.player.x = world.width - this.player.width
+                        if (!rubbing) this.player.x += this.player.mx
+                        if (this.player.x + this.player.width > world.width) {
+                            this.player.x = world.width - this.player.width
+                        }
                     }
                 }
 
-                for (let i=0; i<this.platforms.length; i++) {
-                    if (this.player.landed(this.platforms[i])) {
-                        this.player.color = 'blue'
-                        this.player.y = this.platforms[i].top() - this.player.height
-                        this.player.vy = 0
-                        this.player_on_platform = true
-                        if (key_tracker.isKeyDown('ArrowDown') && this.platforms[i] != this.ground && this.player.star_cooldown < 0) {
-                            this.player.star_cooldown = 10
-                            this.player.starGrab()
-                            this.platforms.splice(i,1)
+                this.golden_star.update()
+                if (this.player.star_riding) {
+                    this.player.x = this.golden_star.x - (this.player.width - this.star_size) / 2
+                    this.player.y = this.golden_star.y - this.player.height
+                } else if (this.player.landed(this.golden_star) && !this.player.star_riding) {
+                    this.player_on_platform = true
+                    this.player.star_riding = true
+                    this.player.gold_cooldown = 10
+                } else {
+                    for (let i = 0; i < this.platforms.length; i++) {
+                        if (this.player.landed(this.platforms[i])) {
+                            this.player.color = 'goldenrod'
+                            this.player.y = this.platforms[i].top() - this.player.height
+                            this.player.vy = 0
+                            this.player_on_platform = true
+                            if (key_tracker.isKeyDown('ArrowDown') && this.platforms[i] != this.ground && this.player.star_cooldown < 0) {
+                                this.player.star_cooldown = 10
+                                this.player.starGrab()
+                                this.platforms.splice(i, 1)
+                            }
+                            break
+                        } else if (this.player.hitHead(this.platforms[i]) && this.player.vy < 0) {
+                            this.player.y = this.platforms[i].bottom() + .001
+                            this.player.vy = -.015
+                            break
                         }
-                        break
-                    } else if (this.player.hitHead(this.platforms[i]) && this.player.vy < 0 && !rubbing) {
-                        this.player.y = this.platforms[i].bottom() + .001
-                        this.player.vy = -.015
-                        break
                     }
                 }
 
-                if (!this.player_on_platform) {
+                if (!this.player_on_platform && !this.player.star_riding) {
                     this.player.vy += 0.2
                     this.player.y += this.player.vy
                     if (key_tracker.isKeyDown(' ') && this.player.star_count > 0 && this.player.star_cooldown < 0) {
