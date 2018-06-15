@@ -72,7 +72,7 @@
 
     document.addEventListener('keyup', (evt) => {
         key_tracker.keyUp(evt.key);
-
+        keep_going()
     });
 
 
@@ -156,6 +156,7 @@
             this.view = 0
             this.fuel = 5000
             this.score = 0
+            this.last_player_vx = 0
 
             this.volume = 4 / 3 * Math.random() * 15 * 3.14159265359 ** 3 // in cm**3
             this.density = 7.86 // kg/cm**3 (iron)
@@ -262,6 +263,10 @@
             this.ctx.fill()
         }
 
+        keep_going(){
+            this.player.vx = 1
+        }
+
         draw() {
 
 
@@ -286,6 +291,7 @@
                 this.right_flame()
                 this.fuel--
                 this.white_noise.mute = false
+                this.keep_going()
             }
             if (key_tracker.isKeyDown('ArrowRight') && this.fuel > 0) {
                 this.left_flame()
@@ -312,22 +318,30 @@
 
         update() {
 
-            let player_speed = 1
+            let player_speed = .04
             let gravity = .030
+            let last_player_vx = 0
 
             if (key_tracker.isKeyDown('ArrowLeft') && this.fuel > 0 && this.player_on_platform === false) {
-                this.player.x -= player_speed
-            }
-            if (this.player_on_platform === false) {
-                this.player.x -= this.player.vx
+                this.player.vx += player_speed
+                last_player_vx = this.player.vx
+                console.log(this.player.vx)
+
             }
 
             if (key_tracker.isKeyDown('ArrowRight') && this.fuel > 0 && this.player_on_platform === false) {
-                this.player.x += player_speed
+                this.player.vx -= player_speed
+                last_player_vx = this.player.vx
+                console.log(this.player.vx)
+                if(key_tracker.keyUp()){
+                    this.player.vx = last_player_vx
+                    alert('111')
+                }
             }
             if (this.player_on_platform === false) {
-                this.player.x += this.player.vx - gravity
+                this.player.vx = last_player_vx
             }
+
 
             if (key_tracker.isKeyDown('ArrowUp') && this.fuel > 0) {
                 this.player_on_platform = false
@@ -335,7 +349,7 @@
             }
             this.player.y += this.player.vy
             this.player.vy += gravity
-
+            this.player.x -= this.player.vx
 
 
             for (let i = 0; i < this.platforms.length; ++i) {
