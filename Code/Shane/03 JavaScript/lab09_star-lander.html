@@ -72,7 +72,7 @@
 
     document.addEventListener('keyup', (evt) => {
         key_tracker.keyUp(evt.key);
-        keep_going()
+        
     });
 
 
@@ -263,12 +263,8 @@
             this.ctx.fill()
         }
 
-        keep_going(){
-            this.player.vx = 1
-        }
 
         draw() {
-
 
             this.ctx.clearRect(0, 0, this.cnv.width, this.cnv.height)
 
@@ -285,19 +281,18 @@
                 this.flame()
                 this.fuel--
                 this.noise.mute = false
-
             }
+
             if (key_tracker.isKeyDown('ArrowLeft') && this.fuel > 0) {
                 this.right_flame()
                 this.fuel--
                 this.white_noise.mute = false
-                this.keep_going()
             }
+
             if (key_tracker.isKeyDown('ArrowRight') && this.fuel > 0) {
                 this.left_flame()
                 this.fuel--
                 this.white_noise.mute = false
-
             }
 
             for (let i = 0; i < this.background_elements.length; ++i) {
@@ -333,7 +328,7 @@
                 this.player.vx -= player_speed
                 last_player_vx = this.player.vx
                 console.log(this.player.vx)
-                if(key_tracker.keyUp()){
+                if (key_tracker.keyUp()) {
                     this.player.vx = last_player_vx
                     alert('111')
                 }
