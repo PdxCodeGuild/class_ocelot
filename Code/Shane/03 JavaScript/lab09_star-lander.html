@@ -143,7 +143,6 @@
             let b = getRandomInt(255)
 
 
-
             this.noise = new Tone.Noise("brown").start();
             this.white_noise = new Tone.Noise("pink").start();
 
@@ -163,7 +162,6 @@
             this.fuel = 3000
             this.score = 0
             this.last_player_vx = 0
-
 
 
             this.volume = 4 / 3 * Math.random() * 15 * 3.14159265359 ** 3 // in cm**3
@@ -192,7 +190,7 @@
             }
         }
 
-        minimap(){
+        minimap() {
 
             ////////////// mini msp code
 
@@ -299,7 +297,7 @@
 
         draw() {
             this.ctx.clearRect(0, 0, this.cnv.width, this.cnv.height)
-this.minimap()
+            this.minimap()
 
             // draw score
             //Player Info...
@@ -307,7 +305,6 @@ this.minimap()
             this.ctx.fillText("Fuel: " + this.fuel, 100, 100);
 
             this.ctx.translate(-this.player.x + this.cnv.width / 2, 0)
-
 
 
             this.noise.mute = true
@@ -352,7 +349,6 @@ this.minimap()
         update() {
 
 
-
             let player_speed = .04
             let gravity = .035
             let last_player_vx = this.player.vx
@@ -376,8 +372,6 @@ this.minimap()
             if (this.player_on_platform === true) {
                 this.player.vx = 0
             }
-
-
 
 
             if (key_tracker.isKeyDown('ArrowUp') && this.fuel > 0) {
