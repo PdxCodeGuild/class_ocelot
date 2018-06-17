@@ -1,7 +1,7 @@
 
 
 function random_number(min, max) {
-    return min + Math.random()*(max-min)
+    return min + Math.floor(Math.random()*(max-min)+1)
 }
 
 
@@ -42,7 +42,8 @@ class Entity {
         return this.defense - random_number(move.plusDefense[0], move.plusDefense[1])
     }
     calculate_heal(move){
-        return this.health + random_number(move.heal[0], move.heal[1] )}
+        return this.health + random_number(move.heal[0], move.heal[1] )
+    }
 }
 //     takeTurn() {
 //             this.monsterAttacks()
@@ -76,8 +77,7 @@ new Vue({
             //this.player.health = 100;
             // this.monster.health = 100;
             this.player.health = 100;
-            this.monster.heatlh = 100 + (this.rounds * 0.10)
-
+            this.monster.heatlh = 100 //+ (this.rounds * 0.10)
         },
         // used
         attack: function () {
@@ -89,8 +89,7 @@ new Vue({
             });
             this.takeTurn()
         },
-
-        //dont think i need this any more
+        //dont think i need this any more i was wrong I DID!
         specialAttack: function () {
             var damage = this.calculateDamage(10, 20);
             this.monster.health -= damage
@@ -130,12 +129,14 @@ new Vue({
         },
 
         takeTurn: function() {
-            this.monsterAttacks()
+            this.monsterAttacks();
             this.checkWin()
         },
 
         calculateDamage: function (min, max) {
-            return min + Math.random()*(max-min)
+            //Matthew's, but i added the floor and +1
+            return min + Math.floor(Math.random()*(max-min) +1)
+            //Nate's
             //return Math.max(Math.floor(Math.random() * max) + 1, min);
         },
 
