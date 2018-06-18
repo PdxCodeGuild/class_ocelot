@@ -352,28 +352,28 @@
                 this.star_size = 4
                 this.player_on_platform = true
                 this.ground_height = 20
-                ////////// PLATFORMS ///////////
+                ////// PLATFORMS ///////
                 this.platforms = []
                 this.ground = new Rectangle(0, this.height - this.ground_height,
                                             this.width, this.ground_height, 'green')
                 this.platforms.push(this.ground)
-                ////////// StarJumper ///////////
+                ////// StarJumper ///////
                 let player_size = 20
                 this.player = new StarJumper(cnv.width/2-player_size/2,
                                             cnv.height-this.ground_height-player_size,
                                             player_size, player_size, 'red')
-                ////////// GoldenStar ///////////
+                ////// GoldenStar ///////
                 this.golden_star = new GoldenStar(random(100, this.width - 100),
                                                   random(0, this.height * .8),
                                                   this.star_size, this.star_size, 'yellow')
-                ////////// Stars ///////////
+                ////// Stars ///////
                 for (let i=0; i<100; i++) {
                       let x = random(10, this.width-10)
                       let y = random(10, this.height-this.ground_height-this.star_size-10)
                       let star = new Rectangle(x, y, this.star_size, this.star_size, 'white')
                       this.platforms.push(star)
                 }
-                ////////// Portals ///////////
+                ////// Portals ///////
                 this.circles = []
                 for (let i=0; i<10; i++) {
                     let x, y
@@ -393,7 +393,7 @@
                     this.circles.push(p2)
                     this.circles[this.circles.length - 1].portal_pair = p1
                 }
-                ///////// LEFT CLICK - SHOOT STAR ///////////
+                ///// LEFT CLICK - SHOOT STAR ///////
                 this.shooting_stars = []
                 this.cnv.onclick = (e) => {
                     if (this.player.flip_count <= 0) {
@@ -406,7 +406,7 @@
                         this.shooting_stars.push(shot)
                     }
                 }
-                ///////// RIGHT CLICK - SWORD SWIPE ///////////
+                ///// RIGHT CLICK - SWORD SWIPE ///////
                 this.cnv.oncontextmenu = (e) => {
                     if (this.player.flip_count <= 0 && !this.player.staa_ridin) {
                         let trans_x = this.getTransX()
@@ -493,10 +493,10 @@
 
             update() {
                 for (let i = 0; i < this.circles.length; i++) {
-                    ///////// MOVE PORTAL, SIZE ACCORDING TO PORTAL PAIR /////////
+                    ///// MOVE PORTAL, SIZE ACCORDING TO PORTAL PAIR /////
                     let portal_pair_position = Math.abs(this.circles[i].portal_pair.x - this.golden_star.x) / this.width
                     this.circles[i].update(portal_pair_position)
-                    ///////// BOUNCE PORTALS OFF SIDES & GROUND //////////
+                    ///// BOUNCE PORTALS OFF SIDES & GROUND //////
                     if (this.circles[i].x + this.circles[i].rad > this.width) {
                         this.circles[i].setRight(this.width)
                         this.circles[i].vx *= -1
@@ -514,7 +514,7 @@
                         this.circles[i].vy *= -1
                         this.circles[i].y += this.circles[i].vy
                     }
-                    ///////// CHECK TO SEE IF PORTAL HIT ANOTHER PORTAL //////////
+                    ///// CHECK TO SEE IF PORTAL HIT ANOTHER PORTAL //////
                     for (let j = 0; j < this.circles.length; ++j) {
                         if (i === j) continue
                         let result = this.circles[i].checkCollideCir(this.circles[j])
@@ -527,7 +527,7 @@
                             this.circles[j].vx > 0 ? this.circles[j].vx += .002 : this.circles[j].vx -= .002
                         }
                     }
-                    ///////// SEE IF PORTAL HITS PLAYER, EXCEPT LAST PORTAL EXITED //////////
+                    ///// SEE IF PORTAL HITS PLAYER, EXCEPT LAST PORTAL EXITED //////
                     if (this.circles[i] != this.player.last_teleport) {
                         let hit_player = this.circles[i].checkCollideRec(this.player)
                         if (hit_player) {
@@ -537,7 +537,7 @@
                             this.player.y = this.circles[i].portal_pair.y
                         }
                     }
-                    ///////// SEE IF PORTAL HITS GOLDEN STAR, EXCEPT LAST PORTAL EXITED //////////
+                    ///// SEE IF PORTAL HITS GOLDEN STAR, EXCEPT LAST PORTAL EXITED //////
                     if (this.circles[i] != this.golden_star.last_teleport) {
                         let hit_golden_star = this.circles[i].checkCollideRec(this.golden_star)
                         if (hit_golden_star) {
@@ -556,28 +556,28 @@
                             }
                         }
                     }
-                    ///////// REDUCE VIBRATION COUNT //////////
+                    ///// REDUCE VIBRATION COUNT //////
                     this.circles[i].vib_count -= 1
                 }
-                ///////// BOUNCE GOLDEN STAR //////////
+                ///// BOUNCE GOLDEN STAR //////
                 let is_ob_right = this.golden_star.x + this.golden_star.width > this.width
                 let is_ob_left = this.golden_star.x < 0
                 if (is_ob_right || is_ob_left) this.golden_star.vx *= -1
                 let is_ob_top = this.golden_star.y > this.height - this.ground.height - this.star_size
                 let is_ob_bottom = this.golden_star.y < 0
                 if (is_ob_top || is_ob_bottom) this.golden_star.vy *= -1
-                ///////// JUMP IF ON PLATFORM ////////
+                ///// JUMP IF ON PLATFORM ////////
                 if ((key_tracker.isKeyDown('ArrowUp') || key_tracker.isKeyDown('w')) && this.player_on_platform) {
                     this.player.vy = -6
                     this.player.y -= 0.3
                     this.player.staa_ridin = false
                 }
-                ///////// DEFAULT ASSUMPTIONS, RESET, INCREMENT, ETC //////////
+                ///// DEFAULT ASSUMPTIONS, RESET, INCREMENT, ETC //////
                 this.player_on_platform = false
                 this.player.star_cooldown -= 1
                 this.player.hurt_count -= 1
                 let rubbing = false
-                ///////// GO RIGHT OR LEFT /////////
+                ///// GO RIGHT OR LEFT /////
                 if (!this.player.staa_ridin) {
                     if (key_tracker.isKeyDown('ArrowLeft')|| key_tracker.isKeyDown('a')) {
                         if (this.player.flip_count <= 0) {
