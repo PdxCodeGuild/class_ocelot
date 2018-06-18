@@ -61,8 +61,7 @@ class Hero:
             for j in range(len(self.balls[i].action)):  # loop through the actions for each ball
                 if j >= len(self.balls[i].action):  # fixes a bug as action list is depleted
                     continue
-                if self.balls[i].action[j][
-                    1] == l_ct:  # action list has tuple (action, l_ct), l_ct determines when to take action
+                if self.balls[i].action[j][1] == l_ct:  # action list has tuple (action, l_ct), l_ct determines when to take action
                     if self.balls[i].action[j][0] == 'dbl_jump':
                         self.balls[i].dbl_jump()  # perform action
                         self.balls[i].action.remove(self.balls[i].action[j])  # remove action
