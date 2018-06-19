@@ -1,11 +1,9 @@
 <!DOCTYPE html>
-<!-- saved from url=(0098)http://localhost:63342/class_ocelot/Code/Nathan/VUE/Vue/VueRM.html?_ijt=2lp1dautpcfcjb0u5si5h3ic69 -->
-<html lang="en" class="gr__localhost">
+<html lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
-
+    <meta charset="UTF-8">
     <title>Title</title>
     <style>
         #app {
@@ -71,7 +69,7 @@
         }
     </style>
 </head>
-<body data-gr-c-s-loaded="true">
+<body>
 <!--things to add
     display: grid left 30%; right 70%
     **1.)display only name in list initially
@@ -81,9 +79,25 @@
         c. species
         d. traits
         e. dead or alive-->
-<h1>Rick &amp; Morty</h1>
+<h1>Rick & Morty</h1>
 <div id="app">
-    <div id="characters" class="characters">
+    <div class="characters" id="characters">
+        <div>
+            <ul>
+                <li v-for="character in characters">
+                    <button v-on:click="current_character = character">{{character.name}}</button>
+                </li>
+            </ul>
+            <!--<span v-if="current_character">{{current_character.name}}</span>-->
+        </div>
+    </div>
+    <div id="main_display" v-if="current_character">
+        <h2>{{current_character.name}}</h2>
+        <h2> {{ current_character.status}}</h2>
+        <img v-bind:src="current_character.image">
+        <h3>Where in the Universe: {{ current_character.location.name}}</h3>
+        <h3>Species: {{current_character.species}}</h3>
+        <h3> ID: {{ current_character.id}}</h3>
     </div>
 </div>
 
@@ -111,12 +125,11 @@
                 })
             }
         },
-        created: function () {
+        mounted: function () {
             this.loadCharacters()
         }
     })
 
 </script>
-
 </body>
 </html>

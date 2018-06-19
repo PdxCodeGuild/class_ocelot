@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div id="app">
+        <ul>
+            <li v-for="(ingredient, index) in ingredients">
+                {{ ingredient }} ({{ i }}
+            </li>
+        </ul>
+        <hr>
+        <ul>
+            <li v-for="person in persons">
+                <!--      |ARBITRARY NAMES| FIRST ONE IS ALWAYS THE VALUE OF THE PROPERTY
+                            2ND IS ALWAYS THE NAME OF THE PROPERTY-->
+                <div v-for="(value, key, index) in person">{{ key  }}: {{ ' ' + value }}({{index}})</div>
+            </li>
+        </ul>
+        <span v-for="n in 10">{{ n }}</span>
+        <hr>
+            <template v-for="(ingredient, index) in ingredients">
+                <h1> {{ ingredient }} </h1>
+                <p> {{ index }} </p>
+            </template>
+    </div>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                ingredients: ['meat', 'fruit', 'cookies'],
+                persons: [
+                    {name: 'Nathan', age: 27, color:'red'},
+                    {name:'Maggie', age: 7, color: 'yellow'}
+                ]
+            }
+        });
+    </script>
+</body>
+</html>

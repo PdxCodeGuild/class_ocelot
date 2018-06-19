@@ -1,0 +1,110 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="owfont-master/css/owfont-regular.min.css"/>
+        <script src="owfont-master/planet_phase.js"></script>
+        <style>
+            body{
+                text-align: center;
+            }
+            #description_div {
+                text-transform: capitalize;
+                margin: 2px;
+            }
+            #latitude_div {
+                margin: 5px;
+            }
+            #longitude_div {
+                margin: 5px;
+            }
+        </style>
+    </head>
+    <body>
+        <script>
+            function http_get(url, success) {
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState === 4 && this.status === 200) {
+                        var data = JSON.parse(xhttp.responseText);
+                        success(data);
+                    }
+                };
+                xhttp.open("GET", url, true);
+                xhttp.send();
+            }
+            function get_todays_date() {
+                var date = new Date();
+                var day = date.getDate();
+                var month = date.getMonth()+1;
+                var year = date.getFullYear();
+                return month+'/'+day+'/'+year;
+            }
+            function format_lat_long(latitude, longitude) {
+                var r = '';
+                if (latitude < 0) {
+                    r += (-latitude)+'S';
+                } else{
+                    r += latitude+'N';
+                }
+                r += ',';
+                if (longitude < 0) {
+                    r += (-longitude)+'W';
+                } else{
+                    r += longitude+'E';
+                }
+                return r;
+            }
+            function draw_moon(data) {
+                var fracillum = data.fracillum;
+                var curphase = data.curphase;
+                var t_or_f;
+                if (curphase.indexOf('waxing') >= 0) {
+                    t_or_f = true;
+                }else{
+                    t_or_f = false;
+                }
+                fracillum = fracillum.substring(0,fracillum.length-1);
+                fracillum = parseFloat(fracillum)/100;
+                console.log(fracillum);
+                drawPlanetPhase(document.getElementById('container'), fracillum, t_or_f);
+            }
+            var ip_url = 'https://api.ipify.org/?format=json';
+            http_get(ip_url, function(data) {
+                var ip_address = data.ip;
+                var location_url = 'https://ipapi.co/'+ip_address+'/json/';
+                http_get(location_url, function(data) {
+                    var latitude = Math.random()*180-90;
+                    var longitude = Math.random()*360-180;
+                    //var latitude = data.latitude;
+                    //var longitude = data.longitude;
+                    var weather_url = 'http://api.openweathermap.org/data/2.5/weather?lat='+latitude+'&lon='+longitude+'&appid=b03cb314cd65e6faa00dc416bd075c78';
+                    console.log(weather_url);
+                    http_get(weather_url, function(data) {
+                        var id_category = data.weather[0].id;
+                        var description = data.weather[0].description;
+                        var weather_icon = document.getElementById("weather_icon");
+                        weather_icon.className = 'owf owf-'+id_category+' owf-5x';
+                        document.getElementById('description_div').innerHTML = description;
+                        document.getElementById('latitude_div').innerHTML = latitude;
+                        document.getElementById('longitude_div').innerHTML = longitude;
+                        var google_location = '<a target="_blank" href="https://www.google.com/maps/?q='+ latitude +','+longitude+'">link</a>';
+                        document.getElementById('location_div').innerHTML = google_location;
+                        var d = get_todays_date();
+                        var l_l = format_lat_long(latitude,longitude);
+                        var moon_phase_url = 'http://api.usno.navy.mil/rstt/oneday?date='+d+'&coords='+l_l+'&tz=7';
+                        http_get(moon_phase_url, function(data) {
+                            console.log(data);
+                            draw_moon(data);
+                        });
+                    });
+                });
+            });
+        </script>
+        <i id="weather_icon"></i>
+        <div id="description_div"></div>
+        <div id="latitude_div"></div>
+        <div id="longitude_div"></div>
+        <div id="location_div"></div>
+        <div id="moon_phase_div"></div>
+        <div id="container"></div>
+    </body>
+</html>
