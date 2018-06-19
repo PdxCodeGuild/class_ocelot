@@ -94,7 +94,7 @@ class User(models.Model):
     email_address = models.CharField(max_length=200)
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
-    city = models.ForeignKey(Question, on_delete=models.CASCADE)
+    city = models.ForeignKey(City, on_delete=models.CASCADE)
 ```
 
 ### One-to-One
