@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reverse Over 4</title>
+
+    <style>
+
+        body {
+            background-color: black;
+        }
+    </style>
+</head>
+<body>
+
+
+<script>
+
+    ////////Reverse any word greater than 4 char's in length///////////////
+    function spinWords(sentence) {
+        //TODO Have fun :)
+        let output = ''
+        let split_sentence = sentence.split(' ')
+        split_sentence.forEach(function (word) {
+            if (word.length > 4) {
+                let split_word = word.split('').reverse().join('')
+                output += split_word + ' '
+            } else {
+                output += word + ' '
+            }
+        })
+        return output.trim()
+    }
+    console.log(spinWords('Hey fellow warriors'))
+
+
+</script>
+</body>
+</html>

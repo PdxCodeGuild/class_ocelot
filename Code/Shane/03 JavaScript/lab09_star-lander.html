@@ -9,7 +9,8 @@
             color: white;
             background-color: black;
         }
-        canvas{
+
+        canvas {
             width: 100%;
         }
     </style>
@@ -98,6 +99,7 @@
             ctx.fillRect(this.x, this.y, this.width, this.height)
         }
 
+
         update() {
             this.x += this.vx
             this.y += this.vy
@@ -140,6 +142,7 @@
             let g = getRandomInt(255)
             let b = getRandomInt(255)
 
+
             this.noise = new Tone.Noise("brown").start();
             this.white_noise = new Tone.Noise("pink").start();
 
@@ -156,9 +159,10 @@
             this.width = width
             this.height = height
             this.view = 0
-            this.fuel = 3000                   //474
+            this.fuel = 3000
             this.score = 0
             this.last_player_vx = 0
+
 
             this.volume = 4 / 3 * Math.random() * 15 * 3.14159265359 ** 3 // in cm**3
             this.density = 7.86 // kg/cm**3 (iron)
@@ -166,10 +170,10 @@
 
             this.platforms = []
 
-            let ground_left = new Rectangle(0, this.height - ground_height, player_size/2, ground_height, 'darkgreen')
+            let ground_left = new Rectangle(0, this.height - ground_height, player_size / 2, ground_height, 'darkgreen')
             this.platforms.push(ground_left)
 
-            let ground_right = new Rectangle(this.width, this.height - ground_height, player_size/2, ground_height, 'darkgreen')
+            let ground_right = new Rectangle(this.width, this.height - ground_height, player_size / 2, ground_height, 'darkgreen')
             this.platforms.push(ground_right)
 
             this.player = new Rectangle(0,
@@ -184,6 +188,29 @@
                 let star = new Rectangle(x, y, 4, 4, 'white')
                 this.background_elements.push(star)
             }
+        }
+
+        minimap() {
+
+            ////////////// mini msp code
+
+            let status_bar_left = this.cnv.width * .25
+            let status_bar_width = this.cnv.width * .5
+            let player_position_in_world = (this.player.x + this.player.width / 2) / this.width
+            let player_status_bar_position = status_bar_width * player_position_in_world + status_bar_left
+            this.ctx.lineWidth = 2
+
+            this.ctx.beginPath()
+            this.ctx.moveTo(status_bar_left, 20)
+            this.ctx.lineTo(status_bar_left + status_bar_width, 20)
+            this.ctx.strokeStyle = 'white'
+            this.ctx.stroke()
+
+            this.ctx.beginPath()
+            this.ctx.moveTo(player_status_bar_position, 10)
+            this.ctx.lineTo(player_status_bar_position, 20)
+            this.ctx.strokeStyle = 'deepskyblue'
+            this.ctx.stroke()
         }
 
         flame() {
@@ -270,11 +297,15 @@
 
         draw() {
             this.ctx.clearRect(0, 0, this.cnv.width, this.cnv.height)
+            this.minimap()
+
             // draw score
             //Player Info...
             this.ctx.font = "20px Arial"
+            this.ctx.fillText("Fuel: " + this.fuel, 100, 100);
 
             this.ctx.translate(-this.player.x + this.cnv.width / 2, 0)
+
 
             this.noise.mute = true
             this.white_noise.mute = true
@@ -283,6 +314,7 @@
                 this.flame()
                 this.fuel--
                 this.noise.mute = false
+
             }
 
             if (key_tracker.isKeyDown('ArrowLeft') && this.fuel > 0) {
@@ -309,10 +341,13 @@
             }
 
             this.player.draw(this.ctx)
+
             this.ctx.resetTransform()
+
         }
 
         update() {
+
 
             let player_speed = .04
             let gravity = .035
