@@ -3,24 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <title>Star Jumper</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <style>
         body {
-            color:white;
-            background-color:black;
+            color: white;
+            background-color: black;
+            font-family: 'Open Sans', sans-serif;
         }
         canvas {
             border: 1px solid white;
             background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('whale_sulzenauer_big.jpg');
             background-size: 2400px 480px;
         }
+        button {
+            border-radius: 4px;
+            z-index: 10;
+        }
+        #modal_background {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 11; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+        #instruction_modal_div {
+            position: fixed;
+            z-index: 12;
+            margin-left: -40%;
+            transition: margin-left 1s;
+            height: 300px;
+            width: 500px;
+            top: 50px;
+            border: 3px solid deepskyblue;
+            background-color: white;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        #instruction_options_div {
+            display: flex;
+            text-align: center;
+        }
+        .option {
+            flex: 1;
+            margin: 5px;
+            border-radius: 4px;
+            border: 3px solid black;
+            background-color: deepskyblue;
+            font-size: 2em;
+            font-weight: bolder;
+            color: black;
+        }
+        #rules_option {
+            background-color: darkorchid;
+        }
+        .option:hover {
+            background: mediumblue !important;
+            cursor: pointer;
+        }
+        .instruction_border {
+            position: absolute;
+            transition: margin-left 1s;
+            width: 500px;
+        }
+        .instruction {
+            height: 220px;
+            margin: 5px;
+            margin-top: 0;
+            padding: 5px;
+            border-radius: 4px;
+            border: 3px solid black;
+            color: black;
+        }
+        #instruction_div {
+            display: flex;
+        }
+        #rules_border {
+            margin-left: 0%;
+        }
+        #controls_border {
+            margin-left: 100%;
+        }
+        #other_border {
+            margin-left: 200%;
+        }
+        #instruction_div > button {
+            position: absolute;
+            left: 450px;
+            top: 268px;
+        }
     </style>
 </head>
 <body>
     <canvas id="cnv" width="1200" height="500"></canvas>
+    <div id="modal_background"></div>
+    <div id="instruction_modal_div">
+        <div id="instruction_options_div">
+            <div id="rules_option" class="option">Rules</div>
+            <div id="controls_option" class="option">Controls</div>
+            <div id="other_option" class="option">Other</div>
+        </div>
+        <div id="instruction_div">
+            <div id="rules_border" class="instruction_border">
+                <div id="rules_div" class="instruction">
+                    The object of Star Jumper is (to be determined)...
+                </div>
+            </div>
+            <div id="controls_border" class="instruction_border">
+                <div id="controls_div" class="instruction">
+                    "A" / LEFT : go left<br>
+                    "D" / RIGHT : go right<br>
+                    "W" / UP : jump<br>
+                    "S" / SPACE : pick up & place star<br>
+                    LEFT CLICK : shoot star<br>
+                    RIGHT CLICK (ABOVE) : flip up attack<br>
+                    RIGHT CLICK (BELOW) : flip down attack
+                </div>
+            </div>
+            <div id="other_border" class="instruction_border">
+                <div id="other_div" class="instruction">
+                    Other Stuff
+                </div>
+            </div>
+            <button id="hide_modal_bt">Exit</button>
+        </div>
+    </div><br>
+    <button id="show_modal_bt">Rules</button>
     <script>
+        let cnv = document.querySelector('#cnv')
+        let show_modal_bt = document.querySelector('#show_modal_bt')
+        let modal_background = document.querySelector('#modal_background')
+        let instruction_modal_div = document.querySelector('#instruction_modal_div')
+        let hide_modal_bt = document.querySelector('#hide_modal_bt')
+        let rules_option = document.querySelector('#rules_option')
+        let controls_option = document.querySelector('#controls_option')
+        let other_option = document.querySelector('#other_option')
+        let rules_border = document.querySelector('#rules_border')
+        let controls_border = document.querySelector('#controls_border')
+        let other_border = document.querySelector('#other_border')
+
+        show_modal_bt.onclick = () => {
+            modal_background.style.display = 'block'
+            instruction_modal_div.style.transition = 'margin-left 1s'
+            instruction_modal_div.style.marginLeft = '20%'
+            world.play = false
+        }
+        hide_modal_bt.onclick = () => {
+            rules_border.style.marginLeft = '0%'
+            controls_border.style.marginLeft = '100%'
+            other_border.style.marginLeft = '200%'
+            instruction_modal_div.style.transition = 'none'
+            instruction_modal_div.style.marginLeft = '-50%'
+            modal_background.style.display = 'none'
+            world.play = true
+            window.requestAnimationFrame(animation_loop)
+        }
+        rules_option.onclick = () => {
+            rules_option.style.backgroundColor = 'darkorchid'
+            rules_border.style.marginLeft = '0%'
+            controls_option.style.backgroundColor = 'deepskyblue'
+            controls_border.style.marginLeft = '100%'
+            other_option.style.backgroundColor = 'deepskyblue'
+            other_border.style.marginLeft = '200%'
+        }
+        controls_option.onclick = () => {
+            rules_option.style.backgroundColor = 'deepskyblue'
+            rules_border.style.marginLeft = '-100%'
+            controls_option.style.backgroundColor = 'darkorchid'
+            controls_border.style.marginLeft = '0%'
+            other_option.style.backgroundColor = 'deepskyblue'
+            other_border.style.marginLeft = '100%'
+        }
+        other_option.onclick = () => {
+            rules_option.style.backgroundColor = 'deepskyblue'
+            rules_border.style.marginLeft = '-200%'
+            controls_option.style.backgroundColor = 'deepskyblue'
+            controls_border.style.marginLeft = '-100%'
+            other_option.style.backgroundColor = 'darkorchid'
+            other_border.style.marginLeft = '0%'
+        }
+    </script>
+    <script>
+        function sound(src) {
+            this.sound = document.createElement("audio");
+            this.sound.src = src;
+            this.sound.setAttribute("preload", "auto");
+            this.sound.setAttribute("controls", "none");
+            this.sound.style.display = "none";
+            document.body.appendChild(this.sound);
+            this.play = function(){
+                this.sound.play();
+            }
+            this.stop = function(){
+                this.sound.pause();
+            }
+        }
         function random(lower, upper) {
             return lower + Math.random()*(upper-lower)
         }
+    </script>
+    <script>
         class Image {
             constructor(path, x, y) {
                 this.element = document.createElement('img')
@@ -205,6 +390,8 @@
             grabStar() {
                 this.color = 'red'
                 this.star_count += 1
+                this.energy += 20
+                if (this.energy > 100) this.energy = 100
             }
             getShotVelocities(x_click, y_click) {
                 let dx = x_click - this.x + this.width / 2
@@ -228,7 +415,7 @@
                     this.flip_rotation = 'counter'
                     this.flip_type = 'up'
                     this.facing = 'right'
-                    this.vy = 0
+                    this.vy = -.6
                     this.energy -= 40
                 } else if (dx < 0 & dy > 0 && this.energy >= 25) {
                     this.flip_count = 60
@@ -242,7 +429,7 @@
                     this.flip_rotation = 'clockwise'
                     this.flip_type = 'up'
                     this.facing = 'left'
-                    this.vy = 0
+                    this.vy = -.6
                     this.energy -= 40
                 }
             }
@@ -394,6 +581,7 @@
 
         class World {
             constructor(width, height, cnv) {
+                this.play = true
                 this.cnv = cnv
                 this.cnv_rect = this.cnv.getBoundingClientRect()
                 this.ctx = this.cnv.getContext('2d')
@@ -420,7 +608,7 @@
                 for (let i=0; i<20; i++) {
                     let x = random(10, this.width-10)
                     let y = random(10, this.height-this.ground_height-player_size-10)
-                    let enemy = new Rectangle(x, y, player_size, player_size, 'goldenrod')
+                    let enemy = new Rectangle(x, y, player_size, player_size, 'blue')
                     this.enemies.push(enemy)
                 }
                 ////// GoldenStar ///////
@@ -482,7 +670,6 @@
                     return false
                 }
             }
-
             getTransX() {
                 // trans_x is how far left to shift to get the
                 // right part of the world into view
@@ -495,7 +682,6 @@
                 }
                 return trans_x
             }
-
             draw() {
                 this.ctx.clearRect(0, 0, this.cnv.width, this.cnv.height)
                 this.ctx.lineWidth = 3
@@ -592,7 +778,6 @@
                 }
                 this.ctx.fillText(t_energy, t_left, 66)
             }
-
             update() {
                 let total_velocity = 0
                 for (let i = 0; i < this.circles.length; i++) {
@@ -743,7 +928,7 @@
                 ///// IF YOU ARE FLIPPING, UP OR DOWN /////
                 } else if (this.player.flip_count > 0) {
                     if (this.player.flip_type === 'up') {
-                        this.player.vy -= .05
+                        this.player.vy -= .03
                     } else {
                         this.player.vy += .5
                     }
@@ -858,20 +1043,15 @@
             }
         }
 
-        let cnv = document.querySelector('#cnv')
-        // let lap = 1
         let world = new World(cnv.width * 2, cnv.height, cnv)
-
         function animation_loop() {
             if (!world.start) world.start = Date.now()
             world.current = Date.now()
             world.update()
             world.draw()
-            // if (world.total_velocity > 50) {
-            //     lap += 1
-            //     world = new World(cnv.width * 2, cnv.height, cnv, lap)
-            // }
-            window.requestAnimationFrame(animation_loop)
+            if (world.play) {
+                window.requestAnimationFrame(animation_loop)
+            }
         }
         window.requestAnimationFrame(animation_loop)
     </script>
