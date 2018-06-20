@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body {
+            color: white;
+            background-color: black;
+        }
+
+        canvas {
+            border: 1px solid white;
+        }
+    </style>
+    <canvas id="cnv" width="1000" height="500"></canvas>
+</head>
+<body>
+<script>
+
+
+    // KEY TRACKER ////////////////////////////////////////////////
+
+    class KeyTracker {
+        constructor() {
+            this.keys = [];
+        }
+
+        keyDown(key) {
+            this.keys.push(key);
+        }
+
+        keyUp(key) {
+            this.keys = this.keys.filter(function (e) {
+                return e !== key;
+            });
+        }
+
+        isKeyDown(key) {
+            return this.keys.indexOf(key) > -1;
+        }
+    }
+
+    let key_tracker = new KeyTracker()
+    document.addEventListener('keydown', (evt) => {
+        key_tracker.keyDown(evt.key);
+    });
+
+    document.addEventListener('keyup', (evt) => {
+        key_tracker.keyUp(evt.key);
+    });
+
+
+    // SHAPES ////////////////////////////////////////////////
+
+
+    class BoundedShape {
+        constructor() {
+            this.vx = 0;
+            this.vy = 0;
+        }
+
+        updateBounds(bx, by, bw, bh) {
+            this.bx = bx;
+            this.by = by;
+            this.bw = bw;
+            this.bh = bh;
+        }
+
+        overlaps(bs2) {
+            let bs1 = this;
+            let w = 0.5 * (bs1.bw + bs2.bw);
+            let h = 0.5 * (bs1.bh + bs2.bh);
+            let dx = bs1.centerX() - bs2.centerX();
+            let dy = bs1.centerY() - bs2.centerY();
+
+            if (Math.abs(dx) <= w && Math.abs(dy) <= h) {
+                /* collision! */
+                let wy = w * dy;
+                let hx = h * dx;
+
+                if (wy > hx)
+                    if (wy > -hx)
+                        return 'bottom'
+                    else
+                        return 'left'
+                else if (wy > -hx)
+                    return 'right'
+                else
+                    return 'top'
+            }
+            return null;
+        }
+
+        overlaps2(bs2) {
+            let bs1 = this;
+            let dx = bs1.bx + bs1.bw / 2 - (bs2.bx + bs2.bw / 2);
+            let dy = bs1.by + bs1.bh / 2 - (bs2.by + bs2.bh / 2);
+            let width = (bs1.bw + bs2.bw) / 2;
+            let height = (bs1.bh + bs2.bh) / 2;
+            let crossWidth = width * dy;
+            let crossHeight = height * dx;
+            let collision = null;
+            if (Math.abs(dx) <= width && Math.abs(dy) <= height) {
+                if (crossWidth > crossHeight) {
+                    collision = crossWidth > -crossHeight ? "bottom" : "left";
+                } else {
+                    collision = crossWidth > -crossHeight ? "right" : "top";
+                }
+            }
+
+            return collision;
+        }
+
+        left() {
+            return this.bx;
+        }
+
+        right() {
+            return this.bx + this.bw;
+        }
+
+        top() {
+            return this.by;
+        }
+
+        bottom() {
+            return this.by + this.bh;
+        }
+
+        centerX() {
+            return this.bx + this.bw / 2;
+        }
+
+        centerY() {
+            return this.by + this.bh / 2;
+        }
+    }
+
+    class Circle extends BoundedShape {
+        constructor(x, y, radius, color) {
+            super();
+            this.x = x;
+            this.y = y;
+            this.radius = radius;
+            this.color = color;
+            this.updateBounds()
+        }
+
+        setLeft(x) {
+            this.x = x;
+        }
+
+        setRight(x) {
+            this.x = x - this.radius * 2;
+        }
+
+        setTop(y) {
+            this.y = y;
+        }
+
+        setBottom(y) {
+            this.y = y - this.radius * 2;
+        }
+
+        draw(ctx) {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
+            ctx.fillStyle = this.color;
+            ctx.fill();
+        }
+
+        updateBounds() {
+            super.updateBounds(this.x - this.radius,
+                this.y - this.radius,
+                2 * this.radius,
+                2 * this.radius);
+        }
+    }
+
+    class Image extends BoundedShape {
+        constructor(path, x, y, w, h) {
+            super()
+            this.element = document.createElement("img");
+            this.element.src = path;
+            this.x = x;
+            this.y = y;
+            this.w = w;
+            this.h = h;
+            this.updateBounds()
+        }
+
+        draw(ctx) {
+            ctx.drawImage(this.element, this.x, this.y, this.w, this.h);
+        }
+
+        setLeft(x) {
+            this.x = x;
+        }
+
+        setRight(x) {
+            this.x = x - this.w;
+        }
+
+        setTop(y) {
+            this.y = y;
+        }
+
+        setBottom(y) {
+            this.y = y - this.h;
+        }
+
+        updateBounds() {
+            super.updateBounds(this.x, this.y, this.w, this.h);
+        }
+    }
+
+    class Rectangle extends BoundedShape {
+        constructor(x, y, width, height, color) {
+            super();
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+            this.color = color;
+            this.updateBounds()
+        }
+
+        draw(ctx) {
+            //if (Math.random() < 0.0001) this.color = 'black'//random_color()
+            ctx.fillStyle = this.color;
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+        }
+
+        setLeft(x) {
+            this.x = x;
+        }
+
+        setRight(x) {
+            this.x = x - this.width;
+        }
+
+        setTop(y) {
+            this.y = y;
+        }
+
+        setBottom(y) {
+            this.y = y - this.height;
+        }
+
+        updateBounds() {
+            super.updateBounds(this.x, this.y, this.width, this.height);
+        }
+    }
+
+
+    // WORLD ////////////////////////////////////////////////////////////
+
+    function random_number(lower, upper) {
+        return lower + Math.random() * (upper - lower);
+    }
+
+    function random_green() {
+        let h = random_number(95, 140)
+        let s = random_number(80, 100)
+        let l = random_number(40, 60)
+        return `hsl(${h},${s}%,${l}%)`
+        //return `hsl(${h},100%,50%)`
+    }
+
+    function random_color() {
+        let h = random_number(0, 360)
+        let s = random_number(80, 100)
+        let l = random_number(40, 60)
+        return `hsl(${h},${s}%,${l}%)`
+        //return `hsl(${h},100%,50%)`
+    }
+
+    function random_choice(a) {
+        return a[Math.floor(Math.random() * a.length)]
+    }
+
+    function random_remove(a) {
+        a.splice(Math.floor(Math.random() * a.length), 1)
+    }
+
+    function random_step(a, v) {
+        a[Math.floor(Math.random() * a.length)] += (Math.random() < 0.5) ? v : -v;
+    }
+
+    class World {
+        constructor(width, height, cnv) {
+
+            this.cnv = cnv
+            this.ctx = this.cnv.getContext('2d')
+            let star_size = 4
+            let player_size = 10
+
+            this.can_jump = false
+
+            this.width = width
+            this.height = height
+            this.view = 0
+
+            this.platforms = []
+            //let ground = new Rectangle(0, this.height-ground_height, this.width, ground_height, 'darkgreen')
+            //this.platforms.push(ground)
+
+            let n_squares_wide = 100
+            let square_width = 20
+            let ground_height = 1
+            let hsl = [120, 100, 50]
+            for (let i = 0; i < n_squares_wide; ++i) {
+                let x = i * square_width
+                ground_height += random_choice([0, 0, 0, -1, 1])
+                if (ground_height < 1) ground_height = 1
+                if (ground_height > 10) ground_height = 10
+                let y = cnv.height - square_width
+                let color = `hsl(${hsl[0]},${hsl[1]}%,${hsl[2]}%)`
+                random_step(hsl, 10)
+                if (hsl[2] < 30) hsl[2] = 30
+                if (hsl[2] > 90) hsl[2] = 90
+                let square = new Rectangle(x, y - ground_height * square_width,
+                    square_width, ground_height * square_width, color)
+                this.platforms.push(square)
+            }
+
+
+            this.player = new Rectangle(cnv.width / 2 - player_size / 2,
+                //cnv.height-ground_height-player_size-10,
+                0,
+                player_size, player_size, 'blue')
+
+            this.background_elements = []
+            for (let i = 0; i < 0; ++i) {
+                let x = random(10, this.width - 10)
+                let y = random(10, this.height - ground_height - star_size - 10)
+                let star = new Rectangle(x, y,
+                    Math.floor(4 + Math.random() * 40),
+                    Math.floor(4 + Math.random() * 40), 'white')
+                this.platforms.push(star)
+            }
+
+        }
+
+        draw() {
+
+            this.ctx.clearRect(0, 0, this.cnv.width, this.cnv.height)
+            this.ctx.translate(-this.player.x + this.cnv.width / 2, 0)
+            for (let i = 0; i < this.background_elements.length; ++i) {
+                this.background_elements[i].draw(this.ctx)
+            }
+            for (let i = 0; i < this.platforms.length; ++i) {
+                this.platforms[i].draw(this.ctx)
+            }
+            this.player.draw(this.ctx)
+            this.ctx.resetTransform()
+        }
+
+        update() {
+            //console.log(this.player.y)
+            if (key_tracker.isKeyDown('ArrowLeft')) {
+                this.player.x -= 2
+            } else if (key_tracker.isKeyDown('ArrowRight')) {
+                this.player.x += 2
+            }
+            if (key_tracker.isKeyDown('ArrowUp') && this.can_jump) {
+                this.player.vy = -6
+                this.player.y -= 0.2
+                this.can_jump = false
+            }
+            if(key_tracker)
+            this.player.y += this.player.vy
+            this.player.vy += 0.2
+            this.player.updateBounds()
+
+
+            //random_choice(this.platforms).vy += (Math.random() < 0.5)? -0.001: 0.001;
+
+            if (Math.random() < 0.05) random_remove(this.platforms)
+
+
+            for (let i = 0; i < this.platforms.length; ++i) {
+
+                this.platforms[i].x += this.platforms[i].vx
+                this.platforms[i].y += this.platforms[i].vy
+                this.platforms[i].updateBounds()
+
+                let overlap = this.player.overlaps(this.platforms[i])
+
+                if (overlap) {
+                    // console.log(this.player)
+                    // console.log(this.platforms[i])
+                    // console.log(overlap)
+                    // console.log()
+                    if (overlap === 'left') {
+                        this.player.setRight(this.platforms[i].left())
+                        this.player.vx = 0
+                    } else if (overlap === 'right') {
+                        this.player.setLeft(this.platforms[i].right())
+                        this.player.vx = 0
+                    } else if (overlap === 'top') {
+                        this.player.setBottom(this.platforms[i].top())
+                        this.player.vy = 0
+                        this.can_jump = true
+                    } else if (overlap === 'bottom') {
+                        this.player.setTop(this.platforms[i].bottom())
+                        if (this.player.vy < 0) {
+                            this.player.vy = 0
+                            this.player.y += 0.1
+                        }
+                    }
+                    this.player.updateBounds()
+                }
+
+//       if (this.player.overlaps(this.platforms[i])) {
+
+//         // take player center and platform center
+//         //
+//         console.log(this.player)
+//         console.log(this.platforms[i])
+//         this.player.y = this.platforms[i].y-this.player.height
+//         this.player.vy = 0
+//         this.player.updateBounds()
+//         this.player_on_platform = true
+//       }
+            }
+
+        }
+    }
+
+
+    let cnv = document.querySelector('#cnv')
+    let world = new World(cnv.width * 3, cnv.height, cnv)
+
+    let c = 0
+
+    function animation_loop() {
+        //if (c < 1000) {
+        window.requestAnimationFrame(animation_loop)
+        //c += 1
+        //}
+
+        world.update()
+        world.draw()
+
+
+    }
+
+    window.requestAnimationFrame(animation_loop)
+</script>
+
+</body>
+</html>
