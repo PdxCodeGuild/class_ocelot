@@ -10,13 +10,15 @@
 {% if todo_list %}
 <ul>
 {% for todo in todo_list %}
-    <form action="{% url 'todo:remove_todo' %}" method="post">
+    <li>{{ todo.todo_text }}<input type="submit" value="remove">
+        <form action="{% url 'todo:remove_todo' %}" method="post">
         {% csrf_token %}
         <input type="hidden" name="todo_id" value="{{todo.id}}">
-        <li>{{ todo.todo_text }}<input type="submit" value="remove"> </li>
-    </form>
+        </form>
+    </li>
 {% endfor %}
 </ul>
+
 
 {% else %}
     <p>No todo's are available.</p>
