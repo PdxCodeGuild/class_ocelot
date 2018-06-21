@@ -21,3 +21,12 @@ def add_todo(request):
     todo_item.save()
     # redirect back to the index page   urls.py has paths need to match
     return HttpResponseRedirect(reverse('todo:index'))
+
+def remove_todo(request):
+    todo_id = request.POST['todo_id']
+
+    todo_item = Todo.objects.get(pk=todo_id)
+
+    todo_item.delete()
+
+    return HttpResponseRedirect(reverse('todo:index'))

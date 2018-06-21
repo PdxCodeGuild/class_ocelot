@@ -1,17 +1,24 @@
+
+
 <h1> Todo's & to Procrastinate</h1>
 <form action="{% url 'todo:add_todo' %}" method="post">
     {% csrf_token %}
     <input type="text" name="todo">
-    <input type="submit" Value="add"/>
+    <input type="submit" value="add"/>
 </form>
 
 {% if todo_list %}
 <ul>
 {% for todo in todo_list %}
-    <li>{{ todo.todo_text }}</li>
+    <form action="{% url 'todo:remove_todo' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="todo_id" value="{{todo.id}}">
+        <li>{{ todo.todo_text }}<input type="submit" value="remove"> </li>
+    </form>
 {% endfor %}
 </ul>
 
 {% else %}
     <p>No todo's are available.</p>
 {% endif %}
+
