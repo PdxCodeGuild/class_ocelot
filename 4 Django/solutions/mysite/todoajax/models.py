@@ -2,7 +2,7 @@ from django.db import models
 
 from django.utils import timezone
 
-class TodoItem(models.Model):
+class TodoAjaxItem(models.Model):
     text = models.CharField(max_length=200)
     date_created = models.DateTimeField(default=timezone.now)
     date_completed = models.DateTimeField(null=True, blank=True)
@@ -12,4 +12,10 @@ class TodoItem(models.Model):
 
     def __str__(self):
         return self.text
+
+
+    def toDictionary(self):
+        return {'text': self.text}
+
+
 

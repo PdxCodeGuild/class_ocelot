@@ -20,5 +20,6 @@ from django.urls import include, path
 urlpatterns = [
     path('polls/', include('polls.urls')),
     path('todoappp/', include('todoapp.urls')),
+    path('todoajax/', include('todoajax.urls')),
     path('admin/', admin.site.urls),
 ]

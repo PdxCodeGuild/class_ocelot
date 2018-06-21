@@ -45,7 +45,7 @@
     <body>
         <h1>Todo</h1>
         <table>
-            <form action="{% url 'todoapp:add_todo' %}" method="post">
+            <form action="{% url 'todoapp:index' %}" method="post">
                 {% csrf_token %}
                 <input type="text" name="todo_text" value="" placeholder="todo" autofocus/>
                 <input type="submit" value="add"/>
