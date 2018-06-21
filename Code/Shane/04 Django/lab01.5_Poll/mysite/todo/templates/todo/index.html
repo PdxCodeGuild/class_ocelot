@@ -1,10 +1,29 @@
-
-
 <style>
 
 
+    body {
+        background-color: navajowhite;
+    }
 
 </style>
 
+<form action="{% url 'todo:add_todo' %}" method="post">
+    {% csrf_token %}
+    <input type="text" name="todo_item" placeholder="Give Yourself Something To Do!!">
+    <input type="submit" value="Add To List">
+</form>
 
-Hello {{name}}
+{% if todo_items123 %}
+
+<table>
+    <ul>{% for item in todo_items123 %}
+        <li>
+            {{item.todo_text}}
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <p>No items on the list</p>
+    {% endif %}
+</table>
+
