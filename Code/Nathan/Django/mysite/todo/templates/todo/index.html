@@ -1,24 +1,54 @@
+<!--fix input floats-->
+<style>
+    li{
+        border-bottom: #0d0d0d solid;
+    }
+    #list_dis{
+        float: right;
+        width: 33%;
+    }
 
+    #head{
+        float: left;
+        width: 33%;
+    }
+    h1{
+        text-align: center;
+    }
+    h2{
+        text-align: center;
+    }
+    input{
+        float: right;
+    }
+</style>
 
 <h1> Todo's & to Procrastinate</h1>
-<form action="{% url 'todo:add_todo' %}" method="post">
-    {% csrf_token %}
-    <input type="text" name="todo">
-    <input type="submit" value="add"/>
-</form>
-
-{% if todo_list %}
-<ul>
-{% for todo in todo_list %}
-    <li>{{ todo.todo_text }}<input type="submit" value="remove">
-        <form action="{% url 'todo:remove_todo' %}" method="post">
+<div id="head">
+    <h2>Enter task</h2>
+    <form action="{% url 'todo:add_todo' %}" method="post">
         {% csrf_token %}
-        <input type="hidden" name="todo_id" value="{{todo.id}}">
-        </form>
-    </li>
-{% endfor %}
-</ul>
+        <input type="text" name="todo">
+        <input type="submit" value="add"/>
+</div>
 
+<div id="list_dis">
+    </form>
+
+    {% if todo_list %}
+    <ul>
+        <h2>Todo List</h2>
+    {% for todo in todo_list %}
+
+        <li>{{ todo.todo_text }}<input type="submit" value="remove">
+            <form action="{% url 'todo:remove_todo' %}" method="post">
+            {% csrf_token %}
+            <input id="remove" type="hidden" name="todo_id" value="{{todo.id}}">
+            </form>
+        </li>
+    {% endfor %}
+    </ul>
+</div>
 
 {% else %}
     <p>No todo's are available.</p>

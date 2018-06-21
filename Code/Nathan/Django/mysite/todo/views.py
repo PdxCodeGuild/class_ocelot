@@ -12,7 +12,6 @@ def index(request):
         'todo_list': latest_todo_list,
     }
     return render(request, 'todo/index.html', context)
-
 def add_todo(request):
     todo_text = request.POST['todo']
     # create a to do item
