@@ -12,19 +12,20 @@
 
 {% if todo_items123 %}
 
-<table>
-    <ul>{% for unicorn in todo_items123 %}
-        <form action="{% url 'todo:todo_remove_unicorn' %}" method="post">
-                {% csrf_token %}
-            <input type="hidden" name="todo_item_id_key_in_template" value="{{unicorn.id}}">
-            <li>
-                {{unicorn.todo_text}} <button type="submit">button text</button>
-            </li>
-        </form>
-        {% endfor %}
-    </ul>
-    {% else %}
-    <p>No items on the list</p>
-    {% endif %}
-</table>
+
+<ul>{% for unicorn in todo_items123 %}
+    <form action="{% url 'todo:todo_remove_unicorn' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="todo_item_id_key_in_template" value="{{unicorn.id}}">
+        <li>
+            {{unicorn.todo_text}}
+            <button type="submit">Remove Me!</button>
+        </li>
+    </form>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No items on the list</p>
+{% endif %}
+
 
