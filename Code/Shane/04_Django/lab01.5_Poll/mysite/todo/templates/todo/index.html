@@ -6,7 +6,7 @@
 
 <form action="{% url 'todo:add_todo' %}" method="post">
     {% csrf_token %}
-    <input type="text" name="todo_item" placeholder="Give Yourself Something To Do!!">
+    <input type="text" name="todo_item" placeholder="Give Yourself Something To Do!!" autofocus>
     <input type="submit" value="Add To List">
 </form>
 
