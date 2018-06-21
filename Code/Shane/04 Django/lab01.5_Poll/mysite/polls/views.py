@@ -26,6 +26,8 @@ def results(request, question_id):
     return render(request, 'polls/results.html', {'question': question})
 
 
+
+#submit form
 def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     try:
@@ -37,9 +39,7 @@ def vote(request, question_id):
             'error_message': "You didn't select a choice.",
         })
     else:
-        selected_choice.votes += 12963
+        selected_choice.votes += 1
         selected_choice.save()
-        # Always return an HttpResponseRedirect after successfully dealing
-        # with POST data. This prevents data from being posted twice if a
-        # user hits the Back button.
+        # Always return an HttpResponseRedirect after successfully dealing with POST data. This prevents data from being posted twice if a user hits the Back button.
         return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
