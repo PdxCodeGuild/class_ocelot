@@ -1,0 +1,21 @@
+
+<!--from Django poll tutorial-->
+<form action="{% url 'polls:vote' question.id %}" method="post">
+    {% csrf_token %}
+    {% for choice in question.choice_set.all %}
+        <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}" />
+        <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br />
+    {% endfor %}
+    <input type="submit" value="Vote" />
+</form>
+
+
+<!--Matthew's more readable version-->
+<form action="/polls/1/vote/" method="post">
+    {% csrf_token %}
+    <input type="text" name="first_name" placeholder="first name"/>
+    <input type="text" name="last_name" placeholder="last name"/>
+    <input type="number" name="age" placeholder="age"/>
+    <input type="color" name="fav_color" placeholder="color"/>
+    <input type="submit" value="submit"/>
+</form>
