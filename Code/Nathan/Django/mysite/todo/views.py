@@ -19,5 +19,5 @@ def add_todo(request):
     todo_item = Todo(todo_text=todo_text, pub_date=timezone.now())
     # save it
     todo_item.save()
-    # redirect back to the index page
+    # redirect back to the index page   urls.py has paths need to match
     return HttpResponseRedirect(reverse('todo:index'))
