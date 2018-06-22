@@ -26,3 +26,13 @@ def add_todo(request):
     # redirect back to the index page (HttpResponseRedirect)
 
     return HttpResponseRedirect(reverse('todo:index'))
+
+def remove_todo(request):
+    todo_text = request.POST['todo_item_id_key_in_template']
+    todo_item = TodoItem.objects.get(pk = todo_text)
+    todo_item.delete()
+    # item_on_list = question.choice_set.get(pk=request.POST['choice'])
+    # save data from request.POST in database
+    # redirect back to the index page (HttpResponseRedirect)
+
+    return HttpResponseRedirect(reverse('todo:index'))
