@@ -6,7 +6,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('library/', include('library.urls')),
+    path('polls/', include('polls.urls')),
+    path('theshortening/', include('theshortening.urls')),
     path('admin/', admin.site.urls),
     path('polls/', include('polls.urls')),
     path('todos/', include('todoapp.urls')),
