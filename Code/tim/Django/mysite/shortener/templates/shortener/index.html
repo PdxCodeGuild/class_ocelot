@@ -1,0 +1,34 @@
+<head>
+    <meta charset="UTF-8">
+    <title>Redirect</title>
+</head>
+<body>
+
+    <h1>URL Shortener Bot 5000</h1>
+    <form action="{% url 'shortener:saveurl' %}" method="post">
+        {% csrf_token %}
+        <label>Paste long URL:</label>
+        <input type="text" name="long_url">
+        <input type="submit" value="Add">
+    </form>
+
+    {% if urls %}
+        <form>
+            <table>
+                <tr>
+                    <th>Short URL</th>
+                    <th>Long URL</th>
+                </tr>
+                {% for url in urls %}
+                    <tr>
+                        <td><a href='localhost:8000/shortener/redirect/{{ url.short_url }}' target='blank'>{{ url.short_url }}</a></td>
+                        <td>{{ url.long_url }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </form>
+    {% else %}
+        <p>No URLS shortened yet.</p>
+    {% endif %}
+</body>
+</html>
