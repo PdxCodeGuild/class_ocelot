@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <style>
+        body {
+            font-family: "Helvetica", "Arial", sans-serif;
+        }
+
+        table {
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .table_title {
+            font-weight: bold;
+            text-align: center;
+            font-size: 15px;
+        }
+
+        table, th, td {
+            border: 2px solid black;
+            padding: 2px;
+            width: 50%;
+        }
+
+        .main_form {
+            display: flex;
+            flex-direction: column;
+            height: 30%;
+        }
+
+        .input_and_bt {
+            margin: 10px;
+        }
+
+        .input_field {
+            width: 40%;
+        {#margin: 5px;#} align-items: left;
+        }
+
+
+    </style>
+</head>
+<body>
+
+
+<div class="main_form">
+
+    <form action="{% url 'theshortening:save_url' %}" method="post">
+        {% csrf_token %}
+        <div class="input_and_bt">
+            <input class="input_field" type="text" name="url"/>
+            <button type="submit">Get Short URL</button>
+        </div>
+
+    </form>
+</div>
+<table>
+
+    <tr class="table_title">
+
+        <th>Long URL</th>
+        <th>Short-code</th>
+
+    </tr>
+    <tr>
+
+        <td>http:// this is the long url</td>
+        <td>http:// this is the short url</td>
+
+    </tr>
+
+</table>
+
+
+</body>
+</html>
