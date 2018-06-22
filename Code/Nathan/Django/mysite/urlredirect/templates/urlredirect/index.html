@@ -10,6 +10,18 @@
         <input type="text" name="furl" placeholder="full url"/>
         <input type="submit" value="Shorten"/>
     </form>
+    <form action="{% url 'urlredirect:redirect_form' %}" method="post">
+        {% csrf_token %}
+        <input type="text" name="code" placeholder="code"/>
+        <input type="submit" value="redirect"/>
+    </form>
+    <ul>
+        {% for shortener in shorteners %}
+        <li>
+            <a href="{% url 'urlredirect:short_url_redirect' shortener.code %}">link</a>
+        </li>
+        {% endfor %}
+    </ul>
 </body>
 </html>
 
