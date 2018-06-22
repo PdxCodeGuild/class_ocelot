@@ -185,24 +185,22 @@
             other_option.style.backgroundColor = 'darkorchid'
             other_border.style.marginLeft = '0%'
         }
-    </script>
-    <script>
-        function sound(src) {
-            this.sound = document.createElement("audio");
-            this.sound.src = src;
-            this.sound.setAttribute("preload", "auto");
-            this.sound.setAttribute("controls", "none");
-            this.sound.style.display = "none";
-            document.body.appendChild(this.sound);
-            this.play = function(){
-                this.sound.play();
-            }
-            this.stop = function(){
-                this.sound.pause();
-            }
-        }
         function random(lower, upper) {
             return lower + Math.random()*(upper-lower)
+        }
+        function hexToRgb(hex) {
+            let shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+            hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+                return r + r + g + g + b + b;
+            });
+
+            let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            console.log(result)
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
         }
     </script>
     <script>
@@ -253,6 +251,7 @@
                 this.width = width
                 this.height = height
                 this.color = color
+                this.rgb = {r:255, g:0, b:0}
             }
             update() {
                 this.x += this.vx
@@ -291,22 +290,17 @@
                 this.base_energy = 100
                 this.energy = 100
                 this.shot_speed = 6
-                this.sword_len = 0
                 this.sword_tip = {x:0, y:0}
+                this.sword_trail = []
+                this.flip_duration = 60
                 this.flip_count = 0
                 this.flip_rotation = ''
                 this.flip_type = ''
-                this.facing = 'right'
+                this.facing = 1 // right
             }
             draw(ctx) {
                 ctx.save();
-                let dir_switch
-                if (this.facing === 'right') {
-                    dir_switch = 1
-                } else {
-                    dir_switch = -1
-                }
-                let grd = ctx.createLinearGradient(0, this.height, this.width * dir_switch, -this.height/2)
+                let grd = ctx.createLinearGradient(0, this.height, this.width * this.facing, -this.height/2)
                 grd.addColorStop(0, this.color)
                 grd.addColorStop(1, "white")
                 ctx.fillStyle = grd
@@ -328,37 +322,95 @@
                             this.sword_tip.x = x_cen
                             this.sword_tip.y = y_cen
                         } else if (this.flip_count > 40) {
-                            this.sword_tip.x = x_cen + (50 - this.flip_count) * 5 * dir_switch // full length = 50
+                            this.sword_tip.x = x_cen + (50 - this.flip_count) * 5 * this.facing // full length = 50
                             this.sword_tip.y = y_cen
                         } else if (this.flip_count > 10) {
                             let dx = Math.cos((41 - this.flip_count) / 40 * Math.PI) * 50
                             let dy = Math.sin((41 - this.flip_count) / 40 * Math.PI) * 50
-                            this.sword_tip.x = x_cen + dx * dir_switch
+                            this.sword_tip.x = x_cen + dx * this.facing
                             this.sword_tip.y = y_cen - dy
                         } else {
                             let dx = Math.cos((41 - this.flip_count) / 40 * Math.PI) * 5 * this.flip_count
                             let dy = Math.sin((41 - this.flip_count) / 40 * Math.PI) * 5 * this.flip_count
-                            this.sword_tip.x = x_cen + dx * dir_switch
+                            this.sword_tip.x = x_cen + dx * this.facing
                             this.sword_tip.y = y_cen - dy
+                        }
+                        if (this.flip_count % 2 === 0) {
+                            this.sword_trail[this.sword_trail.length - 1].push({
+                                life: 60,
+                                x_cen: x_cen,
+                                y_cen: y_cen,
+                                x_tip: this.sword_tip.x,
+                                y_tip: this.sword_tip.y
+                            })
                         }
                     } else {
                         if (this.flip_count > 50) {
                             this.sword_tip.x = x_cen
                             this.sword_tip.y = y_cen
-                        } else if (this.flip_count > 40) {
-                            let dx = Math.cos((this.flip_count - 40) * .075 * Math.PI) * 50
-                            let dy = Math.sin((this.flip_count - 40) * .075 * Math.PI) * 50
-                            this.sword_tip.x = x_cen + dx * dir_switch
-                            this.sword_tip.y = y_cen - dy
                         } else {
-                            this.sword_tip.x = x_cen + 50 * dir_switch
-                            this.sword_tip.y = y_cen + (41 - this.flip_count) / 2
+                            if (this.flip_count > 40) {
+                                let dx = Math.cos((this.flip_count - 40) * .075 * Math.PI) * 50
+                                let dy = Math.sin((this.flip_count - 40) * .075 * Math.PI) * 50
+                                this.sword_tip.x = x_cen + dx * this.facing
+                                this.sword_tip.y = y_cen - dy
+                            } else {
+                                this.sword_tip.x = x_cen + 50 * this.facing
+                                this.sword_tip.y = y_cen + (41 - this.flip_count) / 2
+                            }
+                            if (this.flip_count % 2 === 0) {
+                                this.sword_trail[this.sword_trail.length - 1].push({
+                                    life: 60,
+                                    x_cen: x_cen,
+                                    y_cen: y_cen,
+                                    x_tip: this.sword_tip.x,
+                                    y_tip: this.sword_tip.y
+                                })
+                            }
                         }
                     }
                     ctx.beginPath()
                     ctx.moveTo(x_cen, y_cen)
                     ctx.lineTo(this.sword_tip.x, this.sword_tip.y)
                     ctx.stroke()
+                }
+                if (this.sword_trail.length > 0) {
+                    if (this.sword_trail[0].length === 0 && this.sword_trail.length>1) {
+                        this.sword_trail.splice(0, 1)
+                    }
+                    // if (this.sword_trail.length === 2) {
+                    //     console.log(this.sword_trail[0][0].life, this.sword_trail[1])
+                    // }
+                    ctx.fillStyle = this.color
+                    for (let k=0; k<this.sword_trail.length; k++) {
+                        let poly_path = {tip: [], cen: []}
+                        for (let i = 0; i < this.sword_trail[k].length; i++) {
+                            this.sword_trail[k][i].life -= 1
+                            if (this.sword_trail[k][i].life === 0) {
+                                this.sword_trail[k].splice(i, 1)
+                                continue
+                            }
+                            poly_path.tip.push({x: this.sword_trail[k][i].x_tip, y: this.sword_trail[k][i].y_tip})
+                            poly_path.cen.push({x: this.sword_trail[k][i].x_cen, y: this.sword_trail[k][i].y_cen})
+                        }
+                        if (poly_path.tip.length > 0) {
+
+                            ctx.strokeStyle = "rgba(" + this.rgb["r"] + "," + this.rgb["g"] + "," + this.rgb["b"] +
+                                "," + poly_path.tip.length / 60 + ")"
+                            ctx.beginPath()
+                            ctx.moveTo(poly_path.tip[0].x, poly_path.tip[0].y)
+                            for (let i = 1; i < poly_path.tip.length; i++) {
+                                ctx.lineTo(poly_path.tip[i].x, poly_path.tip[i].y)
+                            }
+                            for (let i = poly_path.cen.length - 1; i > 0; i--) {
+                                ctx.lineTo(poly_path.cen[i].x, poly_path.cen[i].y)
+                            }
+                            ctx.closePath()
+                            ctx.stroke()
+                            ctx.fillStyle = ctx.strokeStyle
+                            ctx.fill()
+                        }
+                    }
                 }
             }
             withinVert(r) {
@@ -404,33 +456,37 @@
                 let dx = x_click - this.x + this.width / 2
                 let dy = y_click - this.y
                 if (dx > 0 && dy > 0 && this.energy >= 25) {
-                    this.flip_count = 60
+                    this.flip_count = this.flip_duration
                     this.flip_rotation = 'clockwise'
                     this.flip_type = 'down'
-                    this.facing = 'right'
+                    this.facing = 1 // right
                     this.vy = -3
                     this.energy -= 25
+                    return true
                 } else if (dx > 0 & dy < 0 && this.energy >= 40) {
-                    this.flip_count = 60
+                    this.flip_count = this.flip_duration
                     this.flip_rotation = 'counter'
                     this.flip_type = 'up'
-                    this.facing = 'right'
+                    this.facing = 1 // right
                     this.vy = -.6
                     this.energy -= 40
+                    return true
                 } else if (dx < 0 & dy > 0 && this.energy >= 25) {
-                    this.flip_count = 60
+                    this.flip_count = this.flip_duration
                     this.flip_rotation = 'counter'
                     this.flip_type = 'down'
-                    this.facing = 'left'
+                    this.facing = -1 // left
                     this.vy = -3
                     this.energy -= 25
+                    return true
                 } else if (this.energy >= 40) {
-                    this.flip_count = 60
+                    this.flip_count = this.flip_duration
                     this.flip_rotation = 'clockwise'
                     this.flip_type = 'up'
-                    this.facing = 'left'
+                    this.facing = -1 // left
                     this.vy = -.6
                     this.energy -= 40
+                    return true
                 }
             }
             checkSword(enemy) {
@@ -442,6 +498,20 @@
                     return true
                 }
                 return false
+            }
+            checkSwordPoly (x, y, cornersX, cornersY) {
+                let i, j=cornersX.length-1
+                let oddNodes = false
+                let polyX = cornersX
+                let polyY = cornersY
+                for (i=0; i<cornersX.length; i++) {
+                    if ((polyY[i] < y && polyY[j] >= y || polyY[j] < y && polyY[i] >= y) &&
+                        (polyX[i] <= x || polyX[j] <= x)) {
+                            oddNodes ^= (polyX[i] + (y-polyY[i]) / (polyY[j] - polyY[i]) * (polyX[j] - polyX[i]) < x);
+                    }
+                    j=i;
+                }
+                return oddNodes;
             }
         }
 
@@ -579,6 +649,23 @@
             }
         }
 
+        // class Sound {
+        //     constructor(src) {
+        //         this.sound = document.createElement("audio");
+        //         this.sound.src = src;
+        //         this.sound.setAttribute("preload", "auto");
+        //         this.sound.setAttribute("controls", "none");
+        //         this.sound.style.display = "none";
+        //         document.body.appendChild(this.sound);
+        //     }
+        //     play() {
+        //         this.sound.play();
+        //     }
+        //     stop() {
+        //         this.sound.pause();
+        //     }
+        // }
+
         class World {
             constructor(width, height, cnv) {
                 this.play = true
@@ -593,6 +680,25 @@
                 this.dv = .03
                 this.total_velocity = 0
                 this.max_velocity = 40
+                ////// SOUNDS ///////
+                // this.sounds = []
+                // let my_sounds = [
+                //     'Neck Breaking-SoundBible.com-933536431.mp3',
+                //     'Punch_HD-Mark_DiAngelo-1718986183.mp3',
+                //     'Super Punch MMA-SoundBible.com-1869306362.mp3',
+                //     'Thwack Hit By Punch-SoundBible.com-872409685.mp3',
+                //     'Roundhouse Kick-SoundBible.com-1663225804.mp3',
+                //     'Spin Kick-SoundBible.com-1263586030.mp3',
+                //     'Kick-SoundBible.com-1331196005.mp3',
+                //     'Jab-SoundBible.com-1806727891.mp3',
+                //     'Upper Cut-SoundBible.com-1272257235.mp3',
+                //     'Right Cross-SoundBible.com-1721311663.mp3',
+                //     'Left Hook-SoundBible.com-516660386.mp3',
+                //     'Right Hook-SoundBible.com-1406389182.mp3'
+                // ]
+                // for (let i=0; i<my_sounds.length; i++) {
+                //     this.sounds.push(new Sound(my_sounds[i]))
+                // }
                 ////// PLATFORMS ///////
                 this.platforms = []
                 this.ground = new Rectangle(0, this.height - this.ground_height,
@@ -611,18 +717,18 @@
                     let enemy = new Rectangle(x, y, player_size, player_size, 'blue')
                     this.enemies.push(enemy)
                 }
-                ////// GoldenStar ///////
+                ////// GOLDEN STAR ///////
                 this.golden_star = new GoldenStar(random(100, this.width - 100),
                                                   random(0, this.height * .8),
                                                   this.star_size, this.star_size, 'yellow')
-                ////// Stars ///////
+                ////// PLATFORM STARS ///////
                 for (let i=0; i<100; i++) {
                     let x = random(10, this.width-10)
                     let y = random(10, this.height-this.ground_height-this.star_size-10)
                     let star = new Rectangle(x, y, this.star_size, this.star_size, 'white')
                     this.platforms.push(star)
                 }
-                ////// Portals ///////
+                ////// PORTALS ///////
                 this.circles = []
                 for (let i=0; i<10; i++) {
                     let x, y
@@ -662,12 +768,280 @@
                 this.cnv.oncontextmenu = (e) => {
                     if (this.player.flip_count <= 0 && !this.player.staa_ridin) {
                         let trans_x = this.getTransX()
-                        this.player.getFlipAttack(e.clientX - this.cnv_rect.left - trans_x - this.player.width,
+                        let result = this.player.getFlipAttack(e.clientX - this.cnv_rect.left - trans_x - this.player.width,
                             e.clientY - this.cnv_rect.top)
+                        if (result) {
+                            // this.sounds[Math.floor(Math.random() * this.sounds.length)].play()
+                            this.player.sword_trail.push([])
+                            this.player.sword_tip.x = this.player.x + this.player.width / 2
+                            this.player.sword_tip.y = this.player.y + this.player.height / 2
+                        }
                     }
-                    this.player.sword_tip.x = this.player.x + this.player.width / 2
-                    this.player.sword_tip.y = this.player.y + this.player.height / 2
                     return false
+                }
+            }
+            update() {
+                let total_velocity = 0
+                for (let i = 0; i < this.circles.length; i++) {
+                    total_velocity += Math.abs(this.circles[i].vx) + Math.abs(this.circles[i].vy)
+                    ///// MOVE PORTAL, SIZE ACCORDING TO PORTAL PAIR /////
+                    let portal_pair_position = Math.abs(this.circles[i].portal_pair.x - this.golden_star.x) / this.width
+                    this.circles[i].update(portal_pair_position)
+                    ///// BOUNCE PORTALS OFF SIDES & GROUND //////
+                    if (this.circles[i].x + this.circles[i].rad > this.width) {
+                        this.circles[i].setRight(this.width)
+                        this.circles[i].vx *= -1
+                        this.circles[i].x += this.circles[i].vx
+                    } else if (this.circles[i].x - this.circles[i].rad < 0) {
+                        this.circles[i].setLeft(0)
+                        this.circles[i].vx *= -1
+                        this.circles[i].x += this.circles[i].vx
+                    } else if (this.circles[i].y + this.circles[i].rad > this.height - this.ground_height) {
+                        this.circles[i].setBottom(this.height - this.ground_height)
+                        this.circles[i].vy *= -1
+                        this.circles[i].y += this.circles[i].vy
+                    } else if (this.circles[i].y - this.circles[i].rad < 0) {
+                        this.circles[i].setTop(0)
+                        this.circles[i].vy *= -1
+                        this.circles[i].y += this.circles[i].vy
+                    }
+                    ///// CHECK TO SEE IF PORTAL HIT ANOTHER PORTAL //////
+                    for (let j = 0; j < this.circles.length; ++j) {
+                        if (i === j) continue
+                        let result = this.circles[i].checkCollideCir(this.circles[j])
+                        let dv = this.total_velocity < this.max_velocity ? this.dv : -this.dv*2
+                        if (result && this.circles[i].vib_count <= 0) {
+                            this.circles[i].vib_count = 60
+                            this.circles[i].vy > 0 ? this.circles[i].vy += dv: this.circles[i].vy -= dv
+                            this.circles[i].vx > 0 ? this.circles[i].vx += dv: this.circles[i].vx -= dv
+                            this.circles[j].vib_count = 60
+                            this.circles[j].vy > 0 ? this.circles[j].vy += dv: this.circles[j].vy -= dv
+                            this.circles[j].vx > 0 ? this.circles[j].vx += dv: this.circles[j].vx -= dv
+                        }
+                    }
+                    ///// SEE IF PORTAL HITS PLAYER, EXCEPT LAST PORTAL EXITED //////
+                    if (this.circles[i] != this.player.last_teleport) {
+                        let hit_player = this.circles[i].checkCollideRec(this.player)
+                        if (hit_player) {
+                            if (this.player.flip_count > 0) this.player.sword_trail.push([])
+                            this.player.vy = 0
+                            this.player.last_teleport = this.circles[i].portal_pair
+                            this.player.x = this.circles[i].portal_pair.x
+                            this.player.y = this.circles[i].portal_pair.y
+                        }
+                    }
+                    ///// SEE IF PORTAL HITS GOLDEN STAR, EXCEPT LAST PORTAL EXITED //////
+                    if (this.circles[i] != this.golden_star.last_teleport) {
+                        let hit_golden_star = this.circles[i].checkCollideRec(this.golden_star)
+                        if (hit_golden_star) {
+                            this.golden_star.last_teleport = this.circles[i].portal_pair
+                            this.golden_star.x = this.circles[i].portal_pair.x
+                            this.golden_star.y = this.circles[i].portal_pair.y
+                            if (this.circles[i].portal_pair.vx > 0) {
+                                this.golden_star.vx = -Math.abs(this.golden_star.vx)
+                            } else {
+                                this.golden_star.vx = Math.abs(this.golden_star.vx)
+                            }
+                            if (this.circles[i].portal_pair.vy > 0) {
+                                this.golden_star.vy = -Math.abs(this.golden_star.vy)
+                            } else {
+                                this.golden_star.vy = Math.abs(this.golden_star.vy)
+                            }
+                        }
+                    }
+                    ///// REDUCE VIBRATION COUNT //////
+                    this.circles[i].vib_count -= 1
+                }
+                this.total_velocity = total_velocity
+                ///// BOUNCE GOLDEN STAR //////
+                let is_ob_right = this.golden_star.x + this.golden_star.width > this.width
+                let is_ob_left = this.golden_star.x < 0
+                if (is_ob_right || is_ob_left) this.golden_star.vx *= -1
+                let is_ob_top = this.golden_star.y > this.height - this.ground.height - this.star_size
+                let is_ob_bottom = this.golden_star.y < 0
+                if (is_ob_top || is_ob_bottom) this.golden_star.vy *= -1
+                ///// JUMP IF ON PLATFORM ////////
+                if ((key_tracker.isKeyDown('ArrowUp') || key_tracker.isKeyDown('w')) && this.player_on_platform) {
+                    this.player.vy = -6
+                    this.player.y -= 0.3
+                    this.player.staa_ridin = false
+                }
+                ///// DEFAULT ASSUMPTIONS, RESET, INCREMENT, ETC //////
+                this.player_on_platform = false
+                this.player.star_cooldown -= 1
+                this.player.hurt_count -= 1
+                let rubbing = false
+                if (this.player.energy < 100) this.player.energy += .2
+                ///// GO RIGHT OR LEFT /////
+                if (!this.player.staa_ridin) {
+                    if (key_tracker.isKeyDown('ArrowLeft')|| key_tracker.isKeyDown('a')) {
+                        if (this.player.flip_count <= 0) {
+                            this.player.facing = -1 // left
+                            ///// CHECK LEFT BUMP /////
+                            for (let i = 0; i < this.platforms.length; i++) {
+                                if (this.player.rubLeft(this.platforms[i])) {
+                                    rubbing = true
+                                    break
+                                }
+                            }
+                        }
+                        if (!rubbing) this.player.x -= this.player.mx
+                        ///// TOO FAR LEFT /////
+                        if (this.player.x < 0) this.player.x = 0
+                    } else if (key_tracker.isKeyDown('ArrowRight') || key_tracker.isKeyDown('d')) {
+                        if (this.player.flip_count <= 0) {
+                            this.player.facing = 0 // right
+                            ///// CHECK RIGHT BUMP /////
+                            for (let i = 0; i < this.platforms.length; i++) {
+                                if (this.player.rubRight(this.platforms[i])) {
+                                    rubbing = true
+                                    break
+                                }
+                            }
+                        }
+                        if (!rubbing) this.player.x += this.player.mx
+                        ///// TOO FAR RIGHT /////
+                        if (this.player.x + this.player.width > world.width) {
+                            this.player.x = world.width - this.player.width
+                        }
+                    }
+                }
+                ///// GOLDEN STAR /////
+                this.golden_star.update()
+                ///// IF RIDING ON GOLDEN STAR /////
+                if (this.player.staa_ridin) {
+                    this.player_on_platform = true
+                    this.player.x = this.golden_star.x - (this.player.width - this.star_size) / 2
+                    this.player.y = this.golden_star.y - this.player.height
+                    ///// PICK UP GOLDEN STAR  /////
+                    if (key_tracker.isKeyDown('ArrowDown') || key_tracker.isKeyDown('s')) {
+                        this.player.staa_ridin = false
+                        this.player_on_platform = false
+                        this.player.star_cooldown = 10
+                        this.player.score += 1
+                        this.golden_star.x = random(0, this.width - this.star_size)
+                        this.golden_star.y = random(0, this.height - this.star_size - this.ground_height)
+                        this.golden_star.setRandomVelocities()
+                    }
+                ///// IF YOU LAND ON THE GOLDEN STAR /////
+                } else if (this.player.landed(this.golden_star) && !this.player.staa_ridin) {
+                    this.player_on_platform = true
+                    this.player.staa_ridin = true
+                    this.player.flip_count = 0
+                ///// IF YOU ARE FLIPPING, UP OR DOWN /////
+                } else if (this.player.flip_count > 0) {
+                    if (this.player.flip_type === 'up') {
+                        this.player.vy -= .03
+                    } else {
+                        this.player.vy += .5
+                    }
+                    this.player.y += this.player.vy
+                    if (this.player.y + this.player.height + this.ground.height >= this.height) {
+                        this.player.y = this.height - this.player.height - this.ground.height
+                        this.player.flip_count = 0
+                    } else {
+                        this.player.flip_count -= 1
+                    }
+                    for (let i=0; i<this.enemies.length; i++) {
+                        let sword_hit = this.player.checkSword(this.enemies[i])
+                        if (sword_hit) this.enemies.splice(i, 1)
+                    }
+                ///// OTHERWISE CHECK NORMAL HITS /////
+                } else {
+                    for (let i = 0; i < this.platforms.length; i++) {
+                        ///// LANDED ON STAR OR GROUND /////
+                        if (this.player.landed(this.platforms[i])) {
+                            this.player.color = 'red'
+                            this.player.y = this.platforms[i].top() - this.player.height
+                            this.player.vy = 0
+                            this.player_on_platform = true
+                            ///// DOWN KEY = PICK UP STAR /////
+                            if ((key_tracker.isKeyDown('ArrowDown') || key_tracker.isKeyDown('s'))
+                                && this.platforms[i] != this.ground && this.player.star_cooldown < 0) {
+                                    this.player.star_cooldown = 10
+                                    this.player.grabStar()
+                                    this.platforms.splice(i, 1)
+                            }
+                            break
+                        ///// CHECK HEAD BUMP /////
+                        } else if (this.player.hitHead(this.platforms[i]) && this.player.vy < 0
+                            && this.platforms[i] != this.ground && this.player.flip_count <= 0) {
+                                this.player.y = this.platforms[i].bottom() + .001
+                                this.player.vy = -.015
+                                break
+                        }
+                    }
+                }
+                ///// UPDATE STAR SHOTS /////
+                for (let i=0; i<this.shooting_stars.length; i++) {
+                    ///// UPDATE & BOUNCE SHOTS IN PLAY /////
+                    if (this.shooting_stars[i].ground_timer === 0) {
+                        ///// REMOVE EXPIRED STAR SHOTS
+                        if (this.shooting_stars[i].life === 0) {
+                            this.shooting_stars.splice(i, 1)
+                        } else {
+                            this.shooting_stars[i].update()
+                            if (this.shooting_stars[i].life < 30) {
+                                this.shooting_stars[i].width += 4 / this.shooting_stars[i].life
+                                this.shooting_stars[i].height += 4 / this.shooting_stars[i].life
+                                this.shooting_stars[i].x -= 2 / this.shooting_stars[i].life
+                                this.shooting_stars[i].y -= 2 / this.shooting_stars[i].life
+                            }
+                            for (let j=0; j<this.enemies.length; j++) {
+                                let shot_hit = this.shooting_stars[i].checkShot(this.enemies[j])
+                                if (shot_hit) {
+                                    this.enemies.splice(j, 1)
+                                }
+                            }
+                            ///// SLOW AND BOUNCE STAR SHOTS IN PLAY /////
+                            this.shooting_stars[i].life -= 1
+                            this.shooting_stars[i].vx *= .994
+                            this.shooting_stars[i].vy *= .994
+                            if (this.shooting_stars[i].x > this.width - this.star_size) {
+                                this.shooting_stars[i].vx *= -1
+                                this.shooting_stars[i].x = this.width - this.star_size - this.shooting_stars[i].vx
+                            } else if (this.shooting_stars[i].x < 0) {
+                                this.shooting_stars[i].vx *= -1
+                                this.shooting_stars[i].x = this.shooting_stars[i].vx
+                            } else if (this.shooting_stars[i].y + this.star_size > this.height - this.ground_height) {
+                                this.shooting_stars[i].y = this.height + this.star_size + this.ground_height
+                                this.shooting_stars[i].ground_timer = 30
+                            } else if (this.shooting_stars[i].y < 0) {
+                                this.shooting_stars[i].vy *= -1
+                                this.shooting_stars[i].y += this.shooting_stars[i].vy
+                            }
+                        }
+                    ///// REMOVE INFLATED SHOTS THAT HAVE REACHED 1 /////
+                    } else if (this.shooting_stars[i].ground_timer === 1) {
+                        this.shooting_stars.splice(i, 1)
+                    ///// INFLATE STARS THAT HAVE HIT GROUND /////
+                    } else {
+                        this.shooting_stars[i].ground_timer -= 1
+                        this.shooting_stars[i].height += .6
+                        this.shooting_stars[i].width += .6
+                        this.shooting_stars[i].y = this.height - this.ground_height - this.shooting_stars[i].height
+                        this.shooting_stars[i].x -= .3
+                    }
+                }
+                ///// MID AIR SCENARIOS - NOT ON A PLATFORM OR GOLDEN STAR, NOT FLIPPING /////
+                if (!this.player_on_platform && !this.player.staa_ridin && this.player.flip_count <= 0) {
+                    this.player.vy += 0.2
+                    this.player.y += this.player.vy
+                    ///// CHECK GROUND BOUNCE /////
+                    if (this.player.y + this.player.height + this.ground.height >= this.height) {
+                        this.player.y = this.height - this.player.height - this.ground.height
+                    }
+                    ///// HIT DOWN KEY, S, OR SPACE TO ADD STAR UNDER STAR JUMPER /////
+                    if ((key_tracker.isKeyDown(' ') || key_tracker.isKeyDown('s'))
+                        && this.player.star_count > 0 && this.player.star_cooldown < 0) {
+                            let new_star_x = this.player.x + (this.player.height - this.star_size) / 2
+                            let new_star_y = this.player.y + this.player.height
+                            let star = new Rectangle(new_star_x, new_star_y, this.star_size, this.star_size, 'white')
+                            this.platforms.push(star)
+                            this.player.vy = 0
+                            this.player.star_cooldown = 10
+                            this.player.star_count -= 1
+                    }
                 }
             }
             getTransX() {
@@ -778,280 +1152,17 @@
                 }
                 this.ctx.fillText(t_energy, t_left, 66)
             }
-            update() {
-                let total_velocity = 0
-                for (let i = 0; i < this.circles.length; i++) {
-                    total_velocity += Math.abs(this.circles[i].vx) + Math.abs(this.circles[i].vy)
-                    ///// MOVE PORTAL, SIZE ACCORDING TO PORTAL PAIR /////
-                    let portal_pair_position = Math.abs(this.circles[i].portal_pair.x - this.golden_star.x) / this.width
-                    this.circles[i].update(portal_pair_position)
-                    ///// BOUNCE PORTALS OFF SIDES & GROUND //////
-                    if (this.circles[i].x + this.circles[i].rad > this.width) {
-                        this.circles[i].setRight(this.width)
-                        this.circles[i].vx *= -1
-                        this.circles[i].x += this.circles[i].vx
-                    } else if (this.circles[i].x - this.circles[i].rad < 0) {
-                        this.circles[i].setLeft(0)
-                        this.circles[i].vx *= -1
-                        this.circles[i].x += this.circles[i].vx
-                    } else if (this.circles[i].y + this.circles[i].rad > this.height - this.ground_height) {
-                        this.circles[i].setBottom(this.height - this.ground_height)
-                        this.circles[i].vy *= -1
-                        this.circles[i].y += this.circles[i].vy
-                    } else if (this.circles[i].y - this.circles[i].rad < 0) {
-                        this.circles[i].setTop(0)
-                        this.circles[i].vy *= -1
-                        this.circles[i].y += this.circles[i].vy
-                    }
-                    ///// CHECK TO SEE IF PORTAL HIT ANOTHER PORTAL //////
-                    for (let j = 0; j < this.circles.length; ++j) {
-                        if (i === j) continue
-                        let result = this.circles[i].checkCollideCir(this.circles[j])
-                        let dv = this.total_velocity < this.max_velocity ? this.dv : -this.dv*2
-                        if (result && this.circles[i].vib_count <= 0) {
-                            this.circles[i].vib_count = 60
-                            this.circles[i].vy > 0 ? this.circles[i].vy += dv: this.circles[i].vy -= dv
-                            this.circles[i].vx > 0 ? this.circles[i].vx += dv: this.circles[i].vx -= dv
-                            this.circles[j].vib_count = 60
-                            this.circles[j].vy > 0 ? this.circles[j].vy += dv: this.circles[j].vy -= dv
-                            this.circles[j].vx > 0 ? this.circles[j].vx += dv: this.circles[j].vx -= dv
-                        }
-                    }
-                    ///// SEE IF PORTAL HITS PLAYER, EXCEPT LAST PORTAL EXITED //////
-                    if (this.circles[i] != this.player.last_teleport) {
-                        let hit_player = this.circles[i].checkCollideRec(this.player)
-                        if (hit_player) {
-                            this.player.vy = 0
-                            this.player.last_teleport = this.circles[i].portal_pair
-                            this.player.x = this.circles[i].portal_pair.x
-                            this.player.y = this.circles[i].portal_pair.y
-                        }
-                    }
-                    ///// SEE IF PORTAL HITS GOLDEN STAR, EXCEPT LAST PORTAL EXITED //////
-                    if (this.circles[i] != this.golden_star.last_teleport) {
-                        let hit_golden_star = this.circles[i].checkCollideRec(this.golden_star)
-                        if (hit_golden_star) {
-                            this.golden_star.last_teleport = this.circles[i].portal_pair
-                            this.golden_star.x = this.circles[i].portal_pair.x
-                            this.golden_star.y = this.circles[i].portal_pair.y
-                            if (this.circles[i].portal_pair.vx > 0) {
-                                this.golden_star.vx = -Math.abs(this.golden_star.vx)
-                            } else {
-                                this.golden_star.vx = Math.abs(this.golden_star.vx)
-                            }
-                            if (this.circles[i].portal_pair.vy > 0) {
-                                this.golden_star.vy = -Math.abs(this.golden_star.vy)
-                            } else {
-                                this.golden_star.vy = Math.abs(this.golden_star.vy)
-                            }
-                        }
-                    }
-                    ///// REDUCE VIBRATION COUNT //////
-                    this.circles[i].vib_count -= 1
-                }
-                this.total_velocity = total_velocity
-                ///// BOUNCE GOLDEN STAR //////
-                let is_ob_right = this.golden_star.x + this.golden_star.width > this.width
-                let is_ob_left = this.golden_star.x < 0
-                if (is_ob_right || is_ob_left) this.golden_star.vx *= -1
-                let is_ob_top = this.golden_star.y > this.height - this.ground.height - this.star_size
-                let is_ob_bottom = this.golden_star.y < 0
-                if (is_ob_top || is_ob_bottom) this.golden_star.vy *= -1
-                ///// JUMP IF ON PLATFORM ////////
-                if ((key_tracker.isKeyDown('ArrowUp') || key_tracker.isKeyDown('w')) && this.player_on_platform) {
-                    this.player.vy = -6
-                    this.player.y -= 0.3
-                    this.player.staa_ridin = false
-                }
-                ///// DEFAULT ASSUMPTIONS, RESET, INCREMENT, ETC //////
-                this.player_on_platform = false
-                this.player.star_cooldown -= 1
-                this.player.hurt_count -= 1
-                let rubbing = false
-                if (this.player.energy < 100) this.player.energy += .2
-                ///// GO RIGHT OR LEFT /////
-                if (!this.player.staa_ridin) {
-                    if (key_tracker.isKeyDown('ArrowLeft')|| key_tracker.isKeyDown('a')) {
-                        if (this.player.flip_count <= 0) {
-                            this.player.facing = 'left'
-                            ///// CHECK LEFT BUMP /////
-                            for (let i = 0; i < this.platforms.length; i++) {
-                                if (this.player.rubLeft(this.platforms[i])) {
-                                    rubbing = true
-                                    break
-                                }
-                            }
-                        }
-                        if (!rubbing) this.player.x -= this.player.mx
-                        ///// TOO FAR LEFT /////
-                        if (this.player.x < 0) this.player.x = 0
-                    } else if (key_tracker.isKeyDown('ArrowRight') || key_tracker.isKeyDown('d')) {
-                        if (this.player.flip_count <= 0) {
-                            this.player.facing = 'right'
-                            ///// CHECK RIGHT BUMP /////
-                            for (let i = 0; i < this.platforms.length; i++) {
-                                if (this.player.rubRight(this.platforms[i])) {
-                                    rubbing = true
-                                    break
-                                }
-                            }
-                        }
-                        if (!rubbing) this.player.x += this.player.mx
-                        ///// TOO FAR RIGHT /////
-                        if (this.player.x + this.player.width > world.width) {
-                            this.player.x = world.width - this.player.width
-                        }
-                    }
-                }
-                ///// GOLDEN STAR /////
-                this.golden_star.update()
-                ///// IF RIDING ON GOLDEN STAR /////
-                if (this.player.staa_ridin) {
-                    this.player_on_platform = true
-                    this.player.x = this.golden_star.x - (this.player.width - this.star_size) / 2
-                    this.player.y = this.golden_star.y - this.player.height
-                    ///// PICK UP GOLDEN STAR  /////
-                    if (key_tracker.isKeyDown('ArrowDown') || key_tracker.isKeyDown('s')) {
-                        this.player.staa_ridin = false
-                        this.player_on_platform = false
-                        this.player.star_cooldown = 10
-                        this.player.score += 1
-                        this.golden_star.x = random(0, this.width - this.star_size)
-                        this.golden_star.y = random(0, this.height - this.star_size - this.ground_height)
-                        this.golden_star.setRandomVelocities()
-                    }
-                ///// IF YOU LAND ON THE GOLDEN STAR /////
-                } else if (this.player.landed(this.golden_star) && !this.player.staa_ridin) {
-                    this.player_on_platform = true
-                    this.player.staa_ridin = true
-                    this.player.flip_count = 0
-                ///// IF YOU ARE FLIPPING, UP OR DOWN /////
-                } else if (this.player.flip_count > 0) {
-                    if (this.player.flip_type === 'up') {
-                        this.player.vy -= .03
-                    } else {
-                        this.player.vy += .5
-                    }
-                    this.player.y += this.player.vy
-                    if (this.player.y + this.player.height + this.ground.height >= this.height) {
-                        this.player.y = this.height - this.player.height - this.ground.height
-                        this.player.flip_count = 0
-                    } else {
-                        this.player.flip_count -= 1
-                    }
-                    for (let i=0; i<this.enemies.length; i++) {
-                        let sword_hit = this.player.checkSword(this.enemies[i])
-                        if (sword_hit) this.enemies.splice(i, 1)
-                    }
-                ///// OTHERWISE CHECK NORMAL HITS /////
-                } else {
-                    for (let i = 0; i < this.platforms.length; i++) {
-                        ///// LANDED ON STAR OR GROUND /////
-                        if (this.player.landed(this.platforms[i])) {
-                            this.player.color = 'red'
-                            this.player.y = this.platforms[i].top() - this.player.height
-                            this.player.vy = 0
-                            this.player_on_platform = true
-                            ///// DOWN KEY = PICK UP STAR /////
-                            if ((key_tracker.isKeyDown('ArrowDown') || key_tracker.isKeyDown('s'))
-                                && this.platforms[i] != this.ground && this.player.star_cooldown < 0) {
-                                    this.player.star_cooldown = 10
-                                    this.player.grabStar()
-                                    this.platforms.splice(i, 1)
-                            }
-                            break
-                        ///// CHECK HEAD BUMP /////
-                        } else if (this.player.hitHead(this.platforms[i]) && this.player.vy < 0
-                            && this.platforms[i] != this.ground && this.player.flip_count <= 0) {
-                                this.player.y = this.platforms[i].bottom() + .001
-                                this.player.vy = -.015
-                                break
-                        }
-                    }
-                }
-                ///// UPDATE STAR SHOTS /////
-                for (let i=0; i<this.shooting_stars.length; i++) {
-                    ///// UPDATE & BOUNCE SHOTS IN PLAY /////
-                    if (this.shooting_stars[i].ground_timer === 0) {
-                        ///// REMOVE EXPIRED STAR SHOTS
-                        if (this.shooting_stars[i].life === 0) {
-                            this.shooting_stars.splice(i, 1)
-                        } else {
-                            this.shooting_stars[i].update()
-                            if (this.shooting_stars[i].life < 30) {
-                                this.shooting_stars[i].width += 4 / this.shooting_stars[i].life
-                                this.shooting_stars[i].height += 4 / this.shooting_stars[i].life
-                                this.shooting_stars[i].x -= 2 / this.shooting_stars[i].life
-                                this.shooting_stars[i].y -= 2 / this.shooting_stars[i].life
-                            }
-                            for (let j=0; j<this.enemies.length; j++) {
-                                let shot_hit = this.shooting_stars[i].checkShot(this.enemies[j])
-                                if (shot_hit) {
-                                    this.enemies.splice(j, 1)
-                                }
-                            }
-                            this.shooting_stars[i].life -= 1
-                            this.shooting_stars[i].vx *= .994
-                            this.shooting_stars[i].vy *= .994
-                            if (this.shooting_stars[i].x > this.width - this.star_size) {
-                                this.shooting_stars[i].vx *= -1
-                                this.shooting_stars[i].x = this.width - this.star_size - this.shooting_stars[i].vx
-                            } else if (this.shooting_stars[i].x < 0) {
-                                this.shooting_stars[i].vx *= -1
-                                this.shooting_stars[i].x = this.shooting_stars[i].vx
-                            } else if (this.shooting_stars[i].y + this.star_size > this.height - this.ground_height) {
-                                this.shooting_stars[i].y = this.height + this.star_size + this.ground_height
-                                this.shooting_stars[i].ground_timer = 30
-                            } else if (this.shooting_stars[i].y < 0) {
-                                this.shooting_stars[i].vy *= -1
-                                this.shooting_stars[i].y += this.shooting_stars[i].vy
-                            }
-                        }
-                    ///// REMOVE INFLATED SHOTS THAT HAVE REACHED 1 /////
-                    } else if (this.shooting_stars[i].ground_timer === 1) {
-                        this.shooting_stars.splice(i, 1)
-                    ///// INFLATE STARS THAT HAVE HIT GROUND /////
-                    } else {
-                        this.shooting_stars[i].ground_timer -= 1
-                        this.shooting_stars[i].height += .6
-                        this.shooting_stars[i].width += .6
-                        this.shooting_stars[i].y = this.height - this.ground_height - this.shooting_stars[i].height
-                        this.shooting_stars[i].x -= .3
-                    }
-                }
-                ///// MID AIR SCENARIOS - NOT ON A PLATFORM OR GOLDEN STAR, NOT FLIPPING /////
-                if (!this.player_on_platform && !this.player.staa_ridin && this.player.flip_count <= 0) {
-                    this.player.vy += 0.2
-                    this.player.y += this.player.vy
-                    ///// CHECK GROUND BOUNCE /////
-                    if (this.player.y + this.player.height + this.ground.height >= this.height) {
-                        this.player.y = this.height - this.player.height - this.ground.height
-                    }
-                    ///// HIT DOWN KEY, S, OR SPACE TO ADD STAR UNDER STAR JUMPER /////
-                    if ((key_tracker.isKeyDown(' ') || key_tracker.isKeyDown('s'))
-                        && this.player.star_count > 0 && this.player.star_cooldown < 0) {
-                            let new_star_x = this.player.x + (this.player.height - this.star_size) / 2
-                            let new_star_y = this.player.y + this.player.height
-                            let star = new Rectangle(new_star_x, new_star_y, this.star_size, this.star_size, 'white')
-                            this.platforms.push(star)
-                            this.player.vy = 0
-                            this.player.star_cooldown = 10
-                            this.player_on_platform = true
-                            this.player.star_count -= 1
-                    }
-                }
-            }
         }
 
         let world = new World(cnv.width * 2, cnv.height, cnv)
         function animation_loop() {
+            if (world.play) {
+                window.requestAnimationFrame(animation_loop)
+            }
             if (!world.start) world.start = Date.now()
             world.current = Date.now()
             world.update()
             world.draw()
-            if (world.play) {
-                window.requestAnimationFrame(animation_loop)
-            }
         }
         window.requestAnimationFrame(animation_loop)
     </script>

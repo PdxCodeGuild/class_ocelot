@@ -1,0 +1,10 @@
+
+{% if lists %}
+    <ul>
+        {% for list in lists %}
+            <li><a href="/todo/{{ list.id }}/">{{ list.name }}</a></li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Nothing to do, nothing done.</p>
+{% endif %}

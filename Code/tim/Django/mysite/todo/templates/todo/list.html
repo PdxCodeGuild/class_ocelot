@@ -1,0 +1,50 @@
+
+<style>
+    table * {
+        border: 5px solid green;
+    }
+</style>
+
+<form action="{% url 'todo:add' list.id %}" method="post">
+    {% csrf_token %}
+    <input type="text" name="item_text"/>
+    <label>To Do Item</label><br/>
+    <select name="urgency">
+        <option value="Whatevs">Whatevs</option>
+        <option value="Meh">Meh</option>
+        <option value="Yeah fine">Yeah fine</option>
+        <option value="Holy shit">Holy shit</option>
+        <option value="To Late">Too late</option>
+    </select>
+    <label>Urgency</label><br/>
+    <input type="date" name="due_date"/>
+    <label>Due Date</label><br/>
+    <input type="submit" value="Add Toto"/>
+</form>
+
+{% if items %}
+    <table>
+        <tr>
+            <th>To Do Item</th>
+            <th>Urgency</th>
+            <th>Due Date</th>
+            <th>Date Created</th>
+            <th>Toto To Do</th>
+            <th>Song</th>
+            <th>Year</th>
+        </tr>
+        {% for todo in items %}
+            <tr>
+                <td>{{ todo.item_text }}</td>
+                <td>{{ todo.urgency }}</td>
+                <td>{{ todo.due_date }}</td>
+                <td>{{ todo.created }}</td>
+                <td>{{ todo.toto_item.lyric }}</td>
+                <td>{{ todo.toto_item.song }}</td>
+                <td>{{ todo.toto_item.year }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>Nothing to do, nothing done.</p>
+{% endif %}
