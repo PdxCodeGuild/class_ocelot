@@ -1,0 +1,77 @@
+
+
+<html>
+    <head>
+        <style>
+            td:nth-child(3) {
+                color:lightgrey;
+            }
+            td, th {
+                padding:8px;
+                text-align:left;
+                vertical-align: middle;
+            }
+            form {
+                margin:0;
+            }
+            td::-moz-selection {
+                background-color:yellow;
+                color:fuchsia;
+            }
+            td::selection {
+                background-color:yellow;
+                color:fuchsia;
+            }
+            th {
+                color:white;
+                background-color:cornflowerblue;
+            }
+            tr:nth-child(even) {
+                background-color:whitesmoke;
+            }
+            tr:nth-child(odd) {
+                background-color:white;
+            }
+            .completed {
+                text-decoration:line-through;
+                color:lightgrey;
+            }
+            .uncompleted input[type='submit'] {
+                color:green;
+            }
+
+        </style>
+    </head>
+    <body>
+        <h1>Todo</h1>
+        <table>
+            <form action="{% url 'todoapp:index' %}" method="post">
+                {% csrf_token %}
+                <input type="text" name="todo_text" value="" placeholder="todo" autofocus/>
+                <input type="submit" value="add"/>
+            </form>
+            <tr>
+                <th></th>
+                <th>Todo Item</th>
+                <th>Date Created</th>
+                <th>Date Completed</th>
+            </tr>
+        {% for todo_item in todo_items %}
+            <tr class="{% if todo_item.completed %}completed{% else %}uncompleted{% endif %}">
+                <td>
+                    {% if not todo_item.completed %}
+                    <form action="{% url 'todoapp:complete_todo' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="todo_item_id" value="{{todo_item.id}}"/>
+                        <input type="submit" value="✓"/>
+                    </form>
+                    {% endif %}
+                </td>
+                <td>{{todo_item.text}}</td>
+                <td>{{ todo_item.date_created|date:'Y-m-d H:i' }}</td>
+                <td>{{ todo_item.date_completed|date:'Y-m-d H:i' }}</td>
+            </tr>
+        {% endfor %}
+        </table>
+    </body>
+</html>

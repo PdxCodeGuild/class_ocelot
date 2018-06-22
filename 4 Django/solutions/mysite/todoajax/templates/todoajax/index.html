@@ -1,0 +1,57 @@
+
+<html>
+    <head>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+    </head>
+    <body>
+        <div id="app">
+            <input type="text" v-model="todo_text" placeholder="todo text"/>
+            <button @click="add_todo">add</button>
+            <ul>
+                <li v-for="todo_item in todo_items">
+                    [[ todo_item.text ]]
+                </li>
+            </ul>
+        </div>
+
+        <script>
+            let vue = new Vue({
+                el:'#app',
+                delimiters: ['[[', ']]'],
+                data: {
+                    todo_text: '',
+                    todo_items: []
+                },
+                methods: {
+                    get_todos: function() {
+                        let app = this
+                        axios.get("{% url 'todoajax:get_todos' %}")
+                            .then(function(response) {
+                                app.todo_items = response.data.todo_items
+                            })
+                    },
+                    add_todo: function() {
+                        let app = this
+                        axios.post("{% url 'todoajax:add_todo' %}",
+                            {
+                                todo_text: this.todo_text
+                            },{
+                                headers: {
+                                    'X-CSRFToken': '{{ csrf_token }}',
+                                }
+                            })
+                            .then(function(response) {
+                                app.get_todos()
+                                //app.todo_items = response.data.todo_items
+                            })
+                    }
+                },
+                created: function() {
+                    this.get_todos()
+                }
+            })
+        </script>
+    </body>
+</html>
+
