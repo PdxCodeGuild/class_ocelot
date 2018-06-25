@@ -5,16 +5,27 @@
     <title>Library</title>
 </head>
 <body>
-
-    <form action="{% url 'library:author_lookup' %}" method="get">
-        {% csrf_token %}
+    <form action="{% url 'library:index' %}" method="get">
 
         <select name="author_id">
             {% for author in authors %}
             <option value="{{ author.id }}">{{ author.name }}</option>
             {% endfor %}
         </select>
+        <input type="submit" value="filter"/>
     </form>
+    <table>
+        <tr>
+            <th>Title</th>
+            <th>Publish Date</th>
+        </tr>
+        {% for book in books %}
+            <tr>
+                <td>{{book.title}}</td>
+                <td>{{book.publish_date}}</td>
+            </tr>
+        {% endfor %}
+    </table>
 
 </body>
 </html>

@@ -1,12 +1,11 @@
 from django.db import models
 
 # Create your models here.
-
-# book.author
+# book = Book.objects.get(pk=1)
+# book.author.name
 # author.book_set.all() or .order_by()
 
-
-class Author (models.Model):
+class Author(models.Model):
     name = models.CharField(max_length=200)
 
     def __str__(self):
@@ -19,9 +18,3 @@ class Book(models.Model):
 
     def __str__(self):
         return self.title
-
-
-
-
-
-

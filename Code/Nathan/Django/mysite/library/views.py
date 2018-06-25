@@ -5,14 +5,29 @@ from .models import Author, Book
 # Create your views here.
 
 def index(request):
-    context = {'authors': Author.objects.all()}
+
+    print(request.GET)
+
+    if 'author_id' in request.GET:
+        author_id = request.GET['author_id']
+        author = Author.objects.get(pk=author_id)
+        books = author.book_set.all()
+    else:
+        books = Book.objects.all()
+    authors = Author.objects.all()
+
+    context = {'authors': authors, 'books': books}
     return render(request, 'library/index.html', context)
 
-
-def author_lookup(request):
-    author_search = request.GET['author_search']
-    author = Author.objects.get(name=author_search)
-    print(author.book_set.all())
-
-    return HttpResponseRedirect(reverse('library:index'))
-
+# def author_lookup(request):
+#
+#     # author_search = request.GET['author_search']
+#     # author = Author.objects.get(name=author_search)
+#     # print(author.book_set.all())
+#     # output = Book.objects.filter(title=author.id) \
+#     #          | Book.objects.filter(publish_date=author.id)
+#
+#
+#
+#     return HttpResponseRedirect(reverse('library:index'))
+#
