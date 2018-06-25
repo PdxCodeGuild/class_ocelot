@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'publiclibrary.apps.PubliclibraryConfig'
     'theshortening.apps.TheshorteningConfig',
     'django.contrib.admin',
     'django.contrib.auth',
