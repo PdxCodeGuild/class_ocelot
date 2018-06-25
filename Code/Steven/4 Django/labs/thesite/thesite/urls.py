@@ -20,4 +20,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # the below 'include' includes the app's urls.py here in the main url.py
     path('theshortening/', include('theshortening.urls')),
+    path('publiclibrary/', include('publiclibrary.urls')),
 ]
