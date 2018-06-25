@@ -27,5 +27,5 @@ def remove_todo(request):
     todo_item = Todo.objects.get(pk=todo_id)
 
     todo_item.delete()
-
+    print('this still works kind of')
     return HttpResponseRedirect(reverse('todo:index'))

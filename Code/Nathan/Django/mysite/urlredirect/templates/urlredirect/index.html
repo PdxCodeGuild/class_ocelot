@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Url Shortener</title>
+</head>
+<body>
+    <form action="{% url 'urlredirect:save_shortener' %}" method="post">
+        {% csrf_token %}
+        <input type="text" name="furl" placeholder="full url"/>
+        <input type="submit" value="Shorten"/>
+    </form>
+    <form action="{% url 'urlredirect:redirect_form' %}" method="post">
+        {% csrf_token %}
+        <input type="text" name="code" placeholder="code"/>
+        <input type="submit" value="redirect"/>
+    </form>
+    <ul>
+        {% for shortener in shorteners %}
+        <li>
+            <a href="{% url 'urlredirect:short_url_redirect' shortener.code %}">link</a>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
+
+<!--<h1> Todo's & to Procrastinate</h1>-->
+<!--<div id="head">-->
+    <!--<h2>Enter task</h2>-->
+    <!--<form action="{% url 'todo:add_todo' %}" method="post">-->
+        <!--{% csrf_token %}-->
+        <!--<input class="input_head" type="text" name="todo">-->
+        <!--<input class="input_head" type="submit" value="add"/>-->
+    <!--</form>-->
+<!--</div>-->
+
+<!--<div id="list_dis">-->
+    <!--<h2>Todo List</h2>-->
+    <!--{% if todo_list %}-->
+    <!--<ul>-->
+        <!--{% for todo in todo_list %}-->
+        <!--<li>{{ todo.todo_text }}<input type="submit" value="remove">-->
+            <!--<form action="{% url 'todo:remove_todo' %}" method="post">-->
+                <!--{% csrf_token %}-->
+                <!--<input type="hidden" name="todo_id" value="{{todo.id}}">-->
+            <!--</form>-->
+        <!--</li>-->
+        <!--{% endfor %}-->
+    <!--</ul>-->
+<!--</div>-->
+
+<!--{% else %}-->
+<!--<p>No todo's are available.</p>-->
+<!--{% endif %}-->
