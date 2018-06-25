@@ -5,5 +5,5 @@ from . import views
 publiclibrary = 'publiclibrary'
 urlpatterns = [
     path('', views.index, name='index'),
-
+    path(r'^')
 ]

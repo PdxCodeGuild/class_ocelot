@@ -2,12 +2,68 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Public Library Catalog</title>
+
+    <style>
+        body {
+            font-family: "Helvetica", "Arial", sans-serif;
+        }
+
+        table {
+            border-collapse: collapse;
+            font-size: 13px;
+            width: 100%;
+
+        }
+
+        {#.table_title {#}
+        {#    font-weight: bold;#}
+        {#    text-align: center;#}
+        {#    font-size: 15px;#}
+        {#}#}
+
+        table, th, td {
+            border: 2px solid black;
+            padding: 2px;
+        }
+
+        {#.main_form {#}
+        {#    display: flex;#}
+        {#    flex-direction: column;#}
+        {#    height: 30%;#}
+        {#}#}
+
+        .input_and_bt {
+            margin: 10px;
+        }
+
+        .input_field {
+            width: 40%;
+        {#margin: 5px;#} align-items: left;
+        }
+
+    </style>
+
 </head>
 <body>
 
+<div class="main_form">
+
+    <form action="{% url 'publiclibrary:save_url' %}" method="post">
+        {% csrf_token %}
+        <div class="input_and_bt">
+            <input class="input_field" type="text" name="url"/>
+            <button type="submit">Get Short URL</button>
+        </div>
+
+    </form>
+</div>
+
+
+
+
 <table>
-    <tr class="table_title">
+    <tr class="main_form">
 
         <th>Title</th>
         <th>Author</th>
@@ -19,6 +75,7 @@
             <td>{{ book.title }}</td>
             <td>{{ book.author }}</td>
             <td>{{ book.publish_date }}</td>
+
         </tr>
     {%  endfor %}
 

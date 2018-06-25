@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout</title>
+</head>
+<body>
+
+
+<div class="main_form">
+
+    <form action="{% url 'theshortening:save_url' %}" method="post">
+        {% csrf_token %}
+        <div class="input_and_bt">
+            <input class="input_field" type="text" name="url"/>
+            <button type="submit">Get Short URL</button>
+        </div>
+
+    </form>
+</div>
+
+<a href="{% url 'checkout' %}">Go to Checkout</a>
+
+</body>
+</html>
