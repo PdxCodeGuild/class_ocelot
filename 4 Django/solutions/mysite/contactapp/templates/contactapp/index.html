@@ -1,0 +1,52 @@
+{% load static %}
+
+<html>
+    <head>
+        <link href="{% static 'contactapp/style.css' %}" rel="stylesheet"/>
+        <style>
+            form, table {
+                width: 50%;
+                text-align: left;
+            }
+            /*body {*/
+                /*background-color: {{ color }};*/
+            /*}*/
+        </style>
+    </head>
+    <body>
+        <h1>HELLO</h1>
+
+        <form action="{% url 'contactapp:index' %}" method="get">
+            <input type="text" name="search_text"/>
+            <input type="submit" value="search"/>
+        </form>
+        <form action="{% url 'contactapp:index' %}" method="post">
+            {% csrf_token %}
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Fav Fruit</th>
+                    <th>Fav Color</th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <td><input type="text" placeholder="first and last name" name="name" pattern="\w+ \w+" title="enter a first and last name"/></td>
+                    <td><input type="text" placeholder="favorite fruit" name="fav_fruit" required/></td>
+                    <td><input type="text" placeholder="favorite color" name="fav_color"/></td>
+                    <td><input type="submit" value="add"/></td>
+                </tr>
+                {% for contact in contacts %}
+                <tr>
+                    <td>{{contact.name}}</td>
+                    <td>{{contact.fav_fruit}}</td>
+                    <td>{{contact.fav_color}}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </form>
+    </body>
+</html>
+
+
+
+

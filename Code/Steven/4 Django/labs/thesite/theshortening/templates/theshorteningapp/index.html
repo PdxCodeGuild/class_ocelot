@@ -23,7 +23,7 @@
         table, th, td {
             border: 2px solid black;
             padding: 2px;
-            width: 50%;
+            width: 100%;
         }
 
         .main_form {
@@ -40,7 +40,6 @@
             width: 40%;
         {#margin: 5px;#} align-items: left;
         }
-
 
     </style>
 </head>
@@ -59,19 +58,23 @@
     </form>
 </div>
 <table>
-
     <tr class="table_title">
 
         <th>Long URL</th>
         <th>Short-code</th>
+        <th>Link</th>
 
     </tr>
+    {%  for long_url in long_urls %}
     <tr>
 
-        <td>http:// this is the long url</td>
-        <td>http:// this is the short url</td>
-
+        <td>{{ long_url.url }}</td>
+        <td>{{ long_url.code }}</td>
+        <td>
+            <a href="{% url 'theshortening:redeem_shortcode' long_url.code %}">{% url 'theshortening:redeem_shortcode' long_url.code %}</a>
+        </td>
     </tr>
+    {%  endfor %}
 
 </table>
 
