@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Library</title>
+</head>
+<body>
+
+    <form action="{% url 'library:author_lookup' %}" method="get">
+        {% csrf_token %}
+
+        <select name="author_id">
+            {% for author in authors %}
+            <option value="{{ author.id }}">{{ author.name }}</option>
+            {% endfor %}
+        </select>
+    </form>
+
+</body>
+</html>

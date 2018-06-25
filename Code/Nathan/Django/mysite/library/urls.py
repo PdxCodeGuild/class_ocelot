@@ -6,4 +6,5 @@ app_name = 'library'
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path('author_lookup', views.author_lookup, name='author_lookup')
 ]
