@@ -14,11 +14,8 @@ def index(request):
 
     show_short_codes = ShortUrl.objects.all()
 
-    newthing = ShortUrl.objects.get(short_url='1stShort')
-
     context = {
         'show_short_codes': show_short_codes,
-        'newthing': newthing
     }
 
     return render(request, 'short_url/index.html', context)

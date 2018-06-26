@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Public Library Catalog</title>
+
+    <style>
+        body {
+            font-family: "Helvetica", "Arial", sans-serif;
+        }
+
+        table {
+            border-collapse: collapse;
+            font-size: 13px;
+            width: 100%;
+
+        }
+
+        {#.table_title {#}
+        {#    font-weight: bold;#}
+        {#    text-align: center;#}
+        {#    font-size: 15px;#}
+        {#}#}
+
+        table, th, td {
+            border: 2px solid black;
+            padding: 2px;
+        }
+
+        {#.main_form {#}
+        {#    display: flex;#}
+        {#    flex-direction: column;#}
+        {#    height: 30%;#}
+        {#}#}
+
+        .input_and_bt {
+            margin: 10px;
+        }
+
+        .input_field {
+            width: 40%;
+        {#margin: 5px;#} align-items: left;
+        }
+
+    </style>
+
+</head>
+<body>
+
+
+
+
+<table>
+    <tr class="main_form">
+
+        <th>Title</th>
+        <th>Author</th>
+        <th>Publish Date</th>
+
+    </tr>
+    {%  for book in books %}
+        <tr>
+            <td>{{ book.title }}</td>
+            <td>{{ book.author }}</td>
+            <td>{{ book.publish_date }}</td>
+
+        </tr>
+    {%  endfor %}
+
+</table>
+
+
+</body>
+</html>
