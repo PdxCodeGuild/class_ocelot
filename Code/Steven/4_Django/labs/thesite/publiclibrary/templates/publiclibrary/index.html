@@ -47,18 +47,6 @@
 </head>
 <body>
 
-<div class="main_form">
-
-    <form action="{% url 'publiclibrary:save_url' %}" method="post">
-        {% csrf_token %}
-        <div class="input_and_bt">
-            <input class="input_field" type="text" name="url"/>
-            <button type="submit">Get Short URL</button>
-        </div>
-
-    </form>
-</div>
-
 
 
 
