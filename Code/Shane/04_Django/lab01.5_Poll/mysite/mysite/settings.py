@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'short_url.apps.ShortUrlConfig',
     'todo.apps.TodoConfig',
     'polls.apps.PollsConfig',
+    'library.apps.LibraryConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
