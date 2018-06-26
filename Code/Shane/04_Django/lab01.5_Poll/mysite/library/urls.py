@@ -1,8 +1,11 @@
-from django.conf.urls import url
+from django.urls import path
+
 from . import views
 
-publiclibrary = 'publiclibrary'
+app_name = 'library'
+
 urlpatterns = [
+
     path('', views.index, name='index'),
 
 ]

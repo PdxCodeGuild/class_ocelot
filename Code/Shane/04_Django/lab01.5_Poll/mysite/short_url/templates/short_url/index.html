@@ -8,27 +8,44 @@
         body {
             background-color: #222222;
             color: ghostwhite;
+            display: flex;
+            flex-direction: row;
         }
+
+        .one {
+            width: 50%;
+            padding: 20px;
+            background-color: rgba(38, 126, 168, 0.69);
+            word-wrap: break-word;
+        }
+
+
     </style>
 </head>
 <body>
+<div class="one">
+    <form action="{% url 'short_url:add_url' %}" method="post">
+        {% csrf_token %}
+        <textarea type="text" name="long_url_text" placeholder="URL HERE" autofocus></textarea>
+        <button type="submit">Hit Me</button>
+        <br>
+    </form>
+</div>
 
-<form action="{% url 'short_url:add_url' %}" method="post">
-    {% csrf_token %}
-    {{ csrf_token }}
-    <input type="text" name="long_url_text" placeholder="URL HERE" autofocus>
-    <button type="submit">Hit Me</button>
-</form>
+<div class="one">
+    {% if show_short_codes %}
 
-{% if show_short_codes %}
+    {% for each_thing in show_short_codes %}
+    <li>
+        <p style="color: yellow">short code: </p>
+        {{each_thing.short_url}}
+    </li>
+    <li><p style="color: yellow">URL:</p>
+        {{each_thing.long_url}}
+    </li>
+    {% endfor %}
 
-{% for each_thing in show_short_codes %}
-
-{{each_thing.short_url}} <br> {{each_thing.long_url}} <br>
-<br>
-
-{% endfor %}
-
-{% endif %}
+    {% endif %}
+</div>
 </body>
 </html>
