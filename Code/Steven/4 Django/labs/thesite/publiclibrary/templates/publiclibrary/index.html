@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Public Library Catalog</title>
 
     <style>
         body {
@@ -12,25 +12,26 @@
         table {
             border-collapse: collapse;
             font-size: 13px;
+            width: 100%;
+
         }
 
-        .table_title {
-            font-weight: bold;
-            text-align: center;
-            font-size: 15px;
-        }
+        {#.table_title {#}
+        {#    font-weight: bold;#}
+        {#    text-align: center;#}
+        {#    font-size: 15px;#}
+        {#}#}
 
         table, th, td {
             border: 2px solid black;
             padding: 2px;
-            width: 100%;
         }
 
-        .main_form {
-            display: flex;
-            flex-direction: column;
-            height: 30%;
-        }
+        {#.main_form {#}
+        {#    display: flex;#}
+        {#    flex-direction: column;#}
+        {#    height: 30%;#}
+        {#}#}
 
         .input_and_bt {
             margin: 10px;
@@ -42,13 +43,13 @@
         }
 
     </style>
+
 </head>
 <body>
 
-
 <div class="main_form">
 
-    <form action="{% url 'theshortening:save_url' %}" method="post">
+    <form action="{% url 'publiclibrary:save_url' %}" method="post">
         {% csrf_token %}
         <div class="input_and_bt">
             <input class="input_field" type="text" name="url"/>
@@ -57,23 +58,25 @@
 
     </form>
 </div>
+
+
+
+
 <table>
-    <tr class="table_title">
+    <tr class="main_form">
 
-        <th>Long URL</th>
-        <th>Short-code</th>
-        <th>Link</th>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Publish Date</th>
 
     </tr>
-    {%  for long_url in long_urls %}
-    <tr>
+    {%  for book in books %}
+        <tr>
+            <td>{{ book.title }}</td>
+            <td>{{ book.author }}</td>
+            <td>{{ book.publish_date }}</td>
 
-        <td>{{ long_url.url }}</td>
-        <td>{{ long_url.code }}</td>
-        <td>
-            <a href="{% url 'theshortening:redeem_shortcode' long_url.code %}">{% url 'theshortening:redeem_shortcode' long_url.code %}</a>
-        </td>
-    </tr>
+        </tr>
     {%  endfor %}
 
 </table>
