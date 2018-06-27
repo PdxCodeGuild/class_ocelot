@@ -7,8 +7,6 @@ from django.utils import timezone
 
 def index(request):
 
-    print(request.GET)
-
     if 'author_id' in request.GET:
         author_id = request.GET['author_id']
 
@@ -24,20 +22,8 @@ def index(request):
     context = {'authors': authors, 'books': books}
     return render(request, 'library/index.html', context)
 
-# def author_lookup(request):
-#
-#     # author_search = request.GET['author_search']
-#     # author = Author.objects.get(name=author_search)
-#     # print(author.book_set.all())
-#     # output = Book.objects.filter(title=author.id) \
-#     #          | Book.objects.filter(publish_date=author.id)
-#
-#
-#
-#     return HttpResponseRedirect(reverse('library:index'))
-#
-
 def checkout(request, book_id):
+
     print(request.POST)
 
     user = request.POST['user_name']
@@ -48,7 +34,6 @@ def checkout(request, book_id):
     checkout = Checkout(user=user, book=book, checkout_date=time_out)
     checkout.save()
     print(checkout.book)
-
 
     return HttpResponseRedirect(reverse('library:index'))
     # HttpResponse('ok')
@@ -64,9 +49,8 @@ def checkin(request, book_id):
 
     checkout = Checkout.objects.get(book_id=book_id, checkin_date__isnull=True)
 
-
     checkout.checkin_date = timezone.now()
-    checkout.save()
 
+    checkout.save()
 
     return HttpResponseRedirect(reverse('library:index'))
