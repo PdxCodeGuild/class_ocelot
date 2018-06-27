@@ -26,7 +26,7 @@
             width: 100%;
         }
 
-        .main_form {
+        .main-form {
             display: flex;
             flex-direction: column;
             height: 30%;
@@ -46,7 +46,7 @@
 <body>
 
 
-<div class="main_form">
+<div class="main-form">
 
     <form action="{% url 'theshortening:save_url' %}" method="post">
         {% csrf_token %}

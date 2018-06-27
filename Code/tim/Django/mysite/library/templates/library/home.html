@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Library</title>
+    <link href="https://fonts.googleapis.com/css?family=Jua" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        body {
+            padding: 10px
+        }
+        table {
+            text-align: left;
+        }
+        td, th {
+            padding: 3px 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h2>Book-Borrowing-Place</h2>
+        <table>
+            <tr>
+                <td>Author:</td>
+                <td>
+                    <select name="filter" id="filter">
+                        {% for author in authors %}
+                            <option value="{{ author.id }}">{{ author }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Book:</td>
+                <td>
+                    <input id="search" placeholder="search by book title" v-model="search_val" v-on:change="filter">
+                </td>
+            </tr>
+        </table>
+
+            {% csrf_token %}
+            <table>
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Year Published</th>
+                </tr>
+                {% for book in books %}
+                    <tr>
+                        <td>{{ book.title }}</td>
+                        <td>{{ book.author }}</td>
+                        <td>{{ book.yearPublished }}</td>
+                        <td><input type="submit" value="check-out" id="book{{ forloop.counter }}" /></td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </form>
+    </div>
+    <script>
+        let app = new Vue({
+            el: '#app',
+            data: {
+                search_val: ''
+
+            },
+            methods: {
+                filter() {
+                    this.$http.get("{% url 'library:filter' " + this.search_val + "%}")
+
+
+
+                }
+            }
+
+        })
+    </script>
+</body>
+</html>

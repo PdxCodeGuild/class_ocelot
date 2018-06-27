@@ -9,6 +9,12 @@
             font-family: "Helvetica", "Arial", sans-serif;
         }
 
+
+        h1 {
+            color: #gray;
+        }
+
+
         table {
             border-collapse: collapse;
             font-size: 13px;
@@ -16,62 +22,133 @@
 
         }
 
-        {#.table_title {#}
-        {#    font-weight: bold;#}
-        {#    text-align: center;#}
-        {#    font-size: 15px;#}
-        {#}#}
-
         table, th, td {
-            border: 2px solid dimgray;
-            padding: 2px;
+            border: .5px solid rgba(211, 211, 211, .5);
+            padding: 5px;
         }
 
-        {#.main_form {#}
-        {#    display: flex;#}
-        {#    flex-direction: column;#}
-        {#    height: 30%;#}
-        {#}#}
+        .table-header-book-list {
+            background-color: #2f96b4;
+            {#color: white;#}
+            {#font-weight: lighter;#}
+        }
 
-        .input_and_bt {
-            margin: 10px;
+        .table-cell-centered {
+            text-align: center;
+        }
+
+
+        {# BUTTONS #}
+        .text-only-button {
+            padding: 0;
+            margin: 0;
+            border: none;
+            background: none;
+        }
+
+        .checked-in {
+
+        }
+
+        .checked-out {
+            color: #888c92;
+        }
+
+        .checked-out-bt-clr {
+            background: rgba(47, 150, 180, 0.47);
+        {#transition: width 2s;#}
         }
 
         .input_field {
             width: 40%;
-        {#margin: 5px;#} align-items: left;
+            align-items: left;
         }
+
 
     </style>
 
 </head>
 <body>
 
+<table class="page-header">
+    <tr>
+        <td><h1>Public Library Catalog</h1></td>
+        <td>
+            <table>
 
+                <tr>
+                    <th>Total</th>
+                    <th>Checked out</th>
+                    <th>Available</th>
+                    <th>Authors</th>
+                </tr>
+
+                <tr class="table-cell-centered">
+                    <td>{{ cat_total }}</td>
+                    <td>{{ cat_in }}</td>
+                    <td>{{ cat_out }}</td>
+                    <td>{{ author_total }}</td>
+                </tr>
+
+            </table>
+
+        </td>
+    </tr>
+</table>
+
+{#<table>#}
+{#    <tr>#}
+{#        <td>#}
+{#            <table>#}
+{#                <tr>#}
+{#                    <th>Honor System Checkout</th>#}
+{#                        <form action="{% url 'publiclibrary:borrower' %}" method="post">#}
+{#                            {% csrf_token %}#}
+{#                            <input type="text" name="user_name_or_num" value="" placeholder="Enter name or card #" autofocus/>#}
+{#                            <input type="submit" value="Log in"/>#}
+{#                        </form>#}
+{#                    <td>{{ user_name_or_num }}</td>#}
+{#                </tr>#}
+{#            </table>#}
+{##}
+{#        </td>#}
+{#    </tr>#}
+{#</table>#}
 
 
 <table>
-    <tr class="main_form">
-
+    <tr class="table-header-book-list">
         <th>Title</th>
         <th>Author</th>
         <th>Publish Date</th>
+        <th>Checkout Date</th>
+        <th></th>
+
 
     </tr>
     {%  for book in books %}
-        <tr>
+        <tr class="{% if book.checked_out %}checked-out{% else %}checked-in{% endif %}">
 
             <td>{{ book.title }}</td>
             <td>{{ book.author }}</td>
-            <td>{{ book.publish_date }}</td>
-            <td>{{ book.checkedout_date }}</td>
-            <td>
-                <form action="{% url 'publiclibrary:checkout_book' %}" method="post">
-                    {% csrf_token %}
+            <td class="table-cell-centered" >{{ book.publish_date|date:'ymd' }}</td>
+            <td class="table-cell-centered" >{{ book.checkedout_date|date:'ymd Hi' }}</td>
 
-                    <input type="hidden" name="book_id" value="{{ book.id }}"/>
-                    <input type="submit" value="Check out"/>
-                </form>
+            <td class="{% if book.checked_out %}checked-out-bt-clr{% endif %}">
+                {%  if book.checked_out %}
+                    <form action="{% url 'publiclibrary:checkin_book' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="book_id" value="{{ book.id }}"/>
+                        <input class="text-only-button" type="submit" value="Check in"/>
+                    </form>
+
+                {% else %}
+                    <form action="{% url 'publiclibrary:checkout_book' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="book_id" value="{{ book.id }}"/>
+                        <input class="text-only-button" type="submit" value="Check out"/>
+                    </form>
+                {% endif %}
             </td>
 
         </tr>
