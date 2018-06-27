@@ -1,7 +1,8 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
-from .models import Author, Book
+from .models import Author, Book , Checkout
+from django.utils import timezone
 # Create your views here.
 
 def index(request):
@@ -38,12 +39,34 @@ def index(request):
 
 def checkout(request, book_id):
     print(request.POST)
+
     user = request.POST['user_name']
 
+    book = Book.objects.get(pk=book_id)
     # create a checkout object
-    # edit the template to only enable the checkout button if the book isn't checked out
-    # and vice-versa
+    time_out = timezone.now()
+    checkout = Checkout(user=user, book=book, checkout_date=time_out)
+    checkout.save()
+    print(checkout.book)
 
-    # Checkout.objects.filter(user = user, checkin_date__isnull=true)
 
-    return HttpResponse('ok') # HttpResponseRedirect(reverse('library:index'))
+    return HttpResponseRedirect(reverse('library:index'))
+    # HttpResponse('ok')
+
+def checkin(request, book_id):
+    print(request.POST)
+
+    user = request.POST['user_name']
+
+    # find the Checkout for this book whose check in date is none\
+    # book = Book.objects.get(pk=book_id)
+    # checkout = book.checkout_set.get(checkin_date__isnull=True)
+
+    checkout = Checkout.objects.get(book_id=book_id, checkin_date__isnull=True)
+
+
+    checkout.checkin_date = timezone.now()
+    checkout.save()
+
+
+    return HttpResponseRedirect(reverse('library:index'))
