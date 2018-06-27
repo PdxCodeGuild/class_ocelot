@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import Author, Book
+from .models import Author, Book, Checkout
 from django.urls import reverse
+from django.utils import timezone
 
 
 # Create your views here.
@@ -10,10 +11,11 @@ def index(request):
     # return HttpResponse("hi there")
     authors = Author.objects.all()
     books = Book.objects.all()
+    users = Checkout.objects.all()
 
     context = {
         'authors_key': authors,
-        'books_key': books
+        'books_key': books,
     }
 
     return render(request, 'library/index.html', context)
@@ -47,6 +49,27 @@ def add_book_and_author(request):
 
 
 
+def checkout(request):
+    #add the name of the person that checked out the book to the model
+    checkout_person = request.POST['person']
+    book_id = request.POST['book_id']
+    checkout = Checkout(user=checkout_person, book_id=book_id)
+    checkout.save()
+
+
+    #need to change the check-out button to check-in
+    #Remove the input field and print the name of the person that has the book checked out
+
+
+    return HttpResponseRedirect(reverse('library:index'))
+
+
+def checkin(request):
+    book_id = request.POST['book_id']
+    checkout = Checkout.objects.get(book_id=book_id, checkin__isnull=True)
+    checkout.checkin = timezone.now()
+    checkout.save()
+    return HttpResponseRedirect(reverse('library:index'))
 
 
 
