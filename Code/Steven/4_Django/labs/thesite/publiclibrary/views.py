@@ -1,7 +1,7 @@
 from django.shortcuts import render, reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.utils import timezone
-from .models import Book, Author
+from .models import Book, Author, User
 
 
 def index(request): # the 'default' view
@@ -35,3 +35,25 @@ def checkin_book(request):
     checked_in_book.checkedout_date = None
     checked_in_book.save()
     return HttpResponseRedirect(reverse('publiclibrary:index'))
+
+# def borrower(request):
+#     bor_name_or_num = request.POST['user_id']
+#
+#     def BorClaimIsNum(user_name_or_num):
+#         try:
+#             int(user_name_or_num)
+#             return True
+#         except ValueError:
+#             return False
+#
+#     if BorClaimIsNum(True):
+#         user_num = bor_name_or_num
+#         sign_for_book = User.objects.get(pk=user_id)
+#         login_.user_name_or_num = None
+#
+#     elif BorClaimIsNum(False):
+#         sign_for_book = User.objects.get(pk=user_id)
+#             login_.user_name_or_num = None
+#             checked_in_book.save()
+#
+#     return HttpResponseRedirect(reverse('publiclibrary:index'))
