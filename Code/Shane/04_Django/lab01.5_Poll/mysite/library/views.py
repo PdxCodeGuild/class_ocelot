@@ -22,20 +22,25 @@ def index(request):
 
 def add_book_and_author(request):
     print(request)
-    author = request.POST['author_input']
+    author_text = request.POST['author_input']
     book_text = request.POST['book_input']
 
-    if book_text.lower()
     # check if exists, if not, create
     # for book and author
 
-    author_text = Author(author_name=author)
-    author_text.save()
+    try:
+        author = Author.objects.get(author_name=author_text)
+    except Author.DoesNotExist:
+        author = Author(author_name=author_text)
+        author.save()
 
-    book = Book(book_title=book_text)
-    book.save()
+    try:
+        book = Book.objects.get(book_title=book_text)
+    except Book.DoesNotExist:
+        book = Book(book_title=book_text)
+        book.save()
 
-    book.authors.add(author_text)
+    book.authors.add(author)
     book.save()
 
     return HttpResponseRedirect(reverse('library:index'))
