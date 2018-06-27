@@ -3,10 +3,17 @@
 
 
 
-<h1>Taking a Break!!</h1>
+<!--<h1>Taking a Break!!</h1>-->
 
-<img src="https://media.giphy.com/media/13XW2MJE0XCoM0/giphy.gif">
-<br>
+<!--<img src="https://media.giphy.com/media/13XW2MJE0XCoM0/giphy.gif">-->
+<!--<br>-->
+
+<form action="{% url 'library:author'}" method="post">
+    <input type="text" name="author_input">
+    <input type="text" name="book_input">
+    <input type="submit">
+
+</form>
 
 {% for eachthing in author %}
 
