@@ -6,26 +6,38 @@
 </head>
 <body>
     <form action="{% url 'library:index' %}" method="get">
-
         <select name="author_id">
+            <option value="show_all">Show All</option>
             {% for author in authors %}
             <option value="{{ author.id }}">{{ author.name }}</option>
             {% endfor %}
         </select>
         <input type="submit" value="filter"/>
     </form>
-    <table>
-        <tr>
-            <th>Title</th>
-            <th>Publish Date</th>
-        </tr>
-        {% for book in books %}
-            <tr>
-                <td>{{book.title}}</td>
-                <td>{{book.publish_date}}</td>
-            </tr>
-        {% endfor %}
-    </table>
+        <!--user_name input-->
 
+
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="user_name" placeholder="user name"/>
+        <table>
+            <tr>
+                <th>Title</th>
+                <th>Publish Date</th>
+                <th>Check-Out</th>
+                <th>Check-In</th>
+            </tr>
+            {% for book in books %}
+                <tr>
+                    <td>{{book.title}}</td>
+                    <td>{{book.publish_date}}</td>
+                    <td><input type="submit" value="Checkout"
+                        formaction="{% url 'library:checkout' book.id %}"/>
+                        </td>
+                    <!--for loop with checkin checkout buttons-->
+                </tr>
+            {% endfor %}
+        </table>
+    </form>
 </body>
 </html>
