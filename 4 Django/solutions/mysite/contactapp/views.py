@@ -30,3 +30,6 @@ def index(request):
     context = {'contacts': output, 'color':'red'}
     return render(request, 'contactapp/index.html', context)
 
+
+
+
