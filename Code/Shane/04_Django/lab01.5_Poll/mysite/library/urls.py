@@ -7,7 +7,5 @@ app_name = 'library'
 urlpatterns = [
 
     path('', views.index, name='index'),
-    path('author', views.index, name='author'),
-    path('book', views.index, name='book'),
-
+    path('changed/', views.add_book_and_author, name='add_book_and_author'),
 ]
