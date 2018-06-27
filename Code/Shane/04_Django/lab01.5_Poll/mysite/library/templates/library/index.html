@@ -1,0 +1,33 @@
+<!--<h1>Taking a Break!!</h1>-->
+
+<!--<img src="https://media.giphy.com/media/13XW2MJE0XCoM0/giphy.gif">-->
+<!--<br>-->
+
+<form action="{% url 'library:add_book_and_author' %}" method="post">
+    {% csrf_token %}
+    <input type="text" name="author_input" placeholder="Author Name">
+    <input type="text" name="book_input" placeholder="Book Title">
+    <input type="submit">
+
+</form>
+
+{% for eachthing in authors_key %}
+
+{{eachthing}}
+
+{%endfor%}
+
+
+<br>
+
+
+{% for eachthing in books_key %}
+
+{{eachthing}}
+
+{%endfor%}
+
+
+
+
+

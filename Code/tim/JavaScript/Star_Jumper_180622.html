@@ -117,8 +117,8 @@
 <body>
     <canvas id="world_cnv" width="1200" height="500"></canvas>
     <canvas id="sword_cnv" width="1200" height="500"></canvas>
-    <canvas id="player_shots_cnv" width="1200" height="500"></canvas>
-    <canvas id="enemy_attack_cnv" width="1200" height="500"></canvas>
+    <!--<canvas id="player_shots_cnv" width="1200" height="500"></canvas>-->
+    <!--<canvas id="enemy_attack_cnv" width="1200" height="500"></canvas>-->
     <div id="modal_background"></div>
     <div id="instruction_modal_div">
         <div id="instruction_options_div">
@@ -155,8 +155,8 @@
     <script>
         let world_cnv = document.querySelector('#world_cnv')
         let sword_cnv = document.querySelector('#sword_cnv')
-        let player_shots_cnv = document.querySelector('#player_shots_cnv')
-        let enemy_attack_cnv = document.querySelector('#enemy_attack_cnv')
+        // let player_shots_cnv = document.querySelector('#player_shots_cnv')
+        // let enemy_attack_cnv = document.querySelector('#enemy_attack_cnv')
         let show_modal_bt = document.querySelector('#show_modal_bt')
         let modal_background = document.querySelector('#modal_background')
         let instruction_modal_div = document.querySelector('#instruction_modal_div')
@@ -486,7 +486,6 @@
                     && this.top() + this.vy <= r.bottom()
             }
             grabStar() {
-                this.color = 'red'
                 this.star_count += 1
                 this.energy += 20
                 if (this.energy > 100) this.energy = 100
@@ -531,19 +530,19 @@
         }
 
         class World {
-            constructor(world_cnv, sword_cnv, player_shots_cnv, enemy_attack_cnv) {
+            constructor(world_cnv, sword_cnv) {
                 this.play = true
                 this.world_cnv = world_cnv
                 this.sword_cnv = sword_cnv
-                this.player_shots_cnv = player_shots_cnv
-                this.enemy_attack_cnv = enemy_attack_cnv
+                // this.player_shots_cnv = player_shots_cnv
+                // this.enemy_attack_cnv = enemy_attack_cnv
                 this.world_ctx = world_cnv.getContext('2d')
                 this.sword_ctx = sword_cnv.getContext('2d')
-                this.player_shots_ctx = player_shots_cnv.getContext('2d')
-                this.enemy_attack_ctx = enemy_attack_cnv.getContext('2d')
-                this.cnv_rect = player_shots_cnv.getBoundingClientRect()
-                this.width = world_cnv.width * 2
-                this.height = world_cnv.height
+                // this.player_shots_ctx = player_shots_cnv.getContext('2d')
+                // this.enemy_attack_ctx = enemy_attack_cnv.getContext('2d')
+                this.cnv_rect = sword_cnv.getBoundingClientRect()
+                this.width = sword_cnv.width * 2
+                this.height = sword_cnv.height
                 this.star_size = 3
                 this.player_on_platform = true
                 this.ground_height = 20
@@ -578,20 +577,20 @@
                 let player_size = 20
                 this.player = new StarJumper(sword_cnv.width/2-player_size/2,
                                             sword_cnv.height-this.ground_height-player_size*2,
-                                            player_size, player_size*1.5, 'red')
+                                            player_size, player_size*2, 'orange')
                 ////// TARGET PRACTICE /////
                 this.enemies = []
                 this.enemy_shots = []
                 for (let i=0; i<20; i++) {
                     let x = random(10, this.width-10)
                     let y = random(10, this.height-this.ground_height-player_size-10)
-                    let enemy = new Rectangle(x, y, player_size, player_size, 'blue')
+                    let enemy = new Rectangle(x, y, player_size, player_size, 'white')
                     this.enemies.push(enemy)
                 }
                 ////// GOLDEN STAR ///////
-                this.golden_star = new GoldenStar(random(100, this.width - 100),
+                this.point_star = new PointStar(random(100, this.width - 100),
                                                   random(0, this.height * .8),
-                                                  this.star_size, this.star_size, 'yellow')
+                                                  this.star_size, this.star_size, 'deeppink')
                 ////// PLATFORM STARS ///////
                 for (let i=0; i<100; i++) {
                     let x = random(10, this.width-10)
@@ -600,55 +599,98 @@
                     this.platforms.push(star)
                 }
                 ////// PORTALS ///////
-                this.circles = []
-                for (let i=0; i<6; i++) {
+                this.portals = []
+                let colors = ['red','orange', 'yellow', 'limegreen', 'blue', 'darkorchid', 'white']
+                for (let i=0; i<colors.length; i++) {
                     let x, y
                     let radius = 10 + Math.random() * 10;
                     let color = `hsl(${i*60}, 100%, 50%)`
 
                     x = random(radius, this.width - radius)
                     y = random(radius, this.height * .8)
-                    let p1 = new Portal(x, y, radius, color, Math.random()-.5, Math.random()-.5)
+                    let p1 = new Portal(x, y, radius, colors[i], Math.random()-.5, Math.random()-.5)
 
                     x = random(radius, this.width - radius)
                     y = random(radius, this.height * .8)
-                    let p2 = new Portal(x, y, radius, color, Math.random()-.5, Math.random()-.5)
+                    let p2 = new Portal(x, y, radius, colors[i], Math.random()-.5, Math.random()-.5)
 
-                    this.circles.push(p1)
-                    this.circles[this.circles.length - 1].portal_pair = p2
-                    this.circles.push(p2)
-                    this.circles[this.circles.length - 1].portal_pair = p1
+                    this.portals.push(p1)
+                    this.portals[this.portals.length - 1].portal_pair = p2
+                    this.portals.push(p2)
+                    this.portals[this.portals.length - 1].portal_pair = p1
                 }
                 ///// LEFT CLICK - SHOOT STAR ///////
-                this.enemy_attack_cnv.onclick = (e) => {
+                this.sword_cnv.onclick = (e) => {
                     if (this.player.flip_count <= 0 && this.player.energy >= 4) {
                         let trans_x = this.getTransX()
+                        let clicked_x = e.clientX - this.cnv_rect.left - trans_x
+                        let clicked_y = e.clientY - this.cnv_rect.top
                         let shot_vel = getShotVelocities(
-                            e.clientX - this.cnv_rect.left - trans_x - this.player.width,
-                            e.clientY - this.cnv_rect.top,
+                            clicked_x, clicked_y,
                             this.player.x + this.player.width/2,
                             this.player.y + this.player.height/2,
                             this.player.shot_speed)
-                        // console.log(shot_vel)
                         let shot
                         if (this.player.color === 'red') {
-                            let target = getClosestTarget(
-                                e.clientX - this.cnv_rect.left - trans_x - this.player.width/2,
-                                e.clientY - this.cnv_rect.top + this.player.height/2, this.enemies)
+                            this.player.mx = 2
+                            this.player.shot_speed = 6
+                            let target = getClosestTarget(clicked_x, clicked_y, this.enemies)
                             shot = new RedShot(
                                 this.player.x + this.player.width / 2, this.player.y + this.player.height / 2,
-                                this.star_size, this.star_size, 'red', shot_vel.vx, shot_vel.vy,
+                                this.star_size, this.star_size, this.player.color, shot_vel.vx, shot_vel.vy,
                                 this.player, this.player.shot_speed, target)
+                        } else if (this.player.color === 'yellow') {
+                            this.player.mx = 2.5
+                            this.player.shot_speed = 7
+                            shot = new YellowShot(
+                                this.player.x + this.player.width / 2, this.player.y + this.player.height / 2,
+                                this.star_size, this.star_size, this.player.color, shot_vel.vx, shot_vel.vy,
+                                this.player, this.player.shot_speed)
+                        } else if (this.player.color === 'orange') {
+                            this.player.mx = 1.5
+                            this.player.shot_speed = 5
+                            shot = new StarShot(
+                                this.player.x + this.player.width / 2, this.player.y + this.player.height / 2,
+                                this.star_size, this.star_size, this.player.color, shot_vel.vx, shot_vel.vy,
+                                this.player, this.player.shot_speed)
+                            let click_dx = clicked_x - (this.player.x + this.player.width/2)
+                            let click_dy = clicked_y - (this.player.y + this.player.height/2)
+                            let angle = Math.atan2(click_dy, click_dx)
+
+                            let v1_x = Math.cos(angle + 0.2)
+                            let v1_y = Math.sin(angle + 0.2)
+                            let v2_x = Math.cos(angle - 0.2)
+                            let v2_y = Math.sin(angle - 0.2)
+
+                            let rand = random(.6, .8)
+                            let mini_vel = {vx: v1_x, vy: v1_y}
+                            let mini_shot = new StarShot(
+                                this.player.x + this.player.width / 2,this.player.y + this.player.height / 2,
+                                this.star_size, this.star_size, this.player.color,
+                                mini_vel.vx, mini_vel.vy, this.player, 0)
+                            this.player.shots.push(mini_shot)
+
+                            rand = random(.6, .8)
+                            mini_vel = {vx: v2_x, vy: v2_y}
+                            mini_shot = new StarShot(
+                                this.player.x + this.player.width / 2, this.player.y + this.player.height / 2,
+                                this.star_size, this.star_size, this.player.color,
+                                mini_vel.vx, mini_vel.vy, this.player, 0)
+                            this.player.shots.push(mini_shot)
+                        } else {
+                            this.player.mx = 2
+                            this.player.shot_speed = 6
+                            shot = new StarShot(
+                                this.player.x + this.player.width / 2, this.player.y + this.player.height / 2,
+                                this.star_size, this.star_size, this.player.color, shot_vel.vx, shot_vel.vy,
+                                this.player, this.player.shot_speed)
                         }
-                        // console.log(shot_vel.vx, shot_vel.vy)
-                        // console.log(shot)
                         this.player.shots.push(shot)
                         this.player.energy -= 6
-                        // console.log(this.player.shots)
                     }
                 }
                 ///// RIGHT CLICK - SWORD SWIPE ///////
-                this.enemy_attack_cnv.oncontextmenu = (e) => {
+                this.sword_cnv.oncontextmenu = (e) => {
                     if (this.player.flip_count <= 0 && !this.player.staa_ridin) {
                         let trans_x = this.getTransX()
                         let result = this.player.getFlipAttack(e.clientX - this.cnv_rect.left - trans_x - this.player.width,
@@ -665,74 +707,75 @@
             }
             update() {
                 let total_velocity = 0
-                for (let i = 0; i < this.circles.length; i++) {
-                    total_velocity += Math.abs(this.circles[i].vx) + Math.abs(this.circles[i].vy)
+                for (let i = 0; i < this.portals.length; i++) {
+                    total_velocity += Math.abs(this.portals[i].vx) + Math.abs(this.portals[i].vy)
                     ///// MOVE PORTAL, SIZE ACCORDING TO PORTAL PAIR /////
-                    let portal_pair_position = Math.abs(this.circles[i].portal_pair.x - this.golden_star.x) / this.width
-                    this.circles[i].update(portal_pair_position)
+                    let portal_pair_position = Math.abs(this.portals[i].portal_pair.x - this.point_star.x) / this.width
+                    this.portals[i].update(portal_pair_position)
                     ///// BOUNCE PORTALS OFF SIDES & GROUND //////
-                    if (this.circles[i].x + this.circles[i].rad > this.width) {
-                        this.circles[i].setRight(this.width)
-                        this.circles[i].vx *= -1
-                        this.circles[i].x += this.circles[i].vx
-                    } else if (this.circles[i].x - this.circles[i].rad < 0) {
-                        this.circles[i].setLeft(0)
-                        this.circles[i].vx *= -1
-                        this.circles[i].x += this.circles[i].vx
-                    } else if (this.circles[i].y + this.circles[i].rad > this.height - this.ground_height) {
-                        this.circles[i].setBottom(this.height - this.ground_height)
-                        this.circles[i].vy *= -1
-                        this.circles[i].y += this.circles[i].vy
-                    } else if (this.circles[i].y - this.circles[i].rad < 0) {
-                        this.circles[i].setTop(0)
-                        this.circles[i].vy *= -1
-                        this.circles[i].y += this.circles[i].vy
+                    if (this.portals[i].x + this.portals[i].rad > this.width) {
+                        this.portals[i].setRight(this.width)
+                        this.portals[i].vx *= -1
+                        this.portals[i].x += this.portals[i].vx
+                    } else if (this.portals[i].x - this.portals[i].rad < 0) {
+                        this.portals[i].setLeft(0)
+                        this.portals[i].vx *= -1
+                        this.portals[i].x += this.portals[i].vx
+                    } else if (this.portals[i].y + this.portals[i].rad > this.height - this.ground_height) {
+                        this.portals[i].setBottom(this.height - this.ground_height)
+                        this.portals[i].vy *= -1
+                        this.portals[i].y += this.portals[i].vy
+                    } else if (this.portals[i].y - this.portals[i].rad < 0) {
+                        this.portals[i].setTop(0)
+                        this.portals[i].vy *= -1
+                        this.portals[i].y += this.portals[i].vy
                     }
                     ///// CHECK TO SEE IF PORTAL HIT ANOTHER PORTAL //////
-                    for (let j = i+1; j < this.circles.length; ++j) {
-                        let result = this.circles[i].checkCollideCir(this.circles[j])
+                    for (let j = i+1; j < this.portals.length; ++j) {
+                        let result = this.portals[i].checkCollideCir(this.portals[j])
                         let dv = this.total_velocity < this.max_velocity ? this.dv : -this.dv*2
-                        if (result && this.circles[i].vib_count <= 0) {
-                            this.circles[i].vib_count = 60
-                            this.circles[i].vy > 0 ? this.circles[i].vy += dv: this.circles[i].vy -= dv
-                            this.circles[i].vx > 0 ? this.circles[i].vx += dv: this.circles[i].vx -= dv
-                            this.circles[j].vib_count = 60
-                            this.circles[j].vy > 0 ? this.circles[j].vy += dv: this.circles[j].vy -= dv
-                            this.circles[j].vx > 0 ? this.circles[j].vx += dv: this.circles[j].vx -= dv
+                        if (result && this.portals[i].vib_count <= 0) {
+                            this.portals[i].vib_count = 60
+                            this.portals[i].vy > 0 ? this.portals[i].vy += dv: this.portals[i].vy -= dv
+                            this.portals[i].vx > 0 ? this.portals[i].vx += dv: this.portals[i].vx -= dv
+                            this.portals[j].vib_count = 60
+                            this.portals[j].vy > 0 ? this.portals[j].vy += dv: this.portals[j].vy -= dv
+                            this.portals[j].vx > 0 ? this.portals[j].vx += dv: this.portals[j].vx -= dv
                         }
                     }
                     ///// SEE IF PORTAL HITS PLAYER, EXCEPT LAST PORTAL EXITED //////
-                    if (this.circles[i] != this.player.last_teleport) {
-                        let hit_player = this.circles[i].checkCollideRec(this.player)
+                    if (this.portals[i] != this.player.last_teleport) {
+                        let hit_player = this.portals[i].checkCollideRec(this.player)
                         if (hit_player) {
                             if (this.player.flip_count > 0) this.player.sword_trail.push([])
                             this.player.vy = 0
-                            this.player.last_teleport = this.circles[i].portal_pair
-                            this.player.x = this.circles[i].portal_pair.x
-                            this.player.y = this.circles[i].portal_pair.y
+                            this.player.color = this.portals[i].color
+                            this.player.last_teleport = this.portals[i].portal_pair
+                            this.player.x = this.portals[i].portal_pair.x
+                            this.player.y = this.portals[i].portal_pair.y
                         }
                     }
                     ///// SEE IF PORTAL HITS GOLDEN STAR, EXCEPT LAST PORTAL EXITED //////
-                    if (this.circles[i] != this.golden_star.last_teleport) {
-                        let hit_golden_star = this.circles[i].checkCollideRec(this.golden_star)
-                        if (hit_golden_star) {
-                            this.golden_star.last_teleport = this.circles[i].portal_pair
-                            this.golden_star.x = this.circles[i].portal_pair.x
-                            this.golden_star.y = this.circles[i].portal_pair.y
-                            if (this.circles[i].portal_pair.vx > 0) {
-                                this.golden_star.vx = -Math.abs(this.golden_star.vx)
+                    if (this.portals[i] != this.point_star.last_teleport) {
+                        let hit_point_star = this.portals[i].checkCollideRec(this.point_star)
+                        if (hit_point_star) {
+                            this.point_star.last_teleport = this.portals[i].portal_pair
+                            this.point_star.x = this.portals[i].portal_pair.x
+                            this.point_star.y = this.portals[i].portal_pair.y
+                            if (this.portals[i].portal_pair.vx > 0) {
+                                this.point_star.vx = -Math.abs(this.point_star.vx)
                             } else {
-                                this.golden_star.vx = Math.abs(this.golden_star.vx)
+                                this.point_star.vx = Math.abs(this.point_star.vx)
                             }
-                            if (this.circles[i].portal_pair.vy > 0) {
-                                this.golden_star.vy = -Math.abs(this.golden_star.vy)
+                            if (this.portals[i].portal_pair.vy > 0) {
+                                this.point_star.vy = -Math.abs(this.point_star.vy)
                             } else {
-                                this.golden_star.vy = Math.abs(this.golden_star.vy)
+                                this.point_star.vy = Math.abs(this.point_star.vy)
                             }
                         }
                     }
                     ///// REDUCE VIBRATION COUNT //////
-                    this.circles[i].vib_count -= 1
+                    this.portals[i].vib_count -= 1
                 }
                 this.total_velocity = total_velocity
                 ///// JUMP IF ON PLATFORM ////////
@@ -805,7 +848,7 @@
                             for (let j=0; j<this.player.shots.length; j++) {
                                 if (this.player.shots[j].checkCollideRec(this.enemies[i])) {
                                     this.enemies.splice(i, 1)
-                                    if (this.player.color === 'red') this.player.shots.splice(j, 1)
+                                    this.player.shots.splice(j, 1)
                                     break
                                 }
                             }
@@ -835,37 +878,37 @@
                         if (sword_hit) {
                             this.player.shots.push(new StarShot(
                                 this.enemy_shots[i].x, this.enemy_shots[i].y,
-                                this.star_size, this.star_size, 'red',
+                                this.star_size, this.star_size, this.player.color,
                                 -this.enemy_shots[i].vx * 2, -this.enemy_shots[i].vy * 2))
                             this.enemy_shots.splice(i, 1)
                         }
                     // }
                 }
                 ///// BOUNCE GOLDEN STAR //////
-                let is_ob_right = this.golden_star.x + this.golden_star.width > this.width
-                let is_ob_left = this.golden_star.x < 0
-                if (is_ob_right || is_ob_left) this.golden_star.vx *= -1
-                let is_ob_top = this.golden_star.y > this.height - this.ground.height - this.star_size
-                let is_ob_bottom = this.golden_star.y < 0
-                if (is_ob_top || is_ob_bottom) this.golden_star.vy *= -1
+                let is_ob_right = this.point_star.x + this.point_star.width > this.width
+                let is_ob_left = this.point_star.x < 0
+                if (is_ob_right || is_ob_left) this.point_star.vx *= -1
+                let is_ob_top = this.point_star.y > this.height - this.ground.height - this.star_size
+                let is_ob_bottom = this.point_star.y < 0
+                if (is_ob_top || is_ob_bottom) this.point_star.vy *= -1
                 ///// IF RIDING ON GOLDEN STAR /////
-                this.golden_star.update()
+                this.point_star.update()
                 if (this.player.staa_ridin) {
                     this.player_on_platform = true
-                    this.player.x = this.golden_star.x - (this.player.width - this.star_size) / 2
-                    this.player.y = this.golden_star.y - this.player.height
+                    this.player.x = this.point_star.x - (this.player.width - this.star_size) / 2
+                    this.player.y = this.point_star.y - this.player.height
                     ///// PICK UP GOLDEN STAR  /////
                     if (key_tracker.isKeyDown('ArrowDown') || key_tracker.isKeyDown('s')) {
                         this.player.staa_ridin = false
                         this.player_on_platform = false
                         this.player.star_cooldown = 10
                         this.player.score += 1
-                        this.golden_star.x = random(0, this.width - this.star_size)
-                        this.golden_star.y = random(0, this.height - this.star_size - this.ground_height)
-                        this.golden_star.setRandomVelocities()
+                        this.point_star.x = random(0, this.width - this.star_size)
+                        this.point_star.y = random(0, this.height - this.star_size - this.ground_height)
+                        this.point_star.setRandomVelocities()
                     }
                 ///// IF YOU LAND ON THE GOLDEN STAR /////
-                } else if (this.player.landed(this.golden_star) && !this.player.staa_ridin) {
+                } else if (this.player.landed(this.point_star) && !this.player.staa_ridin) {
                     this.player_on_platform = true
                     this.player.staa_ridin = true
                     this.player.flip_count = 0
@@ -888,7 +931,6 @@
                     for (let i=0; i<this.platforms.length; i++) {
                         ///// LANDED ON STAR OR GROUND /////
                         if (this.player.landed(this.platforms[i])) {
-                            this.player.color = 'red'
                             this.player.y = this.platforms[i].top() - this.player.height
                             this.player.vy = 0
                             this.player_on_platform = true
@@ -990,20 +1032,20 @@
             draw() {
                 this.world_ctx.clearRect(0, 0, this.world_cnv.width, this.world_cnv.height)
                 this.sword_ctx.clearRect(0, 0, this.sword_cnv.width, this.sword_cnv.height)
-                this.player_shots_ctx.clearRect(0, 0, this.player_shots_cnv.width, this.player_shots_cnv.height)
-                this.enemy_attack_ctx.clearRect(0, 0, this.enemy_attack_cnv.width, this.enemy_attack_cnv.height)
+                // this.player_shots_ctx.clearRect(0, 0, this.player_shots_cnv.width, this.player_shots_cnv.height)
+                // this.enemy_attack_ctx.clearRect(0, 0, this.enemy_attack_cnv.width, this.enemy_attack_cnv.height)
 
                 this.world_ctx.lineWidth = 3
                 // this.sword_ctx.lineWidth = 3
                 let trans_x = this.getTransX()
                 this.world_cnv.style.backgroundPositionX = trans_x + 'px'
                 this.sword_cnv.style.backgroundPositionX = trans_x + 'px'
-                this.player_shots_cnv.style.backgroundPositionX = trans_x + 'px'
-                this.enemy_attack_cnv.style.backgroundPositionX = trans_x + 'px'
+                // this.player_shots_cnv.style.backgroundPositionX = trans_x + 'px'
+                // this.enemy_attack_cnv.style.backgroundPositionX = trans_x + 'px'
                 this.world_ctx.translate(trans_x, 0)
                 this.sword_ctx.translate(trans_x, 0)
-                this.player_shots_ctx.translate(trans_x, 0)
-                this.enemy_attack_ctx.translate(trans_x, 0)
+                // this.player_shots_ctx.translate(trans_x, 0)
+                // this.enemy_attack_ctx.translate(trans_x, 0)
 
                 for (let i=0; i<this.platforms.length; i++) {
                     this.platforms[i].draw(this.world_ctx)
@@ -1012,32 +1054,32 @@
                     this.enemies[i].draw(this.world_ctx)
                 }
                 for (let i=0; i<this.enemy_shots.length; i++) {
-                    this.enemy_shots[i].draw(this.enemy_attack_ctx)
+                    this.enemy_shots[i].draw(this.world_ctx)
                 }
                 for (let i=0; i<this.player.shots.length; i++) {
-                    this.player.shots[i].draw(this.player_shots_ctx)
+                    this.player.shots[i].draw(this.world_ctx)
                 }
 
-                for (let i=0; i<this.circles.length; i++) {
-                    if (this.circles[i].vib_count > 0) {
-                        if (this.circles[i].vib_count % 4 < 2) {
-                            this.circles[i].rad += 2
-                            this.circles[i].draw(this.world_ctx)
-                            this.circles[i].rad -= 2
+                for (let i=0; i<this.portals.length; i++) {
+                    if (this.portals[i].vib_count > 0) {
+                        if (this.portals[i].vib_count % 4 < 2) {
+                            this.portals[i].rad += 2
+                            this.portals[i].draw(this.world_ctx)
+                            this.portals[i].rad -= 2
                         } else {
-                            this.circles[i].draw(this.world_ctx)
+                            this.portals[i].draw(this.world_ctx)
                         }
                     } else {
-                        this.circles[i].draw(this.world_ctx)
+                        this.portals[i].draw(this.world_ctx)
                     }
                 }
 
                 this.player.draw(this.world_ctx, this.sword_ctx)
-                this.golden_star.draw(this.world_ctx)
+                this.point_star.draw(this.world_ctx)
                 this.world_ctx.resetTransform()
                 this.sword_ctx.resetTransform()
-                this.player_shots_ctx.resetTransform()
-                this.enemy_attack_ctx.resetTransform()
+                // this.player_shots_ctx.resetTransform()
+                // this.enemy_attack_ctx.resetTransform()
 
 
                 this.world_ctx.fillStyle = "white"
@@ -1049,8 +1091,8 @@
                 let status_bar_width = this.world_cnv.width * .5
                 let player_position_in_world = (this.player.x + this.player.width / 2) / this.width
                 let player_status_bar_position = status_bar_width * player_position_in_world + status_bar_left
-                let golden_star_position_in_world = (this.golden_star.x + this.golden_star.width / 2) / this.width
-                let golden_star_status_bar_position = status_bar_width * golden_star_position_in_world + status_bar_left
+                let point_star_position_in_world = (this.point_star.x + this.point_star.width / 2) / this.width
+                let point_star_status_bar_position = status_bar_width * point_star_position_in_world + status_bar_left
 
                 this.world_ctx.lineWidth = 2
                 this.world_ctx.beginPath()
@@ -1061,15 +1103,15 @@
 
                 this.world_ctx.lineWidth = 5
                 this.world_ctx.beginPath()
-                this.world_ctx.moveTo(player_status_bar_position, 5)
-                this.world_ctx.lineTo(player_status_bar_position, 25)
-                this.world_ctx.strokeStyle = 'red'
+                this.world_ctx.moveTo(player_status_bar_position, 7)
+                this.world_ctx.lineTo(player_status_bar_position, 23)
+                this.world_ctx.strokeStyle = this.player.color
                 this.world_ctx.stroke()
 
                 this.world_ctx.beginPath()
-                this.world_ctx.moveTo(golden_star_status_bar_position, 5)
-                this.world_ctx.lineTo(golden_star_status_bar_position, 25)
-                this.world_ctx.strokeStyle = 'yellow'
+                this.world_ctx.moveTo(point_star_status_bar_position, 3)
+                this.world_ctx.lineTo(point_star_status_bar_position, 27)
+                this.world_ctx.strokeStyle = this.point_star.color
                 this.world_ctx.stroke()
 
                 this.world_ctx.lineWidth = 40
@@ -1134,6 +1176,25 @@
                     this.speed)
                 this.vx = (this.vx * 74 + shot_velocities.vx) / 75
                 this.vy = (this.vy * 74 + shot_velocities.vy) / 75
+                this.x += this.vx
+                this.y += this.vy
+            }
+        }
+
+        class YellowShot extends StarShot {
+            constructor(x, y, width, height, color, vx, vy, shooter, speed) {
+                super(x, y, width, height, color, vx, vy, shooter, speed)
+            }
+            update() {
+                if (this.life % 50 === 49) {
+                    let d_vx = random(1, 2) * (Math.random() < 0.5 ? -1 : 1)
+                    let d_vy = random(1, 2) * (Math.random() < 0.5 ? -1 : 1)
+                    let denom = Math.abs(d_vx + this.vx) + Math.abs(d_vy + this.vy)
+                    let n_vx = this.speed * (d_vx + this.vx) / denom
+                    let n_vy = this.speed * (d_vy + this.vy) / denom
+                    this.vx = n_vx
+                    this.vy = n_vy
+                }
                 this.x += this.vx
                 this.y += this.vy
             }
@@ -1238,7 +1299,7 @@
             }
         }
 
-        class GoldenStar extends Rectangle {
+        class PointStar extends Rectangle {
             constructor(x, y, width, height, color) {
                 super(x, y, width, height, color);
                 this.setRandomVelocities()
@@ -1270,7 +1331,7 @@
         // }
 
 
-        let world = new World(world_cnv, sword_cnv, player_shots_cnv, enemy_attack_cnv)
+        let world = new World(world_cnv, sword_cnv)
         
         function animation_loop() {
             if (world.play) {
