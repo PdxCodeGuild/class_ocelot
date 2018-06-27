@@ -10,8 +10,12 @@ def index(request):
 
     if 'author_id' in request.GET:
         author_id = request.GET['author_id']
-        author = Author.objects.get(pk=author_id)
-        books = author.book_set.all()
+
+        if author_id == 'show_all':
+            books = Book.objects.all()
+        else:
+            author = Author.objects.get(pk=author_id)
+            books = author.book_set.all()
     else:
         books = Book.objects.all()
     authors = Author.objects.all()
@@ -31,3 +35,15 @@ def index(request):
 #
 #     return HttpResponseRedirect(reverse('library:index'))
 #
+
+def checkout(request, book_id):
+    print(request.POST)
+    user = request.POST['user_name']
+
+    # create a checkout object
+    # edit the template to only enable the checkout button if the book isn't checked out
+    # and vice-versa
+
+    # Checkout.objects.filter(user = user, checkin_date__isnull=true)
+
+    return HttpResponse('ok') # HttpResponseRedirect(reverse('library:index'))
