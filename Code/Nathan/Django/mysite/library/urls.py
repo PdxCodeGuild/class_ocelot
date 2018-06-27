@@ -6,6 +6,5 @@ app_name = 'library'
 
 urlpatterns = [
     path('', views.index, name='index'),
-    #path('author_lookup', views.author_lookup, name='author_lookup')
+    path('checkout/<int:book_id>/', views.checkout, name='checkout')
 ]
-#        path in url      method in views       where in index this is happeing / which form
