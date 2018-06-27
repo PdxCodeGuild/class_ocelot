@@ -31,6 +31,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'library.apps.LibraryConfig',
+    'budget.apps.BudgetConfig',
     'urlredirect.apps.UrlredirectConfig',
     'todo.apps.TodoConfig',
     'polls.apps.PollsConfig',

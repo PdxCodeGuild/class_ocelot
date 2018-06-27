@@ -17,6 +17,8 @@ from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
+    path('library/', include('library.urls')),
+    path('budget/', include('budget.urls')),
     path('todo/', include('todo.urls')),
     path('polls/', include('polls.urls')),
     path('urlredirect/', include('urlredirect.urls')),
