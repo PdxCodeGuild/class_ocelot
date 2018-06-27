@@ -11,11 +11,25 @@
 
 </form>
 
+<table>
+    <tr>
+        <th>Author</th>
+        <th>Book Title</th>
+        <th>Check-out Date</th>
+        <th>Check-in Date</th>
+        <th>Check-out/Check-in</th>
+    </tr>
 {% for eachthing in authors_key %}
+    <tr>
+        <td>{{eachthing}}</td>
+    </tr>
+    {%endfor%}
+</table>
 
-{{eachthing}}
 
-{%endfor%}
+
+
+
 
 
 <br>
