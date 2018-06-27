@@ -18,6 +18,9 @@ class Book(models.Model):
     author = models.ForeignKey(
         Author, on_delete=models.CASCADE)
 
+    def checked_out(self):
+        return self.checkedout_date is not None
+
     def __str__(self):
         return self.title
     #
