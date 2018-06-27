@@ -8,4 +8,6 @@ urlpatterns = [
 
     path('', views.index, name='index'),
     path('changed/', views.add_book_and_author, name='add_book_and_author'),
+    path('checkout/', views.checkout, name='checkout'),
+    path('checkin/', views.checkin, name='checkin'),
 ]
