@@ -1,6 +1,6 @@
 
 
-# Lab 5: Todo Part 2
+# Lab 5: Todo2
 
 Refer to [the previous solution](../solutions/todoproj) for some inspiration.
 
