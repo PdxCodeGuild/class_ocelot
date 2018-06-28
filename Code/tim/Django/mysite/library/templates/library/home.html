@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>Library</title>
     <link href="https://fonts.googleapis.com/css?family=Jua" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
     <style>
         body {
             padding: 10px
@@ -25,7 +25,7 @@
             <tr>
                 <td>Author:</td>
                 <td>
-                    <select name="filter" id="filter">
+                    <select name="filter" id="filter" v-model="search_author" v-on:change="search_by_author">
                         {% for author in authors %}
                             <option value="{{ author.id }}">{{ author }}</option>
                         {% endfor %}
@@ -35,7 +35,7 @@
             <tr>
                 <td>Book:</td>
                 <td>
-                    <input id="search" placeholder="search by book title" v-model="search_val" v-on:change="filter">
+                    <input id="search" placeholder="search by book title" v-model="search_title" v-on:input="search_by_title">
                 </td>
             </tr>
         </table>
@@ -47,33 +47,44 @@
                     <th>Author</th>
                     <th>Year Published</th>
                 </tr>
-                {% for book in books %}
-                    <tr>
-                        <td>{{ book.title }}</td>
-                        <td>{{ book.author }}</td>
-                        <td>{{ book.yearPublished }}</td>
-                        <td><input type="submit" value="check-out" id="book{{ forloop.counter }}" /></td>
-                    </tr>
-                {% endfor %}
+                <tr v-for="book in books">
+                    <td> [[ book.title ]] </td>
+                    <td> [[ book.author ]] </td>
+                    <td> [[ book.year ]] </td>
+                </tr>
             </table>
         </form>
     </div>
     <script>
         let app = new Vue({
             el: '#app',
+            delimiters: ['[[', ']]'],
             data: {
-                search_val: ''
-
+                books: [],
+                search_title: '',
+                search_author: '',
             },
             methods: {
-                filter() {
-                    this.$http.get("{% url 'library:filter' " + this.search_val + "%}")
-
-
-
+                search_by_title() {
+                    let app = this
+                    text = this.search_title
+                    if (text === '') text = 'all'
+                    axios.get("{% url 'library:filter_title' %}?search_title=" + text)
+                        .then(response => {
+                            this.books = response.data.books
+                    })
+                },
+                search_by_author() {
+                    let app = this
+                    axios.get("{% url 'library:filter_author' %}?search_author=" + this.search_author)
+                        .then(response => {
+                            this.books = response.data.books
+                    })
                 }
+            },
+            created: function() {
+                this.search_by_title()
             }
-
         })
     </script>
 </body>

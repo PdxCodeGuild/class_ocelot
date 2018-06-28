@@ -454,6 +454,7 @@
                             sword_ctx.closePath()
                             sword_ctx.stroke()
                             sword_ctx.fillStyle = sword_ctx.strokeStyle
+                            sword_ctx.fillColor = this.color
                             sword_ctx.fill()
                         }
                     }
@@ -600,7 +601,7 @@
                 }
                 ////// PORTALS ///////
                 this.portals = []
-                let colors = ['red','orange', 'yellow', 'limegreen', 'blue', 'darkorchid', 'white']
+                let colors = ['red','orange', 'yellow', 'limegreen', 'mediumblue', 'darkorchid', 'white']
                 for (let i=0; i<colors.length; i++) {
                     let x, y
                     let radius = 10 + Math.random() * 10;
@@ -655,28 +656,30 @@
                                 this.player, this.player.shot_speed)
                             let click_dx = clicked_x - (this.player.x + this.player.width/2)
                             let click_dy = clicked_y - (this.player.y + this.player.height/2)
-                            let angle = Math.atan2(click_dy, click_dx)
+                            let angle_in_rad = Math.atan2(click_dy, click_dx)
 
-                            let v1_x = Math.cos(angle + 0.2)
-                            let v1_y = Math.sin(angle + 0.2)
-                            let v2_x = Math.cos(angle - 0.2)
-                            let v2_y = Math.sin(angle - 0.2)
+                            let mini_vel1 = {
+                                vx: Math.cos(angle_in_rad + 0.2),
+                                vy: Math.sin(angle_in_rad + 0.2)}
+                            let mini_vel2 = {
+                                vx: Math.cos(angle_in_rad - 0.2),
+                                vy: Math.sin(angle_in_rad - 0.2)}
 
-                            let rand = random(.6, .8)
-                            let mini_vel = {vx: v1_x, vy: v1_y}
+                            let rand = random(.5, .6) * this.player.shot_speed
                             let mini_shot = new StarShot(
                                 this.player.x + this.player.width / 2,this.player.y + this.player.height / 2,
                                 this.star_size, this.star_size, this.player.color,
-                                mini_vel.vx, mini_vel.vy, this.player, 0)
+                                mini_vel1.vx * rand, mini_vel1.vy * rand, this.player, 0)
                             this.player.shots.push(mini_shot)
 
-                            rand = random(.6, .8)
-                            mini_vel = {vx: v2_x, vy: v2_y}
+                            rand = random(.5, .6) * this.player.shot_speed
                             mini_shot = new StarShot(
                                 this.player.x + this.player.width / 2, this.player.y + this.player.height / 2,
                                 this.star_size, this.star_size, this.player.color,
-                                mini_vel.vx, mini_vel.vy, this.player, 0)
+                                mini_vel2.vx * rand, mini_vel2.vy * rand, this.player, 0)
                             this.player.shots.push(mini_shot)
+                        } else if (this.player.color === 'mediumblue') {
+
                         } else {
                             this.player.mx = 2
                             this.player.shot_speed = 6
@@ -792,7 +795,9 @@
                 if (this.player.energy < 100) this.player.energy += .2
                 ///// GO RIGHT OR LEFT /////
                 if (!this.player.staa_ridin) {
-                    if (key_tracker.isKeyDown('ArrowLeft')|| key_tracker.isKeyDown('a')) {
+                    if (key_tracker.isKeyDown('ArrowLeft')
+                        || key_tracker.isKeyDown('a')
+                        || key_tracker.isKeyDown(('A'))) {
                         if (this.player.flip_count <= 0) {
                             this.player.facing = -1 // left
                             ///// CHECK LEFT BUMP /////
@@ -806,7 +811,9 @@
                         if (!rubbing) this.player.x -= this.player.mx
                         ///// TOO FAR LEFT /////
                         if (this.player.x < 0) this.player.x = 0
-                    } else if (key_tracker.isKeyDown('ArrowRight') || key_tracker.isKeyDown('d')) {
+                    } else if (key_tracker.isKeyDown('ArrowRight')
+                        || key_tracker.isKeyDown('d')
+                        || key_tracker.isKeyDown('D')) {
                         if (this.player.flip_count <= 0) {
                             this.player.facing = 1 // right
                             ///// CHECK RIGHT BUMP /////
@@ -836,24 +843,22 @@
                         }
                     }
                 }
-                let take_shots = Math.random()<.01
+                let take_shots = Math.random()<.005
                 ///// CHECK CONTACT WITH ENEMIES /////
                 for (let i=0; i<this.enemies.length; i++) {
-                    // if (this.enemies[i].x + trans_x < this.world_cnv.width && this.enemies[i].x + trans_x > 0) {
-                        let sword_hit = checkAttackOnCTX(this.enemies[i].x + trans_x, this.enemies[i].y,
-                            this.enemies[i].width, this.enemies[i].height, this.sword_ctx)
-                        if (sword_hit) {
-                            this.enemies.splice(i, 1)
-                        } else {
-                            for (let j=0; j<this.player.shots.length; j++) {
-                                if (this.player.shots[j].checkCollideRec(this.enemies[i])) {
-                                    this.enemies.splice(i, 1)
-                                    this.player.shots.splice(j, 1)
-                                    break
-                                }
+                    let sword_hit = checkAttackOnCTX(this.enemies[i].x + trans_x, this.enemies[i].y,
+                        this.enemies[i].width, this.enemies[i].height, this.sword_ctx)
+                    if (sword_hit) {
+                        this.enemies.splice(i, 1)
+                    } else {
+                        for (let j=0; j<this.player.shots.length; j++) {
+                            if (this.player.shots[j].checkCollideRec(this.enemies[i])) {
+                                this.enemies.splice(i, 1)
+                                this.player.shots.splice(j, 1)
+                                break
                             }
                         }
-                    // }
+                    }
                     if (take_shots) {
                         let rand_vx = (Math.random()-.5)*2
                         let rand_vy = (Math.random()-.5)*2
@@ -861,7 +866,7 @@
                         if (rand_vy < 1) rand_vy *= 3
                         this.enemy_shots.push(new StarShot(
                             this.enemies[i].x + this.enemies[i].width/2, this.enemies[i].y + this.enemies[i].height/2,
-                            this.star_size, this.star_size, 'blue', rand_vx, rand_vy, this.enemies[i]))
+                            this.star_size, this.star_size, 'white', rand_vx, rand_vy, this.enemies[i]))
                     }
                 }
                 ///// CHECK SWORD CONTACT WITH ENEMY SHOTS /////
@@ -872,17 +877,15 @@
                             this.enemy_shots.splice(i, 1)
                         continue
                     }
-                    // if (this.enemy_shots[i].x + trans_x < this.width && this.enemy_shots[i].x + trans_x > 0) {
-                        let sword_hit = checkAttackOnCTX(this.enemy_shots[i].x + trans_x, this.enemy_shots[i].y,
-                            this.star_size, this.star_size, this.sword_ctx)
-                        if (sword_hit) {
-                            this.player.shots.push(new StarShot(
-                                this.enemy_shots[i].x, this.enemy_shots[i].y,
-                                this.star_size, this.star_size, this.player.color,
-                                -this.enemy_shots[i].vx * 2, -this.enemy_shots[i].vy * 2))
-                            this.enemy_shots.splice(i, 1)
-                        }
-                    // }
+                    let sword_hit = checkAttackOnCTX(this.enemy_shots[i].x + trans_x, this.enemy_shots[i].y,
+                        this.star_size, this.star_size, this.sword_ctx)
+                    if (sword_hit) {
+                        this.player.shots.push(new StarShot(
+                            this.enemy_shots[i].x, this.enemy_shots[i].y,
+                            this.star_size, this.star_size, this.player.color,
+                            -this.enemy_shots[i].vx * 2, -this.enemy_shots[i].vy * 2))
+                        this.enemy_shots.splice(i, 1)
+                    }
                 }
                 ///// BOUNCE GOLDEN STAR //////
                 let is_ob_right = this.point_star.x + this.point_star.width > this.width
@@ -1149,6 +1152,11 @@
             }
         }
 
+        // function ShotBuilder () {
+        //
+        //     return shot
+        // }
+
         class StarShot extends Rectangle {
             constructor(x, y, width, height, color, vx, vy, shooter, speed) {
                 super(x, y, width, height, color)
@@ -1197,6 +1205,23 @@
                 }
                 this.x += this.vx
                 this.y += this.vy
+            }
+        }
+
+        class BlueShot extends StarShot {
+            constructor(x, y, width, height, color, vx, vy, shooter, speed) {
+                super(x, y, width, height, color, vx, vy, shooter, speed)
+                this.life = 10
+            }
+
+            update() {
+                if (this.life === 0) {
+                    return false
+                } else {
+                    this.x += this.vx
+                    this.y += this.vy
+                    this.life -= 1
+                }
             }
         }
 

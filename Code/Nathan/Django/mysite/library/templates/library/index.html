@@ -6,26 +6,51 @@
 </head>
 <body>
     <form action="{% url 'library:index' %}" method="get">
-
         <select name="author_id">
+            <option value="show_all">Show All</option>
             {% for author in authors %}
             <option value="{{ author.id }}">{{ author.name }}</option>
             {% endfor %}
         </select>
         <input type="submit" value="filter"/>
     </form>
-    <table>
-        <tr>
-            <th>Title</th>
-            <th>Publish Date</th>
-        </tr>
-        {% for book in books %}
-            <tr>
-                <td>{{book.title}}</td>
-                <td>{{book.publish_date}}</td>
-            </tr>
-        {% endfor %}
-    </table>
+        <!--user_name input-->
 
+
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="user_name" placeholder="User Name"/>
+        <table>
+            <tr>
+                <th>Title</th>
+                <th>Publish Date</th>
+                <th>Availablility</th>
+
+            </tr>
+            {% for book in books %}
+                <tr>
+                    <td>{{book.title}}</td>
+                    <td>{{book.publish_date}}</td>
+                    <!--if loop for checking check in vs check out status-->
+                    <!--style='display: none'-->
+                    {% if book.checked_out %}
+                        <td>
+                            <input type="submit" value="CheckIn"
+                                formaction="{% url 'library:checkin' book.id %}"/>
+                        </td>
+                    {% else %}
+                        <td>
+                            <input type="submit" value="Checkout"
+                                formaction="{% url 'library:checkout' book.id %}"/>
+                        </td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
+    </form>
+<!--add list of checked out books along with who checked them out-->
+    <ul>
+        <li>{checked_out}</li>
+    </ul>
 </body>
 </html>
