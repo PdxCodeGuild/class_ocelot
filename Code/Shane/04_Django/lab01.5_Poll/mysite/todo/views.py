@@ -42,7 +42,7 @@ def mylogin(request):
     return HttpResponse('login here')
 
 
-def myregister(request):
+def register(request):
     return HttpResponse('register here')
 
 
