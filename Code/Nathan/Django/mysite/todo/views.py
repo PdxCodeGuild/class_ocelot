@@ -29,3 +29,11 @@ def remove_todo(request):
     todo_item.delete()
     print('this still works kind of')
     return HttpResponseRedirect(reverse('todo:index'))
+
+@login_required
+def user_registration(request):
+    return HttpResponse('USER REGISTERED')
+
+def user_login(request):
+    reutn HttpResponse('USER LOGGED IN')
+
