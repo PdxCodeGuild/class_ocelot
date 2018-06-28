@@ -22,5 +22,6 @@ urlpatterns = [
     path('todoappp/', include('todoapp.urls')),
     path('todoajax/', include('todoajax.urls')),
     path('contactapp/', include('contactapp.urls')),
+    path('userapp/', include('userapp.urls')),
     path('admin/', admin.site.urls),
 ]
