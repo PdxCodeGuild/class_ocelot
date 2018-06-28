@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth import authenticate, login
 
 from django.utils import timezone
 

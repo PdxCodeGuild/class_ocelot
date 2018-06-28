@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import TodoItem
 from django.urls import reverse
+from django.contrib.auth import authenticate, login
+from django.contrib.auth import logout
 
 
 # Create your views here.
@@ -37,18 +39,25 @@ def remove_todo(request):
 
     return HttpResponseRedirect(reverse('todo:index'))
 
-
-def mylogin(request):
-    return HttpResponse('login here')
-
-
-def register(request):
-    return HttpResponse('register here')
-
-
-def mylogout(request):
-    return HttpResponse('logout here')
-
-
-
+#
+# def register(request):
+#     return HttpResponse('register here')
+#
+#
+# def mylogout(request):
+#     logout(request)
+#     return HttpResponseRedirect(reverse('todo:index'))
+#
+#
+# def mylogin(request):
+#     username = request.POST['username']
+#     password = request.POST['password']
+#     user = authenticate(request, username=username, password=password)
+#     if user is not None:
+#         login(request, user)
+#         return HttpResponseRedirect(reverse('todo:index'))
+#     else:
+#         return HttpResponseRedirect(reverse('todo:index'))
+#
+#
 
