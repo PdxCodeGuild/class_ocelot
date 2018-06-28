@@ -64,4 +64,6 @@ def mylogin(request):
         return HttpResponseRedirect(reverse('todo:index'))
 
 
-
+def login_register(request):
+    next = request.GET.get('next', '')
+    return render(request, 'userapp/login_register.html', {'next': next})

@@ -4,7 +4,8 @@
     body {
         background-color: navajowhite;
     }
-    li{
+
+    li {
         list-style-type: none;
     }
 
@@ -16,7 +17,27 @@
 </head>
 <body>
 
+<h2>Register</h2>
+<form action="{% url 'todo:register' %}" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{next}}"/>
+    <input type="text" name="username" placeholder="username" required/>
+    <input type="text" name="email" placeholder="email" required/>
+    <input type="password" name="password" placeholder="password" required/>
+    <input type="submit" value="register"/>
+</form>
 
+
+<h2>Login</h2>
+<form action="{% url 'todo:login' %}" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{next}}"/>
+    <input type="text" name="username" placeholder="username" required/>
+    <input type="password" name="password" placeholder="password" required/>
+    <input type="submit" value="login"/>
+</form>
+
+<h2>Add To Todo</h2>
 <form action="{% url 'todo:add_todo' %}" method="post">
     {% csrf_token %}
     <input type="text" name="todo_item" placeholder="Give Yourself Something To Do!!" autofocus>
@@ -26,20 +47,22 @@
 {% if todo_items123 %}
 
 {% for unicorn in todo_items123 %}
-    <form id="todo_form" action="{% url 'todo:todo_remove_unicorn' %}" method="post">
-        {% csrf_token %}
-        <input type="hidden" name="todo_item_id_key_in_template" value="{{unicorn.id}}">
-        <li>
-            {{unicorn.todo_text}}
-            <button type="submit">Remove Me!</button>
-        </li>
-    </form>
-    {% endfor %}
+<form id="todo_form" action="{% url 'todo:todo_remove_unicorn' %}" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="todo_item_id_key_in_template" value="{{unicorn.id}}">
+    <li>
+        {{unicorn.todo_text}}
+        <button type="submit">Remove Me!</button>
+    </li>
+</form>
+{% endfor %}
 
 {% else %}
 <p>No items on the list</p>
 {% endif %}
 
+
+<a href="{% url 'todo:logout' %}"/>logout</a>
 
 </body>
 </html>
