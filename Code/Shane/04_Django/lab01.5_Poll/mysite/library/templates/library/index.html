@@ -3,31 +3,98 @@
 <!--<img src="https://media.giphy.com/media/13XW2MJE0XCoM0/giphy.gif">-->
 <!--<br>-->
 
-<form action="{% url 'library:add_book_and_author' %}" method="post">
-    {% csrf_token %}
-    <input type="text" name="author_input" placeholder="Author Name">
-    <input type="text" name="book_input" placeholder="Book Title">
-    <input type="submit">
+<style>
 
-</form>
+    #customers {
+        font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
 
-{% for eachthing in authors_key %}
+    #customers td, #customers th {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
 
-{{eachthing}}
+    #customers tr:nth-child(even) {
+        background-color: #e9d5c5;
+    }
 
-{%endfor%}
+    #customers tr:hover {
+        background-color: #9f9f9f;
+    }
+
+    #customers th {
+        padding-top: 20px;
+        padding-bottom: 12px;
+        text-align: left;
+        background-color: #243faf;
+        color: white;
+    }
 
 
-<br>
+</style>
+<body>
+<div>
+    <form action="{% url 'library:add_book_and_author' %}" method="post">
+        {% csrf_token %}
+        <input type="text" name="author_input" placeholder="Author Name">
+        <input type="text" name="book_input" placeholder="Book Title">
+        <input type="submit">
 
+    </form>
+</div>
 
-{% for eachthing in books_key %}
+<div>
+    <div id="tables">
+        <table id="customers">
+            <tr>
+                <th>Book Title</th>
+                <th>Author</th>
+                <th>Check-out Date</th>
+                <th>Check-in Date</th>
+                <th>Check-out/Check-in</th>
+            </tr>
+            {% for book in books_key %}
 
-{{eachthing}}
+            <tr>
+                <td>{{book}}</td>
+                <td>{{book.author_list}}</td>
+                <td>Checkout Date</td>
+                <td>Checkin Date</td>
 
-{%endfor%}
+                {% if book.checked_out %}
+                <td>
 
+                    <form action="{% url 'library:checkin' %}" method="post">
+                        {% csrf_token %}
+                        {{book.checked_out_user}}
+                        <input type="hidden" name="book_id" value="{{book.id}}"/>
+                        <input type="submit" value="Check-in">
+                    </form>
 
+                </td>
 
+                {% else %}
 
+                <td>
+                    <form action="{% url 'library:checkout' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="book_id" value="{{book.id}}"/>
+                        <input type="text" name="person" placeholder="Your Name Here" required>
+                        <input type="submit" value="Check-out">
+                    </form>
+                </td>
 
+                {% endif %}
+
+            </tr>
+            {%endfor%}
+        </table>
+    </div>
+</div>
+<script>
+    document.getElementById('checkout_name')
+
+</script>
+</body>

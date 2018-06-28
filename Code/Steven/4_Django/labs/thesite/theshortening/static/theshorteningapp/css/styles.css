@@ -20,7 +20,7 @@ table, th, td {
     width: 50%;
 }
 
-.main_form {
+.main-form {
     display: flex;
     flex-direction: column;
     height: 30%;
