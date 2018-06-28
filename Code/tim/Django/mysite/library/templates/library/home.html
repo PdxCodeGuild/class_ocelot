@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Library</title>
+    <link href="https://fonts.googleapis.com/css?family=Jua" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+    <style>
+        body {
+            padding: 10px
+        }
+        table {
+            text-align: left;
+        }
+        td, th {
+            padding: 3px 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h2>Book-Borrowing-Place</h2>
+        <table>
+            <tr>
+                <td>Author:</td>
+                <td>
+                    <select name="filter" id="filter" v-model="search_author" v-on:change="search_by_author">
+                        {% for author in authors %}
+                            <option value="{{ author.id }}">{{ author }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Book:</td>
+                <td>
+                    <input id="search" placeholder="search by book title" v-model="search_title" v-on:input="search_by_title">
+                </td>
+            </tr>
+        </table>
+
+            {% csrf_token %}
+            <table>
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Year Published</th>
+                </tr>
+                <tr v-for="book in books">
+                    <td> [[ book.title ]] </td>
+                    <td> [[ book.author ]] </td>
+                    <td> [[ book.year ]] </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <script>
+        let app = new Vue({
+            el: '#app',
+            delimiters: ['[[', ']]'],
+            data: {
+                books: [],
+                search_title: '',
+                search_author: '',
+            },
+            methods: {
+                search_by_title() {
+                    let app = this
+                    text = this.search_title
+                    if (text === '') text = 'all'
+                    axios.get("{% url 'library:filter_title' %}?search_title=" + text)
+                        .then(response => {
+                            this.books = response.data.books
+                    })
+                },
+                search_by_author() {
+                    let app = this
+                    axios.get("{% url 'library:filter_author' %}?search_author=" + this.search_author)
+                        .then(response => {
+                            this.books = response.data.books
+                    })
+                }
+            },
+            created: function() {
+                this.search_by_title()
+            }
+        })
+    </script>
+</body>
+</html>

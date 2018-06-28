@@ -1,17 +1,59 @@
-from django.shortcuts import render
-from django.http import HttpResponse
-from .models import Book
+from django.shortcuts import render, reverse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.utils import timezone
+from .models import Book, Author, User
 
 
-def index(request):
-
-    # Get all the books from the database, ordered by id
-    books = Book.objects.all()
-
-    # Put all the books in a dictionary
-    context = {'books':books}
+def index(request): # the 'default' view
+    books = Book.objects.all() # Get all the books from the database, ordered by id
+    cat_total = Book.objects.all().count() # Count all books in the database
+    cat_in = Book.objects.filter(checkedout_date__isnull=False).count() # Count all books NOT in 'checked out list'
+    cat_out = Book.objects.filter(checkedout_date__isnull=True).count() # Count all the books IN 'checked out list'
+    author_total = Author.objects.all().count() # Get all the authors in the Author database
+    context = {'books': books,
+               'cat_total': cat_total,
+               'cat_in': cat_in,
+               'cat_out': cat_out,
+               'author_total': author_total
+               }
 
     # Note: In template, loop over the elements of the 'books' dict, generate a <tr> for each book
+    return render(request, 'publiclibrary/index.html', context) # this is the path provided to the browser (via template)
 
-    return render(request, 'publiclibrary/index.html', context)
+def checkout_book(request):
+    # print(request.POST['book_id']) # TESTING
+    book_id = request.POST['book_id'] # Receive book id from 'dictionary-like object' returned from form
+    checked_out_book = Book.objects.get(pk=book_id) # Use book id to get book from database (via model)
+    checked_out_book.checkedout_date = timezone.now()  # set the checkout date on the book timezone.now
+    checked_out_book.save()  # save the book, with new 'checked out date', to database (via model)
+    return HttpResponseRedirect(reverse('publiclibrary:index')) # redirect back to the index page
 
+
+def checkin_book(request):
+    book_id = request.POST['book_id']
+    checked_in_book = Book.objects.get(pk=book_id)
+    checked_in_book.checkedout_date = None
+    checked_in_book.save()
+    return HttpResponseRedirect(reverse('publiclibrary:index'))
+
+# def borrower(request):
+#     bor_name_or_num = request.POST['user_id']
+#
+#     def BorClaimIsNum(user_name_or_num):
+#         try:
+#             int(user_name_or_num)
+#             return True
+#         except ValueError:
+#             return False
+#
+#     if BorClaimIsNum(True):
+#         user_num = bor_name_or_num
+#         sign_for_book = User.objects.get(pk=user_id)
+#         login_.user_name_or_num = None
+#
+#     elif BorClaimIsNum(False):
+#         sign_for_book = User.objects.get(pk=user_id)
+#             login_.user_name_or_num = None
+#             checked_in_book.save()
+#
+#     return HttpResponseRedirect(reverse('publiclibrary:index'))

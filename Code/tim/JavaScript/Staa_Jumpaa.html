@@ -12,7 +12,7 @@
         }
         canvas {
             border: 1px solid white;
-            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('whale_sulzenauer_big.jpg');
+            background-image: url('whale_sulzenauer_big.jpg');
             background-size: 2400px 480px;
         }
         button {
@@ -24,6 +24,7 @@
             position: fixed; /* Stay in place */
             z-index: 11; /* Sit on top */
             left: 0;
+            top: 0;
             top: 0;
             width: 100%; /* Full width */
             height: 100%; /* Full height */
@@ -195,7 +196,6 @@
             });
 
             let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-            console.log(result)
             return result ? {
                 r: parseInt(result[1], 16),
                 g: parseInt(result[2], 16),
@@ -273,6 +273,9 @@
             bottom() {
                 return this.y + this.height
             }
+            center() {
+                return [this.x + this.width/2, this.y + this.height/2]
+            }
         }
 
         class StarJumper extends Rectangle {
@@ -335,7 +338,7 @@
                             this.sword_tip.x = x_cen + dx * this.facing
                             this.sword_tip.y = y_cen - dy
                         }
-                        if (this.flip_count % 2 === 0) {
+                        // if (this.flip_count % 2 === 0) {
                             this.sword_trail[this.sword_trail.length - 1].push({
                                 life: 60,
                                 x_cen: x_cen,
@@ -343,7 +346,7 @@
                                 x_tip: this.sword_tip.x,
                                 y_tip: this.sword_tip.y
                             })
-                        }
+                        // }
                     } else {
                         if (this.flip_count > 50) {
                             this.sword_tip.x = x_cen
@@ -358,7 +361,7 @@
                                 this.sword_tip.x = x_cen + 50 * this.facing
                                 this.sword_tip.y = y_cen + (41 - this.flip_count) / 2
                             }
-                            if (this.flip_count % 2 === 0) {
+                            // if (this.flip_count % 2 === 0) {
                                 this.sword_trail[this.sword_trail.length - 1].push({
                                     life: 60,
                                     x_cen: x_cen,
@@ -366,7 +369,7 @@
                                     x_tip: this.sword_tip.x,
                                     y_tip: this.sword_tip.y
                                 })
-                            }
+                            // }
                         }
                     }
                     ctx.beginPath()
@@ -378,9 +381,6 @@
                     if (this.sword_trail[0].length === 0 && this.sword_trail.length>1) {
                         this.sword_trail.splice(0, 1)
                     }
-                    // if (this.sword_trail.length === 2) {
-                    //     console.log(this.sword_trail[0][0].life, this.sword_trail[1])
-                    // }
                     ctx.fillStyle = this.color
                     for (let k=0; k<this.sword_trail.length; k++) {
                         let poly_path = {tip: [], cen: []}
@@ -394,9 +394,6 @@
                             poly_path.cen.push({x: this.sword_trail[k][i].x_cen, y: this.sword_trail[k][i].y_cen})
                         }
                         if (poly_path.tip.length > 0) {
-
-                            ctx.strokeStyle = "rgba(" + this.rgb["r"] + "," + this.rgb["g"] + "," + this.rgb["b"] +
-                                "," + poly_path.tip.length / 60 + ")"
                             ctx.beginPath()
                             ctx.moveTo(poly_path.tip[0].x, poly_path.tip[0].y)
                             for (let i = 1; i < poly_path.tip.length; i++) {
@@ -405,6 +402,8 @@
                             for (let i = poly_path.cen.length - 1; i > 0; i--) {
                                 ctx.lineTo(poly_path.cen[i].x, poly_path.cen[i].y)
                             }
+                            ctx.strokeStyle = "rgba(" + this.rgb["r"] + "," + this.rgb["g"] + "," + this.rgb["b"] +
+                                "," + poly_path.tip.length / 60 + ")"
                             ctx.closePath()
                             ctx.stroke()
                             ctx.fillStyle = ctx.strokeStyle
@@ -460,7 +459,7 @@
                     this.flip_rotation = 'clockwise'
                     this.flip_type = 'down'
                     this.facing = 1 // right
-                    this.vy = -3
+                    this.vy = -2
                     this.energy -= 25
                     return true
                 } else if (dx > 0 & dy < 0 && this.energy >= 40) {
@@ -476,7 +475,7 @@
                     this.flip_rotation = 'counter'
                     this.flip_type = 'down'
                     this.facing = -1 // left
-                    this.vy = -3
+                    this.vy = -2
                     this.energy -= 25
                     return true
                 } else if (this.energy >= 40) {
@@ -499,19 +498,19 @@
                 }
                 return false
             }
-            checkSwordPoly (x, y, cornersX, cornersY) {
-                let i, j=cornersX.length-1
-                let oddNodes = false
-                let polyX = cornersX
-                let polyY = cornersY
-                for (i=0; i<cornersX.length; i++) {
-                    if ((polyY[i] < y && polyY[j] >= y || polyY[j] < y && polyY[i] >= y) &&
-                        (polyX[i] <= x || polyX[j] <= x)) {
-                            oddNodes ^= (polyX[i] + (y-polyY[i]) / (polyY[j] - polyY[i]) * (polyX[j] - polyX[i]) < x);
-                    }
-                    j=i;
+            checkSwordPoly(point, vs) {
+                // ray-casting algorithm based on
+                // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+                var x = point[0], y = point[1]
+                var inside = false;
+                for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
+                    var xi = vs[i][0], yi = vs[i][1];
+                    var xj = vs[j][0], yj = vs[j][1];
+                    var intersect = ((yi > y) != (yj > y))
+                        && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+                    if (intersect) inside = !inside
                 }
-                return oddNodes;
+                return inside
             }
         }
 
@@ -551,6 +550,8 @@
                 grd.addColorStop(1, this.color);
                 ctx.beginPath()
                 ctx.arc(this.x, this.y, this.rad, 0, 2 * Math.PI, false)
+                // ctx.strokeStyle = this.color
+                // ctx.stroke()
                 ctx.fillStyle = grd;
                 ctx.fill();
             }
@@ -572,9 +573,11 @@
             checkCollideCir(cir) {
                 let change_in_x = this.x - cir.x
                 let change_in_y = this.y - cir.y
-                let separation = Math.sqrt(change_in_x ** 2 + change_in_y ** 2)
+                let separation2 = change_in_x*change_in_x + change_in_y * change_in_y
                 let combo_len = this.rad + cir.rad
-                if (separation <= combo_len) {
+                let combo_len2 = combo_len * combo_len
+                if (separation2 <= combo_len2) {
+                    let separation = Math.sqrt(separation2)
                     // YOUR BALLS ARE TOUCHING, SEPARATE THEM
                     let diff = combo_len - separation
                     let nudge = diff / 2
@@ -674,7 +677,7 @@
                 this.ctx = this.cnv.getContext('2d')
                 this.width = width
                 this.height = height
-                this.star_size = 4
+                this.star_size = 3
                 this.player_on_platform = true
                 this.ground_height = 20
                 this.dv = .03
@@ -806,8 +809,7 @@
                         this.circles[i].y += this.circles[i].vy
                     }
                     ///// CHECK TO SEE IF PORTAL HIT ANOTHER PORTAL //////
-                    for (let j = 0; j < this.circles.length; ++j) {
-                        if (i === j) continue
+                    for (let j = i+1; j < this.circles.length; ++j) {
                         let result = this.circles[i].checkCollideCir(this.circles[j])
                         let dv = this.total_velocity < this.max_velocity ? this.dv : -this.dv*2
                         if (result && this.circles[i].vib_count <= 0) {
@@ -890,7 +892,7 @@
                         if (this.player.x < 0) this.player.x = 0
                     } else if (key_tracker.isKeyDown('ArrowRight') || key_tracker.isKeyDown('d')) {
                         if (this.player.flip_count <= 0) {
-                            this.player.facing = 0 // right
+                            this.player.facing = 1 // right
                             ///// CHECK RIGHT BUMP /////
                             for (let i = 0; i < this.platforms.length; i++) {
                                 if (this.player.rubRight(this.platforms[i])) {
@@ -906,9 +908,30 @@
                         }
                     }
                 }
-                ///// GOLDEN STAR /////
-                this.golden_star.update()
+                ///// BUILD SWORD TRAIL POLYGON /////
+                let pst = this.player.sword_trail
+                let tips = [], cens = []
+                for (let i=0; i<this.player.sword_trail.length; i++) {
+                    for (let j = 0; j < pst[i].length; j++) {
+                        tips.push([pst[i][j].x_tip, pst[i][j].y_tip])
+                        cens.push([pst[i][j].x_cen, pst[i][j].y_cen])
+                    }
+                }
+                let vertexes = tips.concat(cens)
+                ///// CHECK SWORD SWIPE INTERSECTION /////
+                if (vertexes.length > 0) {
+                    for (let i=0; i<this.platforms.length; i++) {
+                        if (this.platforms[i] != this.ground) {
+                            let star_hit = this.player.checkSwordPoly(this.platforms[i].center(), vertexes)
+                            if (star_hit) {
+                                this.platforms.splice(i, 1)
+                                this.player.star_count += 1
+                            }
+                        }
+                    }
+                }
                 ///// IF RIDING ON GOLDEN STAR /////
+                this.golden_star.update()
                 if (this.player.staa_ridin) {
                     this.player_on_platform = true
                     this.player.x = this.golden_star.x - (this.player.width - this.star_size) / 2
@@ -948,7 +971,7 @@
                     }
                 ///// OTHERWISE CHECK NORMAL HITS /////
                 } else {
-                    for (let i = 0; i < this.platforms.length; i++) {
+                    for (let i=0; i<this.platforms.length; i++) {
                         ///// LANDED ON STAR OR GROUND /////
                         if (this.player.landed(this.platforms[i])) {
                             this.player.color = 'red'
@@ -1087,6 +1110,9 @@
                 this.player.draw(this.ctx)
                 this.golden_star.draw(this.ctx)
                 this.ctx.resetTransform()
+
+
+
                 this.ctx.fillStyle = "white"
                 this.ctx.font = "bolder 24px Arial"
                 this.ctx.fillText('Star Pouch: ' + this.player.star_count, 8, 24)
@@ -1155,7 +1181,8 @@
         }
 
         let world = new World(cnv.width * 2, cnv.height, cnv)
-        function animation_loop() {
+        let ct = 0
+        function animation_loop(timestamp) {
             if (world.play) {
                 window.requestAnimationFrame(animation_loop)
             }
