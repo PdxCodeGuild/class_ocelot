@@ -1,13 +1,13 @@
-from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+
 from .models import TodoItem
-from django.urls import reverse
-from django.contrib.auth import authenticate, login
-from django.contrib.auth import logout
+from django.shortcuts import render, reverse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib.auth.models import User
+from django.contrib.auth import logout, authenticate, login
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
-
 def index(request):
     somevar = TodoItem.objects.all()
 
@@ -39,25 +39,25 @@ def remove_todo(request):
 
     return HttpResponseRedirect(reverse('todo:index'))
 
-#
-# def register(request):
-#     return HttpResponse('register here')
-#
-#
-# def mylogout(request):
-#     logout(request)
-#     return HttpResponseRedirect(reverse('todo:index'))
-#
-#
-# def mylogin(request):
-#     username = request.POST['username']
-#     password = request.POST['password']
-#     user = authenticate(request, username=username, password=password)
-#     if user is not None:
-#         login(request, user)
-#         return HttpResponseRedirect(reverse('todo:index'))
-#     else:
-#         return HttpResponseRedirect(reverse('todo:index'))
-#
-#
+
+def register(request):
+    return HttpResponse('register here')
+
+
+def mylogout(request):
+    logout(request)
+    return HttpResponseRedirect(reverse('todo:index'))
+
+
+def mylogin(request):
+    username = request.POST['username']
+    password = request.POST['password']
+    user = authenticate(request, username=username, password=password)
+    if user is not None:
+        login(request, user)
+        return HttpResponseRedirect(reverse('todo:index'))
+    else:
+        return HttpResponseRedirect(reverse('todo:index'))
+
+
 
