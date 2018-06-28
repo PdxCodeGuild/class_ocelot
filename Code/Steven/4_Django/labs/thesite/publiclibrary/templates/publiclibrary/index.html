@@ -4,159 +4,183 @@
     <meta charset="UTF-8">
     <title>Public Library Catalog</title>
 
-    <style>
-        body {
-            font-family: "Helvetica", "Arial", sans-serif;
+    <style> body {
+        min-height: 100vh;
+    }
+    body, .wrapper {
+        display: flex;
+        flex-direction: column;
+        font-family: "Helvetica", "Arial", sans-serif;
+        font-size: 14px;
+        margin: 0;
+    }
+    .wrapper {
+        flex: 1;
+        /*grow to fill*/
+    }
+    main {
+        flex: 1;
+        /*grow to fill*/
+    }
+    sidebar {
+        order: -1;
+    }
+    @media (min-width: 800px) {
+        .wrapper {
+            flex-direction: row;
         }
+    }
+    /* REGULAR, NON-FLEXBOX STYLES*/
+    main {
+        background: white;
+    }
+    header {
+        background: grey;
+        border-bottom: solid lightgrey;
+        letter-spacing: .3em;
+        font-weight: lighter;
+        text-align: center;
+        color: whitesmoke;
+    }
+    sidebar {
+        background: grey;
 
+    }
+    .sidebar-header {
+        color: white;
+        text-align: center;
+    }
+    body > *, .wrapper > * {
+        padding: .25em;
+    }
+    .wrapper {
+        padding: 0;
+    }
 
-        h1 {
-            color: #gray;
-        }
+    /*TABLE STYLES*/
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    th, td {
+        padding: 2px;
+    }
+    .table-book-list {
+        border: .5px solid rgba(211, 211, 211, .5);
+    }
+    .table-book-list-header {
+        background-color: #c8d0d3;
+        color: white;
+        border: 2px solid white;
+        font-weight: lighter;
+    }
+    .table-sidebar {
+        border: 0px;
+        text-align: center;
+    }
+    .table-sidebar-header {
+        border: 0px;
+    }
+    .table-cell-centered {
+        text-align: center;
+    }
+    /*BUTTON STYLES*/
+    .bt-no-border {
+        padding: 0;
+        margin: 0;
+        border: none;
+        background: none;
+        font-size: 14px;
+    }
+    .bt-no-border:hover {
+        color: whitesmoke;
+    }
 
-
-        table {
-            border-collapse: collapse;
-            font-size: 13px;
-            width: 100%;
-
-        }
-
-        table, th, td {
-            border: .5px solid rgba(211, 211, 211, .5);
-            padding: 5px;
-        }
-
-        .table-header-book-list {
-            background-color: #2f96b4;
-            {#color: white;#}
-            {#font-weight: lighter;#}
-        }
-
-        .table-cell-centered {
-            text-align: center;
-        }
-
-
-        {# BUTTONS #}
-        .text-only-button {
-            padding: 0;
-            margin: 0;
-            border: none;
-            background: none;
-        }
-
-        .checked-in {
-
-        }
-
-        .checked-out {
-            color: #888c92;
-        }
-
-        .checked-out-bt-clr {
-            background: rgba(47, 150, 180, 0.47);
-        {#transition: width 2s;#}
-        }
-
-        .input_field {
-            width: 40%;
-            align-items: left;
-        }
-
-
+    .checked-out {
+        color: darkgrey;
+    }
+    .checked-out-bt-clr {
+        background: rgba(47, 150, 180, 0.47);
+        transition: width 2s;
+    }
+    .input_field {
+        width: 40%;
+        align-items: left;
+    }
     </style>
 
 </head>
 <body>
 
-<table class="page-header">
-    <tr>
-        <td><h1>Public Library Catalog</h1></td>
-        <td>
-            <table>
 
-                <tr>
-                    <th>Total</th>
-                    <th>Checked out</th>
-                    <th>Available</th>
-                    <th>Authors</th>
-                </tr>
+<header><h1>Public Library Catalog</h1></header>
+<div class="wrapper">
+    <main>
 
-                <tr class="table-cell-centered">
-                    <td>{{ cat_total }}</td>
-                    <td>{{ cat_in }}</td>
-                    <td>{{ cat_out }}</td>
-                    <td>{{ author_total }}</td>
-                </tr>
+        <table>
+            <tr class="table-book-list-header" >
+                <th>Title</th>
+                <th>Author</th>
+                <th>Publish Date</th>
+                <th>Checkout Date</th>
+                <th></th>
 
-            </table>
+            </tr>
+            {%  for book in books %}
+            <tr class="{% if book.checked_out %}checked-out{% else %}checked-in{% endif %}">
 
-        </td>
-    </tr>
-</table>
+                <td>{{ book.title }}</td>
+                <td>{{ book.author }}</td>
+                <td class="table-cell-centered" >{{ book.publish_date|date:'Y-m-d' }}</td>
+                <td class="table-cell-centered" >{{ book.checkedout_date|date:'Y-m-d H:i' }}</td>
 
-{#<table>#}
-{#    <tr>#}
-{#        <td>#}
-{#            <table>#}
-{#                <tr>#}
-{#                    <th>Honor System Checkout</th>#}
-{#                        <form action="{% url 'publiclibrary:borrower' %}" method="post">#}
-{#                            {% csrf_token %}#}
-{#                            <input type="text" name="user_name_or_num" value="" placeholder="Enter name or card #" autofocus/>#}
-{#                            <input type="submit" value="Log in"/>#}
-{#                        </form>#}
-{#                    <td>{{ user_name_or_num }}</td>#}
-{#                </tr>#}
-{#            </table>#}
-{##}
-{#        </td>#}
-{#    </tr>#}
-{#</table>#}
-
-
-<table>
-    <tr class="table-header-book-list">
-        <th>Title</th>
-        <th>Author</th>
-        <th>Publish Date</th>
-        <th>Checkout Date</th>
-        <th></th>
-
-
-    </tr>
-    {%  for book in books %}
-        <tr class="{% if book.checked_out %}checked-out{% else %}checked-in{% endif %}">
-
-            <td>{{ book.title }}</td>
-            <td>{{ book.author }}</td>
-            <td class="table-cell-centered" >{{ book.publish_date|date:'ymd' }}</td>
-            <td class="table-cell-centered" >{{ book.checkedout_date|date:'ymd Hi' }}</td>
-
-            <td class="{% if book.checked_out %}checked-out-bt-clr{% endif %}">
-                {%  if book.checked_out %}
+                <td class="{% if book.checked_out %}checked-out-bt-clr{% endif %}">
+                    {%  if book.checked_out %}
                     <form action="{% url 'publiclibrary:checkin_book' %}" method="post">
                         {% csrf_token %}
                         <input type="hidden" name="book_id" value="{{ book.id }}"/>
-                        <input class="text-only-button" type="submit" value="Check in"/>
+                        <input class="bt-no-border" type="submit" value="Check in"/>
                     </form>
 
-                {% else %}
+                    {% else %}
                     <form action="{% url 'publiclibrary:checkout_book' %}" method="post">
                         {% csrf_token %}
                         <input type="hidden" name="book_id" value="{{ book.id }}"/>
-                        <input class="text-only-button" type="submit" value="Check out"/>
+                        <input class="bt-no-border" type="submit" value="Check out"/>
                     </form>
-                {% endif %}
-            </td>
+                    {% endif %}
+                </td>
 
-        </tr>
-    {%  endfor %}
+            </tr>
+            {%  endfor %}
 
-</table>
+        </table>
+
+    </main>
 
 
+    <sidebar>
+        <h2 class="sidebar-header" >Catalog Detail</h2>
+        <table>
+
+            <tr class="table-sidebar" >
+                <th>Total</th>
+                <th>Checked out</th>
+                <th>Available</th>
+                <th>Authors</th>
+            </tr>
+
+            <tr class="table-sidebar-header">
+                <td>{{ cat_total }}</td>
+                <td>{{ cat_in }}</td>
+                <td>{{ cat_out }}</td>
+                <td>{{ author_total }}</td>
+            </tr>
+
+        </table>
+
+    </sidebar>
+</div>
 
 </body>
 </html>
