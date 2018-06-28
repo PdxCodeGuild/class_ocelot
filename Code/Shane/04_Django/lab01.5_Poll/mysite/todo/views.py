@@ -3,6 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from .models import TodoItem
 from django.urls import reverse
 
+
 # Create your views here.
 
 def index(request):
@@ -35,3 +36,19 @@ def remove_todo(request):
     # redirect back to the index page (HttpResponseRedirect)
 
     return HttpResponseRedirect(reverse('todo:index'))
+
+
+def mylogin(request):
+    return HttpResponse('login here')
+
+
+def register(request):
+    return HttpResponse('register here')
+
+
+def mylogout(request):
+    return HttpResponse('logout here')
+
+
+
+

@@ -16,6 +16,9 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+LOGIN_URL = '/userapp/login_register/'
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
@@ -36,6 +39,7 @@ INSTALLED_APPS = [
     'todoajax.apps.TodoajaxConfig',
     'contactapp.apps.ContactappConfig',
     'libraryapp.apps.LibraryappConfig',
+    'userapp.apps.UserappConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
