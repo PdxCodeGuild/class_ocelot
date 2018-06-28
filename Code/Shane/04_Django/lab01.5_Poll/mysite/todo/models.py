@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 class TodoItem(models.Model):
     todo_text = models.CharField(max_length=300)
     completed = models.BooleanField()
-    # user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
     def __str__(self):

@@ -8,6 +8,8 @@ from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
+
+@login_required
 def index(request):
     somevar = TodoItem.objects.all()
 
@@ -19,9 +21,10 @@ def index(request):
     return render(request, 'todo/index.html', context)
     # go to the bd and get the display      ... ... ...objects.all()
 
+@login_required
 def add_todo(request):
     todo_text = request.POST['todo_item']
-    todo_item = TodoItem(todo_text=todo_text, completed=False)
+    todo_item = TodoItem(todo_text=todo_text, user=request.user, completed=False)
     todo_item.save()
     # item_on_list = question.choice_set.get(pk=request.POST['choice'])
     # save data from request.POST in database
@@ -29,6 +32,7 @@ def add_todo(request):
 
     return HttpResponseRedirect(reverse('todo:index'))
 
+@login_required
 def remove_todo(request):
     todo_text = request.POST['todo_item_id_key_in_template']
     todo_item = TodoItem.objects.get(pk = todo_text)
