@@ -17,6 +17,8 @@
 </head>
 <body>
 
+<h2>Welcome {{user}}</h2>
+
 <h2>Add To Todo</h2>
 <form action="{% url 'todo:add_todo' %}" method="post">
     {% csrf_token %}

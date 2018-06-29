@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 
 @login_required
 def index(request):
-    somevar = TodoItem.objects.all()
+    somevar = request.user.todoitem_set.all()
 
     context = {
         'todo_items123': somevar
@@ -46,6 +46,7 @@ def remove_todo(request):
 
 
 def register(request):
+    print(request.POST)
     username = request.POST['username']
     email = request.POST['email']
     password = request.POST['password']
@@ -65,14 +66,15 @@ def mylogin(request):
         if 'next' in request.POST and request.POST['next'] != '':
             return HttpResponseRedirect(request.POST['next'])
         return HttpResponseRedirect(reverse('todo:index'))
-    return HttpResponseRedirect(reverse('todo:registration_login'))
+    return HttpResponseRedirect(reverse('todo:login_register'))
 
 
 def mylogout(request):
     logout(request)
-    return HttpResponseRedirect(reverse('todo:register'))
+    return HttpResponseRedirect(reverse('todo:login_register'))
 
 
 def login_register(request):
     next = request.GET.get('next', '')
-    return render(request, 'todo/register.html', {'next': next})
+    return render(request, 'todo/login_register.html', {'next': next})
+

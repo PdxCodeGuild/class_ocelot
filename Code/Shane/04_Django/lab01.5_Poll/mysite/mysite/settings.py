@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-LOGIN_URL = '/todo/register/'
+LOGIN_URL = '/todo/login_register/'
 
 # Application definition
 
