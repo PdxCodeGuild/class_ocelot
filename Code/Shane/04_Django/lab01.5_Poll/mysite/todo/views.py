@@ -43,27 +43,41 @@ def remove_todo(request):
 
     return HttpResponseRedirect(reverse('todo:index'))
 
+@login_required
+def home(request):
+    return render(request, 'todo/home.html', {})
+
 
 def register(request):
-    return render(request, 'todo/register.html')
+    username = request.POST['username']
+    email = request.POST['email']
+    password = request.POST['password']
 
+    user = User.objects.create_user(username, email, password)
+    login(request, user)
 
-def mylogout(request):
-    logout(request)
-    return HttpResponseRedirect(reverse('todo:register'))
+    return HttpResponseRedirect(reverse('todo:index'))
 
 
 def mylogin(request):
     username = request.POST['username']
     password = request.POST['password']
     user = authenticate(request, username=username, password=password)
+
     if user is not None:
         login(request, user)
-        return HttpResponseRedirect(reverse('todo:index'))
-    else:
-        return HttpResponseRedirect(reverse('todo:index'))
+        if 'next' in request.POST and request.POST['next'] != '':
+            return HttpResponseRedirect(request.POST['next'])
+        return HttpResponseRedirect(reverse('todo:home'))
+    return HttpResponseRedirect(reverse('todo:registration_login'))
+
+
+def mylogout(request):
+    logout(request)
+    return HttpResponseRedirect(reverse('todo:login_register'))
+
 
 
 def login_register(request):
     next = request.GET.get('next', '')
-    return render(request, 'todo/register.html', {'next': next})
+    return render(request, 'todo/login_register.html', {'next': next})
