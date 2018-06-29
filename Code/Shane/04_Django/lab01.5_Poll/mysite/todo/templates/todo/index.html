@@ -14,37 +14,43 @@
 <head>
     <meta charset="UTF-8">
     <title>To-Do App w/ Django</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
 </head>
 <body>
+<section class="section">
+    <div class="container">
+        <h2>Welcome {{user}}</h2>
 
-<h2>Welcome {{user}}</h2>
+        <h2>Add To Todo</h2>
+        <form action="{% url 'todo:add_todo' %}" method="post">
+            {% csrf_token %}
+            <input type="text" name="todo_item" placeholder="Give Yourself Something To Do!!" autofocus>
+            <button class="button info" type="submit">Add To List</button>
+        </form>
 
-<h2>Add To Todo</h2>
-<form action="{% url 'todo:add_todo' %}" method="post">
-    {% csrf_token %}
-    <input type="text" name="todo_item" placeholder="Give Yourself Something To Do!!" autofocus>
-    <input type="submit" value="Add To List">
-</form>
+        {% if todo_items123 %}
 
-{% if todo_items123 %}
+        {% for unicorn in todo_items123 %}
+        <form id="todo_form" action="{% url 'todo:todo_remove_unicorn' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="todo_item_id_key_in_template" value="{{unicorn.id}}">
+            <li>
+                {{unicorn.todo_text}}
+                <button class="button" type="submit">Remove Me!</button>
+            </li>
+        </form>
+        {% endfor %}
 
-{% for unicorn in todo_items123 %}
-<form id="todo_form" action="{% url 'todo:todo_remove_unicorn' %}" method="post">
-    {% csrf_token %}
-    <input type="hidden" name="todo_item_id_key_in_template" value="{{unicorn.id}}">
-    <li>
-        {{unicorn.todo_text}}
-        <button type="submit">Remove Me!</button>
-    </li>
-</form>
-{% endfor %}
-
-{% else %}
-<p>No items on the list</p>
-{% endif %}
+        {% else %}
+        <p>No items on the list</p>
+        {% endif %}
 
 
-<a href="{% url 'todo:logout' %}"/>logout</a>
+        <a href="{% url 'todo:logout' %}"/>logout</a>
+
+    </div>
+</section>
 
 </body>
 </html>

@@ -29,7 +29,7 @@ ALLOWED_HOSTS = []
 
 LOGIN_URL = '/todo/login_register/'
 
-GOOGLE_RECAPTCHA_SECRET_KEY = '6Lc8dWEUAAAAANHzIbbMVn6yqdsFg1P7Iy-gWTkU'
+
 
 # Application definition
 

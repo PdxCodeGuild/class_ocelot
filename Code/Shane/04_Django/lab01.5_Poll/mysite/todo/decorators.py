@@ -1,7 +1,6 @@
 from functools import wraps
-from django.conf import settings
+from . import local_settings
 from django.contrib import messages
-
 import requests
 
 def check_recaptcha(view_func):
@@ -11,7 +10,7 @@ def check_recaptcha(view_func):
         if request.method == 'POST':
             recaptcha_response = request.POST.get('g-recaptcha-response')
             data = {
-                'secret': settings.GOOGLE_RECAPTCHA_SECRET_KEY,
+                'secret': local_settings.GOOGLE_RECAPTCHA_SECRET_KEY,
                 'response': recaptcha_response
             }
             r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
