@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
+
 @login_required
 def index(request):
     somevar = TodoItem.objects.all()
@@ -69,9 +70,9 @@ def mylogin(request):
 
 def mylogout(request):
     logout(request)
-    return HttpResponseRedirect(reverse('todo:login_register'))
+    return HttpResponseRedirect(reverse('todo:register'))
 
 
 def login_register(request):
     next = request.GET.get('next', '')
-    return render(request, 'todo/login_register.html', {'next': next})
+    return render(request, 'todo/register.html', {'next': next})
