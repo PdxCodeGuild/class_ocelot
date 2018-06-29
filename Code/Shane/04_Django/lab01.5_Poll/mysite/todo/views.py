@@ -43,16 +43,11 @@ def remove_todo(request):
 
     return HttpResponseRedirect(reverse('todo:index'))
 
-@login_required
-def home(request):
-    return render(request, 'todo/home.html', {})
-
 
 def register(request):
     username = request.POST['username']
     email = request.POST['email']
     password = request.POST['password']
-
     user = User.objects.create_user(username, email, password)
     login(request, user)
 
@@ -68,14 +63,13 @@ def mylogin(request):
         login(request, user)
         if 'next' in request.POST and request.POST['next'] != '':
             return HttpResponseRedirect(request.POST['next'])
-        return HttpResponseRedirect(reverse('todo:home'))
+        return HttpResponseRedirect(reverse('todo:index'))
     return HttpResponseRedirect(reverse('todo:registration_login'))
 
 
 def mylogout(request):
     logout(request)
     return HttpResponseRedirect(reverse('todo:login_register'))
-
 
 
 def login_register(request):
