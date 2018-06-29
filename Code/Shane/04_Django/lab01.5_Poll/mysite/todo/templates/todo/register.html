@@ -11,7 +11,7 @@
 </head>
 <body>
     <h2>Register</h2>
-    <form action="{% url 'userapp:register' %}" method="post">
+    <form action="{% url 'todo:register' %}" method="post">
         {% csrf_token %}
         <input type="hidden" name="next" value="{{next}}"/>
         <input type="text" name="username" placeholder="username" required/>
@@ -22,7 +22,7 @@
 
 
     <h2>Login</h2>
-    <form action="{% url 'userapp:login' %}" method="post">
+    <form action="{% url 'todo:login' %}" method="post">
         {% csrf_token %}
         <input type="hidden" name="next" value="{{next}}"/>
         <input type="text" name="username" placeholder="username" required/>

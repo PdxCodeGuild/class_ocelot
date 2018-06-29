@@ -17,26 +17,6 @@
 </head>
 <body>
 
-<h2>Register</h2>
-<form action="{% url 'todo:register' %}" method="post">
-    {% csrf_token %}
-    <input type="hidden" name="next" value="{{next}}"/>
-    <input type="text" name="username" placeholder="username" required/>
-    <input type="text" name="email" placeholder="email" required/>
-    <input type="password" name="password" placeholder="password" required/>
-    <input type="submit" value="register"/>
-</form>
-
-
-<h2>Login</h2>
-<form action="{% url 'todo:login' %}" method="post">
-    {% csrf_token %}
-    <input type="hidden" name="next" value="{{next}}"/>
-    <input type="text" name="username" placeholder="username" required/>
-    <input type="password" name="password" placeholder="password" required/>
-    <input type="submit" value="login"/>
-</form>
-
 <h2>Add To Todo</h2>
 <form action="{% url 'todo:add_todo' %}" method="post">
     {% csrf_token %}

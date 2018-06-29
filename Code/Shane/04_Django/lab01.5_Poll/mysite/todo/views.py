@@ -45,12 +45,12 @@ def remove_todo(request):
 
 
 def register(request):
-    return HttpResponse('register here')
+    return render(request, 'todo/register.html')
 
 
 def mylogout(request):
     logout(request)
-    return HttpResponseRedirect(reverse('todo:index'))
+    return HttpResponseRedirect(reverse('todo:register'))
 
 
 def mylogin(request):
@@ -66,4 +66,4 @@ def mylogin(request):
 
 def login_register(request):
     next = request.GET.get('next', '')
-    return render(request, 'userapp/login_register.html', {'next': next})
+    return render(request, 'todo/register.html', {'next': next})
