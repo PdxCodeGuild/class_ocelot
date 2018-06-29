@@ -1,10 +1,10 @@
-
 from .models import TodoItem
 from django.shortcuts import render, reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.decorators import login_required
+from .decorators import check_recaptcha
 
 
 # Create your views here.
@@ -16,11 +16,12 @@ def index(request):
 
     context = {
         'todo_items123': somevar
-            # somevar[0].todo_text #<-- This is from models column 1 named todo_text
+        # somevar[0].todo_text #<-- This is from models column 1 named todo_text
     }
 
     return render(request, 'todo/index.html', context)
     # go to the bd and get the display      ... ... ...objects.all()
+
 
 @login_required
 def add_todo(request):
@@ -33,10 +34,11 @@ def add_todo(request):
 
     return HttpResponseRedirect(reverse('todo:index'))
 
+
 @login_required
 def remove_todo(request):
     todo_text = request.POST['todo_item_id_key_in_template']
-    todo_item = TodoItem.objects.get(pk = todo_text)
+    todo_item = TodoItem.objects.get(pk=todo_text)
     todo_item.delete()
     # item_on_list = question.choice_set.get(pk=request.POST['choice'])
     # save data from request.POST in database
@@ -74,7 +76,8 @@ def mylogout(request):
     return HttpResponseRedirect(reverse('todo:login_register'))
 
 
+@check_recaptcha
 def login_register(request):
+    print(request)
     next = request.GET.get('next', '')
     return render(request, 'todo/login_register.html', {'next': next})
-

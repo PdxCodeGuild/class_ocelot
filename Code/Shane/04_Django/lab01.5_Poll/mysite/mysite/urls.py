@@ -24,5 +24,4 @@ urlpatterns = [
     path('todo/', include('todo.urls')),
     path('short_url/', include('short_url.urls')),
     path('library/', include('library.urls')),
-
 ]

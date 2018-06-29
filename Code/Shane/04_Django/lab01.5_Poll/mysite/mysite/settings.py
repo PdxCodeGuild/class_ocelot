@@ -29,11 +29,14 @@ ALLOWED_HOSTS = []
 
 LOGIN_URL = '/todo/login_register/'
 
+GOOGLE_RECAPTCHA_SECRET_KEY = '6Lc8dWEUAAAAABjUdXmBSCkJ3lf4BNyXQQyC9MMq'
+
 # Application definition
 
 INSTALLED_APPS = [
     'short_url.apps.ShortUrlConfig',
     'todo.apps.TodoConfig',
+    'captcha',
     'polls.apps.PollsConfig',
     'library.apps.LibraryConfig',
     'django.contrib.admin',
