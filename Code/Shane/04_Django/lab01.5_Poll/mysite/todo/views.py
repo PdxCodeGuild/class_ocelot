@@ -5,6 +5,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.decorators import login_required
 from .decorators import check_recaptcha
+import requests
+from django.conf import settings
+from django.contrib import messages
+import json
+import urllib
 
 
 # Create your views here.
@@ -46,22 +51,26 @@ def remove_todo(request):
 
     return HttpResponseRedirect(reverse('todo:index'))
 
-
+@check_recaptcha
 def register(request):
-    print(request.POST)
+    if not request.recaptcha_is_valid:
+        return HttpResponseRedirect(reverse('todo:login_register')+'?message=bad_recaptcha')
     username = request.POST['username']
     email = request.POST['email']
     password = request.POST['password']
     user = User.objects.create_user(username, email, password)
     login(request, user)
-
     return HttpResponseRedirect(reverse('todo:index'))
 
 
+@check_recaptcha
 def mylogin(request):
+    if not request.recaptcha_is_valid:
+        return HttpResponseRedirect(reverse('todo:login_register')+'?message=bad_recaptcha')
     username = request.POST['username']
     password = request.POST['password']
     user = authenticate(request, username=username, password=password)
+
 
     if user is not None:
         login(request, user)
@@ -76,8 +85,8 @@ def mylogout(request):
     return HttpResponseRedirect(reverse('todo:login_register'))
 
 
-@check_recaptcha
+
 def login_register(request):
-    print(request)
+    message = request.GET.get('message', '')
     next = request.GET.get('next', '')
-    return render(request, 'todo/login_register.html', {'next': next})
+    return render(request, 'todo/login_register.html', {'next': next, 'message': message})
