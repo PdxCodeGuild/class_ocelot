@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>To List Home</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+<style>
+    #ToDoToto td {
+        border: 5px solid green;
+        border-radius: 3px;
+    }
+    #ToDoToto th {
+        background-color: lightgrey;
+        border-radius: 3px;
+    }
+    #list_list {
+        width: 200px;
+    }
+</style>
+</head>
+<body>
+    <div id="app">
+        <h2>To Do List</h2>
+        <table>
+            <tr>
+                <td>New List</td>
+                <td>
+                    <form action="{% url 'todoozer:new_list' %}">
+                        <input type="text" name="list_name" placeholder="New List Name"/>
+                        <input type="submit" value="add"/>
+                    </form>
+                </td>
+            </tr>
+            <tr>
+                <td>Lists</td>
+                <td>
+                    <select id="list_list" v-model="list_id" v-on:change="list_change">
+                        <option value="none"></option>
+                        {% for list in lists %}
+                            <option value="{{ list.id }}">{{ list.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+        </table><br><br>
+        <form action="{% url 'todoozer:add' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="list_id" v-model="list_id"/>
+            <label>To Do Item:</label>
+            <input type="text" name="item_text"/><br>
+            <label>Urgency:</label>
+            <select name="urgency">
+                <option value="Whatevs">Whatevs</option>
+                <option value="Meh">Meh</option>
+                <option value="Yeah fine">Yeah fine</option>
+                <option value="Holy shit">Holy shit</option>
+                <option value="To Late">Too late</option>
+            </select><br>
+            <label>Due Date:</label>
+            <input type="date" name="due_date"/><br>
+            <input type="submit" value="Add Toto"/>
+        </form><br>
+        <table id="ToDoToto">
+            <tr>
+                <th>To Do Item</th>
+                <th>Urgency</th>
+                <th>Due Date</th>
+                <th>Date Created</th>
+                <th>Toto To Do</th>
+                <th>Song</th>
+                <th>Year</th>
+            </tr>
+            <tr v-for="item in items">
+                <td>[[ item.item_text ]]</td>
+                <td>[[ item.urgency ]]</td>
+                <td>[[ item.due_date ]]</td>
+                <td>[[ item.created ]]</td>
+                <td>[[ item.lyric ]]</td>
+                <td>[[ item.song ]]</td>
+                <td>[[ item.year ]]</td>
+            </tr>
+        </table>
+    </div>
+    <script>
+        let app = new Vue({
+            el: '#app',
+            delimiters: ['[[', ']]'],
+            data: {
+                list_id: "{{ selected_list_id }}",
+                items: {'items': []}
+            },
+            methods: {
+                list_change() {
+                    let app = this
+                    console.log("{% url 'todoozer:list' %}?list_id=" + this.list_id)
+                    axios.get("{% url 'todoozer:list' %}?list_id=" + this.list_id)
+                        .then(response => {
+                            console.log('!!!!!!!!!!!!!!%%%%')
+                            this.items = response.data.items
+                    }).catch(function (error) {
+    console.log(error);
+  });
+                }
+            }
+        })
+    </script>
+
+</body>
+

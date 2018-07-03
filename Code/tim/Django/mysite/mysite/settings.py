@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'todo.apps.TodoConfig',
     'shortener.apps.ShortenerConfig',
     'library.apps.LibraryConfig',
+    'todoozer.apps.TodoozerConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

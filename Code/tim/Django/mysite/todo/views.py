@@ -7,14 +7,14 @@ from .models import TodoItem, TotoItem, TodoList
 
 def home(request):
     lists = TodoList.objects.order_by('-created')
-    return render(request, 'todo/home.html', {'lists': lists})
+    return render(request, 'todoozer/home.html', {'lists': lists})
 
 def list(request, list_id):
     list = get_object_or_404(TodoList, pk=list_id)
     ordered_list = list.todoitem_set.order_by('-due_date')
     print(list)
     print(ordered_list)
-    return render(request, 'todo/list.html', {'list': list, 'items': ordered_list})
+    return render(request, 'todoozer/list.html', {'list': list, 'items': ordered_list})
 
 def add(request, list_id):
     toto = random.choice(TotoItem.objects.all())
@@ -26,4 +26,4 @@ def add(request, list_id):
         urgency = request.POST['urgency'],
         toto_item = toto)
     new_todo.save()
-    return HttpResponseRedirect(reverse('todo:list', args=(list_id,)))
+    return HttpResponseRedirect(reverse('todoozer:list', args=(list_id,)))
