@@ -1,0 +1,134 @@
+$color_1: #fff;
+$color_2: white;
+$color_3: #555;
+$font_family_1: 'Encode Sans Condensed', sans-serif;
+$background_color_1: black;
+$background_color_2: #c1ede8;
+$background_color_3: #bbb;
+$border_color_1: #fff;
+
+@import "https://fonts.googleapis.com/css?family=Encode+Sans+Condensed";
+body {
+	margin: 0;
+	min-width: 250px;
+	font-family: $font_family_1;
+	font-weight: lighter;
+	background-color: $background_color_1;
+}
+* {
+	box-sizing: border-box;
+}
+#main-container {
+	alignment: center;
+}
+#todo-container {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	width: 50vw;
+	height: 100vh;
+	max-width: 600px;
+	min-width: 300px;
+	margin: 10px;
+}
+ul {
+	margin: 0;
+	padding: 0;
+	li {
+		cursor: pointer;
+		position: relative;
+		padding: 12px 8px 12px 40px;
+		list-style-type: none;
+		background: #eee;
+		font-size: 16px;
+		transition: 0.2s;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
+		&:nth-child(odd) {
+			background: #f9f9f9;
+		}
+		&:hover {
+			background: #ddd;
+		}
+	}
+	li.checked {
+		background: #888;
+		color: $color_1;
+		text-decoration: line-through;
+		&::before {
+			content: '';
+			position: absolute;
+			border-color: $border_color_1;
+			border-style: solid;
+			border-width: 0 2px 2px 0;
+			top: 10px;
+			left: 16px;
+			transform: rotate(45deg);
+			height: 15px;
+			width: 7px;
+		}
+	}
+}
+.close {
+	position: absolute;
+	right: 0;
+	top: 0;
+	padding: 12px 16px 12px 16px;
+	&:hover {
+		background-color: $background_color_2;
+		color: $color_2;
+	}
+}
+.header {
+	background-color: $background_color_2;
+	padding: 30px 40px;
+	color: $color_2;
+	text-align: center;
+	&:after {
+		content: "";
+		display: table;
+		clear: both;
+	}
+}
+.login-header {
+	padding: 30px 40px;
+	color: $color_2;
+	text-align: center;
+	&:after {
+		content: "";
+		display: table;
+		clear: both;
+	}
+}
+input {
+	display: flex;
+	margin: 0;
+	border: none;
+	border-radius: 0;
+	width: 75%;
+	padding: 10px;
+	float: left;
+	font-size: 16px;
+}
+.addBtn {
+	flex: 1;
+	padding: 10px;
+	width: 25%;
+	background: none;
+	color: $color_3;
+	float: left;
+	text-align: center;
+	font-size: 16px;
+	cursor: pointer;
+	transition: 0.4s;
+	border: none;
+	border-radius: 0;
+	margin: 0;
+	&:hover {
+		background-color: $background_color_3;
+		flex: 1;
+	}
+}

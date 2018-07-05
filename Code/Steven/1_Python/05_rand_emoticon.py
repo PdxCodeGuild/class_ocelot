@@ -1,34 +1,23 @@
 import random
 
-# define emoticon face components
-emo_eyeses = [':', ';', '8']
-emo_noses = ['-', 'o', '^']
-emo_mouths = ['D', 'P', 'p', ')', '/', '|', '(', '<']
-emo_beards = ['>', '⊃']
+# define sideways face parts
+eyeses = [':', ';', '8']
+noses = ['-', 'o', '^']
+mouths = ['D', 'P', 'p', ')', '/', '|', '(', '<']
+# head_left = ' ⏜ '
+# head_right = ' ⏝ '
 
-# randomly select face components
-emo_eyes = random.choice(emo_eyeses)
-emo_nose = random.choice(emo_noses)
+# choose random face parts
+eyes = random.choice(eyeses)
+nose = random.choice(noses)
+mouth = random.choice(mouths)
 
-# random beard state
-beard_state = random.randint(1, 4)
-if beard_state == 1:
-    emo_beard = random.choice(emo_beards)
-else:
-    emo_beard = ''
+print('\n\n')
 
-# display emoticon
-counter1 = 0
-print('\n')
-while counter1 < 5:
-    # mouth select
-    emo_mouth = random.choice(emo_mouths)
-    print(emo_eyes + emo_nose + emo_mouth + emo_beard)
-    counter1 += 1
+for mouth in mouths:
+    # print( head_left, end="\t")
+    print(eyes + nose + mouth, end="\t")
+    # print(head_right, end="\t")
+print('\n\n\n\n')
 
-print()
-print()
-emo_eyes = random.choice(emo_eyeses)
-emo_nose = random.choice(emo_noses)
-for emo_mouth in emo_mouths:
-    print(emo_eyes + emo_nose + emo_mouth + emo_beard)
+
