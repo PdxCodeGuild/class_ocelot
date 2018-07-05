@@ -1,12 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
 </html><!DOCTYPE html>
 <html lang="en">
 <head>
@@ -244,16 +235,31 @@
             }
         }
 
+        let color_index = 0
         let key_tracker = new KeyTracker()
         document.addEventListener('keydown', (evt) => {
-            key_tracker.keyDown(evt.key);
-        });
+            key_tracker.keyDown(evt.key)
+            if (evt.key === 'b') {                                                       /////  CHEAT - CYCLE COLOR
+                world.player.color = world.colors[color_index % world.colors.length]
+                world.player.shot_speed = color_data[world.player.color].shot_speed
+                world.player.shot_cost = color_data[world.player.color].shot_cost
+                world.player.mx = color_data[world.player.color].mx
+                world.player.rgb = new RGBColor(world.player.color)
+                color_index += 1
+            }
+            if (evt.key === 'g') {                                                       /////  CHEAT - GOD MODE
+                world.player.mx = 3.5
+                world.player.energy = 999
+                world.player.star_count = 999
+            }
+        })
 
         document.addEventListener('keyup', (evt) => {
             key_tracker.keyUp(evt.key);
-        });
+        })
 
-        // WORLD STUFF ==============================================
+        // WORLD STUFF
+        // ==============================================
 
         function checkAttackOnCTX(x, y, width, height, ctx) {
             if (width + height < 20) {
@@ -356,6 +362,8 @@
                 this.hurt_count = 0
                 this.last_teleport = {}
                 this.score = 0
+                this.base_health = 100
+                this.health = 100
                 this.base_energy = 100
                 this.energy = 100
                 this.shots = []
@@ -368,7 +376,7 @@
                 this.flip_type = ''
                 this.facing = 1 // right
             }
-            draw(world_ctx, sword_ctx) {
+            draw(world_ctx, sword_ctx, ground_y) {
                 world_ctx.save();
                 let grd = world_ctx.createLinearGradient(0, 0, this.width * this.facing , -this.height/4)
                 grd.addColorStop(0, this.color)
@@ -452,13 +460,20 @@
                         }
                         if (poly_path.tip.length > 0) {
                             sword_ctx.strokeStyle = this.color
-                            let alpha = this.sword_trail[k][this.sword_trail[k].length-1].life / 75 + 0.2
+                            let alpha = this.sword_trail[k][this.sword_trail[k].length-1].life / 120 + 0.2
                             sword_ctx.fillStyle = "rgba(" + this.rgb["r"] + "," + this.rgb["g"] + "," + this.rgb["b"] +
                                 "," + alpha + ")"
                             sword_ctx.beginPath()
                             sword_ctx.moveTo(poly_path.tip[0].x, poly_path.tip[0].y)
+                            // console.log(poly_path.tip.length)
                             for (let i = 1; i < poly_path.tip.length; i++) {
-                                sword_ctx.lineTo(poly_path.tip[i].x, poly_path.tip[i].y)
+                                if (this.flip_type === 'down'
+                                    && poly_path.tip[i].y > ground_y - this.height
+                                    && i === poly_path.tip.length - 1) {
+                                    sword_ctx.lineTo(poly_path.tip[i].x, ground_y)
+                                } else {
+                                    sword_ctx.lineTo(poly_path.tip[i].x, poly_path.tip[i].y)
+                                }
                             }
                             for (let i = poly_path.cen.length - 1; i > 0; i--) {
                                 sword_ctx.lineTo(poly_path.cen[i].x, poly_path.cen[i].y)
@@ -501,7 +516,7 @@
                 this.energy += 20
                 if (this.energy > 100) this.energy = 100
             }
-            getFlipAttack(x_click, y_click) {
+            getFlipAttack(x_click, y_click, ground_boost) {
                 let dx = x_click - this.x + this.width / 2
                 let dy = y_click - this.y
                 if (dx > 0 && dy > 0 && this.energy >= 25) {
@@ -509,7 +524,7 @@
                     this.flip_rotation = 'clockwise'
                     this.flip_type = 'down'
                     this.facing = 1 // right
-                    this.vy = -2
+                    this.vy = -2-ground_boost
                     this.energy -= 25
                     return true
                 } else if (dx > 0 & dy < 0 && this.energy >= 25) {
@@ -525,7 +540,7 @@
                     this.flip_rotation = 'counter'
                     this.flip_type = 'down'
                     this.facing = -1 // left
-                    this.vy = -2
+                    this.vy = -2-ground_boost
                     this.energy -= 25
                     return true
                 } else if (this.energy >= 25) {
@@ -540,49 +555,187 @@
             }
         }
 
-        class WhiEnemy extends Rectangle {
+        class Enemy extends Rectangle {
+            constructor(x, y, width, height, color) {
+                super(x, y, width, height, color)
+                this.move_cooldown = 30
+                this.shot_cooldown = 120
+                this.shots = []
+            }
+            keepDistanceX(min_x, max_x) {
+                let x_dist = Math.abs(this.cen_x() - this.target.cen_x())
+                if (!(x_dist > min_x && x_dist < max_x)) {
+                    let dir_switch = x_dist > min_x ? 1 : -1                // INSIDE MIN_X, MOVE AWAY
+                    this.x += this.vx * this.getDirX() * dir_switch
+                    return true
+                }
+            }
+            proxyX() {
+                return Math.abs(this.cen_x() - this.target.cen_x())
+            }
+            proxyY() {
+                return Math.abs(this.cen_y() - this.target.cen_y())
+            }
+            getDirX() {
+                return this.cen_x() - this.target.cen_x() < 0 ? 1 : -1
+            }
+        }
+
+        class WhiteEnemy extends Enemy {
+            constructor(x, y, width, height, color) {
+                super(x, y, width, height, color)
+                this.fire_range_x = 600
+                this.fire_range_y = 80
+            }
+            update() {
+                if (this.move_cooldown < 0) {
+                    this.keepDistanceX(150, 250)
+                    ///// ALIGN Y WITHIN 10 PX /////
+                    let ey = this.cen_y()
+                    let ty = this.target.cen_y()
+                    if (ey > ty + 10) {
+                        this.y -= this.vy
+                    } else if (ey < ty - 10) {
+                        this.y += this.vy
+                    }
+                }
+                this.move_cooldown -= 1
+            }
+        }
+
+        class RedEnemy extends Enemy {
+            constructor(x, y, width, height, color) {
+                super(x, y, width, height, color)
+                this.jump_range_x = 400
+                this.vx_to_jump = 7
+                this.accel_vx = 0.1
+                this.jump_vy = -12
+                this.on_ground = false
+                this.charge_dir = 1
+            }
+            update(ground_y) {
+                ///// SET CHARGE DIRECTION/////
+                if (this.move_cooldown === 0) {
+                    this.charge_dir = this.getDirX()
+                ///// CHARGE /////
+                } else if (this.move_cooldown < 0 && this.on_ground) {
+                    this.x += this.vx * this.charge_dir
+                    if (this.vx < this.vx_to_jump) this.vx += this.accel_vx
+                    if (this.vx >= this.vx_to_jump) {
+                        if (this.proxyX() < this.jump_range_x) {
+                            this.vy = this.jump_vy
+                            this.on_ground = false
+                        } else if (this.move_cooldown < -240) {
+                            this.move_cooldown = 360
+                        }
+                    }
+                ///// AIRBORN /////
+                } else if (!this.on_ground) {
+                    this.y += this.vy
+                    this.vy += .4
+                    this.vx *= .99
+                    this.x += this.vx * this.charge_dir
+                    if (this.y + this.vy + this.height > ground_y) {
+                        this.on_ground = true
+                        this.y = ground_y - this.height
+                        this.vy = 0
+                        this.move_cooldown = 360
+                        this.shot_cooldown = 180
+                    }
+                ///// LANDED /////
+                } else {
+                    if (this.move_cooldown > 270) {
+                        this.x += this.vx * this.charge_dir
+                        this.vx *= .97
+                    } else if(this.move_cooldown === 270) {
+                        this.vx = 0
+                    }
+                }
+                this.move_cooldown -= 1
+            }
+        }
+
+        class OrangeEnemy extends Enemy {
+            constructor(x, y, width, height, color) {
+                super(x, y, width, height, color)
+                this.fire_range_x = 400
+                this.runaway_cooldown = 0
+                this.runaway_dir = 1
+            }
+            // update() {
+            //     this.runaway_cooldown -= 1
+            //     this.move_cooldown -= 1
+            //     if (this.move_cooldown < 0) {
+            //         if (this.y < 20){
+            //             this.vy = random(0.2, 0.3)
+            //         } else if (this.y > 50 && this.vy > 0) {
+            //             this.vy = -random(0.4, 0.8)
+            //         }
+            //         if (this.runaway_cooldown > 0) {
+            //             this.x += this.vx * this.runaway_dir
+            //         } else if (this.keepDistanceX(200, 300)) {
+            //             this.y += this.vy
+            //         } else {
+            //             this.y += this.vy * 2
+            //         }
+            //     }
+            // }
+            // goodShot() {
+            //     let theta = Math.atan2(this.target.cen_y()-this.cen_y(),this.target.cen_x()-this.cen_x()) > 0
+            //     return theta > 0 && this.runaway_cooldown < -200
+            // }
+        }
+
+        class YellowEnemy extends Enemy {
             constructor(x, y, width, height, color) {
                 super(x, y, width, height, color)
             }
         }
 
-        class RedEnemy extends Rectangle {
+        class GreenEnemy extends Enemy {
             constructor(x, y, width, height, color) {
                 super(x, y, width, height, color)
             }
         }
 
-        class OraEnemy extends Rectangle {
+        class BlueEnemy extends Enemy {
+            constructor(x, y, width, height, color) {
+                super(x, y, width, height, color)
+                this.fire_range_x = 400
+                this.runaway_cooldown = 0
+                this.runaway_dir = 1
+            }
+            update() {
+                this.runaway_cooldown -= 1
+                this.move_cooldown -= 1
+                if (this.move_cooldown < 0) {
+                    if (this.y < 20){
+                        this.vy = random(0.2, 0.3)
+                    } else if (this.y > 50 && this.vy > 0) {
+                        this.vy = -random(0.4, 0.8)
+                    }
+                    if (this.runaway_cooldown > 0) {
+                        this.x += this.vx * this.runaway_dir
+                    } else if (this.keepDistanceX(200, 300)) {
+                        this.y += this.vy
+                    } else {
+                        this.y += this.vy * 2
+                    }
+                }
+            }
+            goodShot() {
+                let theta = Math.atan2(this.target.cen_y()-this.cen_y(),this.target.cen_x()-this.cen_x()) > 0
+                return theta > 0 && this.runaway_cooldown < -200
+            }
+        }
+
+        class PurpleEnemy extends Enemy {
             constructor(x, y, width, height, color) {
                 super(x, y, width, height, color)
             }
         }
 
-        class YelEnemy extends Rectangle {
-            constructor(x, y, width, height, color) {
-                super(x, y, width, height, color)
-            }
-        }
-
-        class GreEnemy extends Rectangle {
-            constructor(x, y, width, height, color) {
-                super(x, y, width, height, color)
-            }
-        }
-
-        class BluEnemy extends Rectangle {
-            constructor(x, y, width, height, color) {
-                super(x, y, width, height, color)
-            }
-        }
-
-        class PurEnemy extends Rectangle {
-            constructor(x, y, width, height, color) {
-                super(x, y, width, height, color)
-            }
-        }
-
-        class StaShot extends Rectangle {
+        class StarShot extends Rectangle {
             constructor(x, y, width, height, color, shooter, life = 360) {
                 super(x, y, width, height, color)
                 this.ground_timer = 0
@@ -592,7 +745,7 @@
             }
         }
 
-        class RedShot extends StaShot {
+        class RedShot extends StarShot {
             constructor(x, y, width, height, color, shooter) {
                 super(x, y, width, height, color, shooter)
             }
@@ -609,7 +762,7 @@
             }
         }
 
-        class YelShot extends StaShot {
+        class YellowShot extends StarShot {
             constructor(x, y, width, height, color, shooter, life=360, original=true) {
                 super(x, y, width, height, color, shooter, life)
                 this.bolt_pivot = {x:0, y:0, life:0}
@@ -628,7 +781,7 @@
                     this.last_dir *= -1
                     if (this.original) {
                         if (Math.random() < 0.3 && this.split_cooldown < 0) {
-                            let shot = new YelShot(
+                            let shot = new YellowShot(
                                 this.x, this.y, this.width, this.height, this.color, this.shooter,
                                     Math.floor(this.life), false)
                             shot.speed = this.speed
@@ -646,7 +799,7 @@
             }
         }
 
-        class BluShot extends StaShot {
+        class BlueShot extends StarShot {
             constructor(x, y, width, height, color, shooter) {
                 super(x, y, width, height, color, shooter)
                 this.ct = 0
@@ -678,13 +831,35 @@
         }
 
         let color_data = {
-            'orange':      {mx: 2.0, shot_speed: 5, shot_cost: 14, shot: StaShot, enemy: WhiEnemy},
-            'mediumblue':  {mx: 2.0, shot_speed: 6, shot_cost: 14, shot: BluShot, enemy: RedEnemy},
-            'white':       {mx: 2.5, shot_speed: 6, shot_cost: 6,  shot: StaShot, enemy: OraEnemy},
-            'darkorchid':  {mx: 2.5, shot_speed: 6, shot_cost: 10, shot: StaShot, enemy: YelEnemy},
-            'red':         {mx: 2.5, shot_speed: 7, shot_cost: 12, shot: RedShot, enemy: GreEnemy},
-            'yellow':      {mx: 3.0, shot_speed: 7, shot_cost: 12, shot: YelShot, enemy: BluEnemy},
-            'limegreen':   {mx: 3.0, shot_speed: 9, shot_cost: 8,  shot: StaShot, enemy: PurEnemy}
+                            //////// PLAYER ////////       //////// ENEMY ////////
+            'white':       {shot:           StarShot   ,   enemy:       WhiteEnemy,
+                            shot_speed:          6.0   ,   enemy_vx:           1.5,
+                            shot_cost:           6.0   ,   enemy_vy:           0.8,
+                            mx:                  2.5   ,                                },
+            'red':         {shot:            RedShot   ,   enemy:         RedEnemy,
+                            shot_speed:          7.0   ,   enemy_vx:             0,     // X ACCELERATION IN CONSTRUCTOR
+                            shot_cost:          12.0   ,   enemy_vy:             0,     // Y JUMP SPEED IN CONSTRUCTOR
+                            mx:                  2.5   ,                                },
+            'orange':      {shot:           StarShot   ,   enemy:        BlueEnemy,
+                            shot_speed:          5.0   ,   enemy_vx:           1.5,
+                            shot_cost:          14.0   ,   enemy_vy:          -3.0,
+                            mx:                  2.0   ,                                },
+            'yellow':      {shot:         YellowShot   ,   enemy:        BlueEnemy,
+                            shot_speed:          7.0   ,   enemy_vx:           2.0,
+                            shot_cost:          12.0   ,   enemy_vy:          -3.0,
+                            mx:                  3.0   ,                                },
+            'limegreen':   {shot:           StarShot   ,   enemy:       WhiteEnemy,
+                            shot_speed:          9.0   ,   enemy_vx:           2.0,
+                            shot_cost:           8.0   ,   enemy_vy:           1.0,
+                            mx:                  3.0   ,                                },
+            'mediumblue':  {shot:           BlueShot   ,   enemy:        BlueEnemy,
+                            shot_speed:          6.0   ,   enemy_vx:           1.5,
+                            shot_cost:          14.0   ,   enemy_vy:          -3.0,
+                            mx:                  2.0   ,                                },
+            'darkorchid':  {shot:           StarShot   ,   enemy:         RedEnemy,
+                            shot_speed:          6.0   ,   enemy_vx:           1.5,
+                            shot_cost:          10.0   ,   enemy_vy:           0.8,
+                            mx:                  2.5   ,                                },
         }
 
         class World {
@@ -741,7 +916,7 @@
                 let player_size = 20
                 this.player = new StarJumper(sword_cnv.width/2-player_size/2,
                                             sword_cnv.height-this.ground_height-player_size*2,
-                                            player_size, player_size*2, 'yellow')
+                                            player_size, player_size*2, this.colors[color_index])
                 ////// GOLDEN STAR ///////
                 this.point_star = new PointStar(random(100, this.width - 100),
                                                   random(0, this.height * 0.8),
@@ -751,10 +926,10 @@
                     let x = random(10, this.width-10)
                     let y = random(10, this.height-this.ground_height-player_size-10)
                     let enemy = new color_data[this.colors[i]].enemy(x, y, player_size, player_size, this.colors[i])
-                    enemy.vx = random(-2, 2)
-                    enemy.vy = random(-2, 2)
-                    enemy.shot_cooldown = 0
-                    enemy.shots = []
+                    // color_data[this.colors[i]].enemy(x, y, player_size, player_size, this.colors[i])
+                    enemy.vx = color_data[this.colors[i]].enemy_vx
+                    enemy.vy = color_data[this.colors[i]].enemy_vy
+                    enemy.target = this.player
                     this.enemies.push(enemy)
 
                     ////// PORTALS ///////
@@ -808,8 +983,10 @@
                 this.sword_cnv.oncontextmenu = (e) => {
                     if (this.player.flip_count <= 0 && !this.player.staa_ridin) {
                         let trans_x = this.getTransX()
-                        let result = this.player.getFlipAttack(e.clientX - this.cnv_rect.left - trans_x - this.player.width,
-                            e.clientY - this.cnv_rect.top)
+                        let ground_boost = Math.max(6 - (this.ground.y - this.player.y) / this.player.height * 2, 0)
+                        let result = this.player.getFlipAttack(
+                            e.clientX - this.cnv_rect.left - trans_x - this.player.width,
+                            e.clientY - this.cnv_rect.top, ground_boost)
                         if (result) {
                             // this.sounds[Math.floor(Math.random() * this.sounds.length)].play()
                             this.player.sword_trail.push([])
@@ -956,20 +1133,39 @@
                 ///// ENEMIES /////
                 for (let i=0; i<this.enemies.length; i++) {
                     if (!this.enemies[i].dead) {
-                        this.enemies[i].update()
-                        if (this.enemies[i].x > this.width - this.star_size) {
-                            this.enemies[i].vx *= -1
-                            this.enemies[i].x = this.width - this.star_size - this.enemies[i].vx
-                        } else if (this.enemies[i].x < 0) {
-                            this.enemies[i].vx *= -1
-                            this.enemies[i].x = this.enemies[i].vx
-                        } else if (this.enemies[i].y > this.height - this.ground_height - this.enemies[i].height) {
-                            this.enemies[i].vy *= -1
-                            this.enemies[i].y = this.height - this.ground_height - this.enemies[i].height + this.enemies[i].vy
-                        } else if (this.enemies[i].y < 0) {
-                            this.enemies[i].vy *= -1
-                            this.enemies[i].y += this.enemies[i].vy
+                        if (this.enemies[i].constructor.name === 'RedEnemy') {
+                            this.enemies[i].update(this.ground.y)
+                            if (this.enemies[i].x > this.width - this.enemies[i].width) {
+                                this.enemies[i].x = this.width - this.enemies[i].width
+                                this.enemies[i].vx = 0
+                                this.enemies[i].move_cooldown = 240
+                            } else if (this.enemies[i].x < 0) {
+                                this.enemies[i].x = 0
+                                this.enemies[i].vx = 0
+                                this.enemies[i].move_cooldown = 240
+                            }
+                        } else if (this.enemies[i].constructor.name === 'BlueEnemy') {
+                            this.enemies[i].update()
+                            if (this.enemies[i].x > this.width - this.enemies[i].width) {
+                                this.enemies[i].x = this.width - this.enemies[i].width
+                                this.enemies[i].runaway_cooldown = 180
+                                this.enemies[i].runaway_dir = -1
+                            } else if (this.enemies[i].x < 0) {
+                                this.enemies[i].x = 0
+                                this.enemies[i].runaway_cooldown = 180
+                                this.enemies[i].runaway_dir = 1
+                            }
+                        } else {
+                            this.enemies[i].update()
                         }
+
+                        // } else if (this.enemies[i].y > this.height - this.ground_height - this.enemies[i].height) {
+                        //     this.enemies[i].vy *= -1
+                        //     this.enemies[i].y = this.height - this.ground_height - this.enemies[i].height + this.enemies[i].vy
+                        // } else if (this.enemies[i].y < 0) {
+                        //     this.enemies[i].vy *= -1
+                        //     this.enemies[i].y += this.enemies[i].vy
+                        // }
                         ///// CHECK ON SWORD /////
                         let sword_hit = checkAttackOnCTX(this.enemies[i].x + trans_x, this.enemies[i].y,
                             this.enemies[i].width, this.enemies[i].height, this.sword_ctx)
@@ -998,26 +1194,56 @@
                     ///// ENEMY STILL ALIVE, TAKE DIRECT SHOT IF RANDOM CHANCE + AFTER COOLDOWN /////
                     if (!this.enemies[i].dead) {
                         this.enemies[i].shot_cooldown -= 1
-                        let take_shots = Math.random() < .02
-                        let is_close = Math.abs(this.enemies[i].x - this.player.x) < this.world_cnv.width / 2
-                        if (take_shots && is_close && this.enemies[i].shot_cooldown < 0) {
-                            let shot = new color_data[this.enemies[i].color].shot(
-                                this.enemies[i].cen_x(), this.enemies[i].cen_y(), this.star_size, this.star_size,
-                                this.enemies[i].color, this.enemies[i])
-                            let shot_vel = getShotVelocities(this.player.cen_x(),this.player.cen_y(),
-                                this.enemies[i].cen_x(), this.enemies[i].cen_y(), shot.speed)
-                            shot.vx = shot_vel.vx
-                            shot.vy = shot_vel.vy
-                            ///// SPECIAL CASES - RED & ORANGE /////
-                            if (this.enemies[i].color === 'red') {
-                                shot = this.addRedTarget(
-                                    this.enemies[i].cen_x(), this.enemies[i].cen_y(), this.enemies[i], shot)
-                            } else if (this.enemies[i].color === 'orange') {
-                                this.addOrangeBuck(this.enemies[i], shot)
+                        if (Math.random() < .02) {
+                            let take_shot = true
+                            if (this.enemies[i].constructor.name === 'WhiteEnemy') {
+                                take_shot = this.enemies[i].proxyX() < this.enemies[i].fire_range_x
+                                take_shot = this.enemies[i].proxyY() < this.enemies[i].fire_range_y
+                            } else if (this.enemies[i].constructor.name === 'RedEnemy') {
+                                take_shot = this.enemies[i].vx === 0
+                            } else if (this.enemies[i].constructor.name === 'BlueEnemy') {
+                                take_shot = this.enemies[i].goodShot()
+                                if (take_shot) {
+                                    this.enemies[i].runaway_cooldown = 180
+                                    this.enemies[i].move_cooldown = 30
+                                    if (this.enemies[i].cen_x() < this.player.cen_x()) {
+                                        this.enemies[i].runaway_dir = -1
+                                    } else {
+                                        this.enemies[i].runaway_dir = 1
+                                    }
+                                }
                             }
-                            shot.life = 240
-                            this.enemies[i].shots.push(shot)
-                            this.enemies[i].shot_cooldown = 60
+                            if (take_shot && this.enemies[i].shot_cooldown < 0) {
+                                let shot = new color_data[this.enemies[i].color].shot(
+                                    this.enemies[i].cen_x(), this.enemies[i].cen_y(), this.star_size, this.star_size,
+                                    this.enemies[i].color, this.enemies[i])
+                                let shot_vel = getShotVelocities(this.player.cen_x(), this.player.cen_y(),
+                                    this.enemies[i].cen_x(), this.enemies[i].cen_y(), shot.speed)
+                                shot.vx = shot_vel.vx
+                                shot.vy = shot_vel.vy
+                                ///// SPECIAL CASES - RED & ORANGE /////
+                                if (this.enemies[i].color === 'red') {
+                                    if (this.enemies[i].proxyX() < 200) {
+                                        shot.vx = 0
+                                        shot.vy = -7
+                                    } else if (this.enemies[i].cen_x() < this.player.cen_x()) {
+                                        shot.vx = 3.3
+                                        shot.vy = -6
+                                    } else {
+                                        shot.vx = -3.3
+                                        shot.vy = -6
+                                    }
+
+                                    shot = this.addRedTarget(
+                                        this.enemies[i].cen_x(), this.enemies[i].cen_y(), this.enemies[i], shot)
+                                } else if (this.enemies[i].color === 'orange') {
+                                    this.addOrangeBuck(this.enemies[i], shot)
+                                }
+                                shot.life = 240
+                                this.enemies[i].shots.push(shot)
+                                this.enemies[i].move_cooldown = 60
+                                this.enemies[i].shot_cooldown = 120
+                            }
                         }
                     }
                     ///// UPDATE ENEMY'S SHOTS /////
@@ -1033,19 +1259,20 @@
                         let sword_hit = checkAttackOnCTX(this.enemies[i].shots[j].x + trans_x, this.enemies[i].shots[j].y,
                             this.star_size, this.star_size, this.sword_ctx)
                         if (sword_hit) {
-                            let shot = new StaShot(
+                            let shot = new StarShot(
                                 this.enemies[i].shots[j].x, this.enemies[i].shots[j].y,
                                 this.star_size, this.star_size, this.player.color, this.player, 180)
                             shot.vx = -this.enemies[i].shots[j].vx * 1
                             shot.vy = -this.enemies[i].shots[j].vy * 1
                             this.player.shots.push(shot)
                             this.enemies[i].shots.splice(j, 1)
-                        ///// OTHERWISE SLOW SHOTS AND CHECK LIFE /////
                         } else {
+                            ///// SLOW SHOTS /////
                             this.enemies[i].shots[j].vx *= 0.994
                             this.enemies[i].shots[j].vy *= 0.994
                             this.enemies[i].shots[j].speed *= 0.994
                             this.enemies[i].shots[j].life -= 1
+                            ///// REMOVE EXPIRED OR INFLATE IF NEAR DEATH /////
                             if (this.enemies[i].shots[j].life === 0) {
                                 this.enemies[i].shots.splice(j, 1)
                             } else if (this.enemies[i].shots[j].life < 30) {
@@ -1054,8 +1281,15 @@
                                 this.enemies[i].shots[j].x -= 2 / this.enemies[i].shots[j].life
                                 this.enemies[i].shots[j].y -= 2 / this.enemies[i].shots[j].life
                             }
+                            ///// CHECK HIT ON PURPLE PORTAL & ON STAR JUMPER /////
+                            if (this.enemies[i].shots[j]) {
+                                this.checkPurpleShot(this.enemies[i], this.enemies[i].shots[j], j)
+                                if (this.enemies[i].shots[j].checkCollideRec(this.player)) {
+                                    if (this.player.health > 0) this.player.health -= 1
+                                    this.enemies[i].shots.splice(j, 1)
+                                }
+                            }
                         }
-                        if (this.enemies[i].shots[j]) this.checkPurpleShot(this.enemies[i], this.enemies[i].shots[j], j)
                     }
                     if (this.enemies[i].dead && this.enemies[i].shots.length === 0) this.enemies.splice(i, 1)
                 }
@@ -1218,15 +1452,17 @@
                         this.portals[i].draw(this.world_ctx)
                     }
                 }
-                this.player.draw(this.world_ctx, this.sword_ctx)
+                this.player.draw(this.world_ctx, this.sword_ctx, this.ground.y)
                 this.point_star.draw(this.world_ctx)
                 this.world_ctx.resetTransform()
                 this.sword_ctx.resetTransform()
 
                 this.world_ctx.fillStyle = "white"
                 this.world_ctx.font = "bolder 24px Arial"
-                this.world_ctx.fillText('Star Pouch: ' + this.player.star_count, 8, 24)
-                this.world_ctx.fillText('Score: ' + this.player.score, this.world_cnv.width - 100, 24)
+                this.world_ctx.fillText('Stars: ', this.world_cnv.width - 104, 24)
+                this.world_ctx.fillText(this.player.star_count, this.world_cnv.width - 32, 24)
+                this.world_ctx.fillText('Score: ', this.world_cnv.width - 111, 48)
+                this.world_ctx.fillText(this.player.score, this.world_cnv.width - 32, 48)
 
                 let status_bar_left = this.world_cnv.width * 0.25
                 let status_bar_width = this.world_cnv.width * 0.5
@@ -1254,38 +1490,70 @@
                 this.world_ctx.strokeStyle = this.point_star.color
                 this.world_ctx.stroke()
 
+                let display_energy = Math.min(this.player.energy, 100)
                 this.world_ctx.lineWidth = 40
                 this.world_ctx.beginPath()
-                this.world_ctx.moveTo(30, 50)
-                this.world_ctx.lineTo(30, 50 + this.player.base_energy - this.player.energy)
-                this.world_ctx.strokeStyle = 'grey'
+                this.world_ctx.moveTo(30, 20)
+                this.world_ctx.lineTo(30, 20 + this.player.base_energy - display_energy)
+                this.world_ctx.strokeStyle = 'rgba(150, 150, 150, 0.8)'
                 this.world_ctx.stroke()
 
                 this.world_ctx.beginPath()
-                this.world_ctx.moveTo(30, 50 + this.player.base_energy)
-                this.world_ctx.lineTo(30, 50 + this.player.base_energy - this.player.energy)
-                this.world_ctx.strokeStyle = 'red'
+                this.world_ctx.moveTo(30, 20 + this.player.base_energy)
+                this.world_ctx.lineTo(30, 20 + this.player.base_energy - display_energy)
+                this.world_ctx.strokeStyle = 'rgba(255, 0, 0, 0.8)'
                 this.world_ctx.stroke()
 
-                this.world_ctx.font = "14px Arial"
-                this.world_ctx.fillText('energy', 9, 45)
-                this.world_ctx.fillText('portal speeds: ' + Math.round(this.total_velocity*10)/10, 70, 45)
-                this.world_ctx.fillText('time elapsed: ' +
-                        Math.floor((this.current - this.start)/60000) + ":" +                       // MINUTES //
-                        ("0" + Math.floor((this.current - this.start) / 1000) % 60).slice(-2),      // SECONDS //
-                        70, 60)
+                this.world_ctx.font = "12px Arial"
+                this.world_ctx.fillText('energy', 11.5, 15)
                 this.world_ctx.fillStyle = "black"
                 this.world_ctx.font = "bolder 18px Arial"
                 let t_left
                 let t_energy = Math.round(this.player.energy)
-                if (t_energy === 100) {
+                if (t_energy >= 100) {
                     t_left = 15
                 } else if (t_energy >= 10) {
                     t_left = 20
                 } else {
                     t_left = 24
                 }
-                this.world_ctx.fillText(t_energy, t_left, 66)
+                this.world_ctx.fillText(t_energy, t_left, 36)
+
+
+                let display_health = Math.min(this.player.health, 100)
+                this.world_ctx.beginPath()
+                this.world_ctx.moveTo(74, 20)
+                this.world_ctx.lineTo(74, 20 + this.player.base_health - display_health)
+                this.world_ctx.strokeStyle = 'rgba(150, 150, 150, 0.8)'
+                this.world_ctx.stroke()
+
+                this.world_ctx.beginPath()
+                this.world_ctx.moveTo(74, 20 + this.player.base_health)
+                this.world_ctx.lineTo(74, 20 + this.player.base_health - display_health)
+                this.world_ctx.strokeStyle = 'rgba(0, 255, 0, 0.8)'
+                this.world_ctx.stroke()
+
+                this.world_ctx.fillStyle = "white"
+                this.world_ctx.font = "12px Arial"
+                this.world_ctx.fillText('health', 58.5, 15)
+                this.world_ctx.fillStyle = "black"
+                this.world_ctx.font = "bolder 18px Arial"
+                let t_health = Math.round(this.player.health)
+                if (t_health >= 100) {
+                    t_left = 59
+                } else if (t_health >= 10) {
+                    t_left = 64
+                } else {
+                    t_left = 68
+                }
+                this.world_ctx.fillText(t_health, t_left, 36)
+
+                // this.world_ctx.fillText('portal speeds: ' + Math.round(this.total_velocity*10)/10, 70, 45)
+                // this.world_ctx.fillText('time elapsed: ' +
+                //         Math.floor((this.current - this.start)/60000) + ":" +                       // MINUTES //
+                //         ("0" + Math.floor((this.current - this.start) / 1000) % 60).slice(-2),      // SECONDS //
+                //         70, 60)
+
             }
             checkExtraDraw(shot) {
                 if (shot.bolt_pivot) {
@@ -1316,7 +1584,7 @@
                     let rand = (i === 0) ? random(0.1, 0.15) : random(-0.15, -0.1)
                     let mini_v = {vx: Math.cos(angle_in_rad + rand),
                                   vy: Math.sin(angle_in_rad + rand)}
-                    let mini_shot = new StaShot(shot.x, shot.y, this.star_size, this.star_size, 'orange', this.player, 180)
+                    let mini_shot = new StarShot(shot.x, shot.y, this.star_size, this.star_size, 'orange', this.player, 180)
                     ///// WEAKER MINI-SHOTS THAN MAIN SHOT /////
                     rand = random(2.5, 3)
                     mini_shot.vx = mini_v.vx * rand
@@ -1339,7 +1607,7 @@
                         x = shooter.cen_x()
                         y = shooter.cen_y()
                     }
-                    shot = new StaShot(x, y, this.star_size, this.star_size, 'red', this.player)
+                    shot = new StarShot(x, y, this.star_size, this.star_size, 'red', this.player)
                     shot.vx = save_vx
                     shot.vy = save_vy
                 }
@@ -1529,7 +1797,7 @@
 
 
         let world = new World(world_cnv, sword_cnv)
-        
+
         function animation_loop() {
             if (world.play) {
                 window.requestAnimationFrame(animation_loop)

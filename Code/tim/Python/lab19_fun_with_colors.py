@@ -1,24 +1,20 @@
 
 import colorsys
+# import PIL
 from PIL import Image
-import random
 
-img = Image.open('Lenna.png')
+# print(PIL.PILLOW_VERSION)
+
+img = Image.open('game_enemy_robot_wasp_shot.png')
 w, h = img.size
 pixels = img.load()
 
-color_dict = {}
-for r in range(256):
-    for g in range(256):
-        for b in range(256):
-            rx = min(max(r + random.randrange(-50, 50), 0), 255)
-            gx = min(max(g + random.randrange(-50, 50), 0), 255)
-            bx = min(max(b + random.randrange(-50, 50), 0), 255)
-            color_dict[(r, g, b)] = (rx, gx, bx)
-
 for i in range(w):
     for j in range(h):
-        r, g, b = pixels[i, j]
-        pixels[i, j] = color_dict[(r, g, b)]
+        r, g, b, a = pixels[i, j]
+        if not (r == g == b):
+            if abs(r - g) < 100:
+                pixels[i, j] = (r, int(g*.7), int(b*1.1), 255)
 
-img.show()
+img = img.convert("RGB")
+img.save('orange_wasp.png')

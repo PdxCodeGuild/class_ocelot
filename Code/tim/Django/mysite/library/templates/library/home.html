@@ -26,6 +26,7 @@
                 <td>Author:</td>
                 <td>
                     <select name="filter" id="filter" v-model="search_author" v-on:change="search_by_author">
+                        <option value="all">All</option>
                         {% for author in authors %}
                             <option value="{{ author.id }}">{{ author }}</option>
                         {% endfor %}
@@ -39,7 +40,6 @@
                 </td>
             </tr>
         </table>
-
             {% csrf_token %}
             <table>
                 <tr>
@@ -67,6 +67,7 @@
             methods: {
                 search_by_title() {
                     let app = this
+                    this.search_author = 'all'
                     text = this.search_title
                     if (text === '') text = 'all'
                     axios.get("{% url 'library:filter_title' %}?search_title=" + text)
@@ -76,6 +77,7 @@
                 },
                 search_by_author() {
                     let app = this
+                    this.search_title = ''
                     axios.get("{% url 'library:filter_author' %}?search_author=" + this.search_author)
                         .then(response => {
                             this.books = response.data.books
