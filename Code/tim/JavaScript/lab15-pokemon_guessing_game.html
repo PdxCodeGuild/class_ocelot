@@ -8,7 +8,8 @@
     <link href="https://fonts.googleapis.com/css?family=Jua" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
-    <script src="http://pokeapi.co/api/v2/language/9/"></script>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>-->
+    <script src="http://pokeapi.salestock.net/api/v2/language/9/"></script>
     <style>
         body {
             margin: 20px;
@@ -86,7 +87,7 @@
             left: 0;
             top: 0;
             background: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ),
-                        url('https://liquipedia.net/commons/images/thumb/d/d4/PS.jpg/600px-PS.jpg');
+                        url('https://www.ssbwiki.com/images/thumb/2/2b/Pokemonstadium.jpg/250px-Pokemonstadium.jpg');
             background-size: cover;
             padding: 20px;
             border: 5px solid #888;
@@ -295,7 +296,7 @@
                 playRegular() {
                     for (let i=0; i<this.game_count; i++) {
                         let rand_index = Math.floor(Math.random() * this.poke_count) + 1
-                        this.$http.get('http://pokeapi.co/api/v2/pokemon/' + rand_index).then(response => {
+                        this.$http.get('http://pokeapi.salestock.net/api/v2/pokemon/' + rand_index).then(response => {
                             let poke_obj = this.buildPokeObj(response.body)
                             this.pokemon.push(poke_obj)
                             if (this.pokemon.length == this.game_count) {
@@ -311,7 +312,7 @@
                 },
                 playHard() {
                     let rand_type = Math.floor(Math.random() * this.num_of_types) + 1
-                    this.$http.get('http://pokeapi.co/api/v2/type/' + rand_type).then(response => {
+                    this.$http.get('http://pokeapi.salestock.net/api/v2/type/' + rand_type).then(response => {
                         let type_data = response.body
                         let num_of_pokemon = type_data.pokemon.length
                         let url_list = []
@@ -350,7 +351,7 @@
                 playAbilities() {
                     for (let i=0; i<this.game_count; i++) {
                         let rand_index = Math.floor(Math.random() * this.poke_count) + 1
-                        this.$http.get('http://pokeapi.co/api/v2/pokemon/' + rand_index).then(response => {
+                        this.$http.get('http://pokeapi.salestock.net/api/v2/pokemon/' + rand_index).then(response => {
                             let poke_obj = this.buildPokeObj(response.body)
                             this.pokemon.push(poke_obj)
                             if (this.pokemon.length == this.game_count) {
@@ -382,7 +383,7 @@
                 playMoves() {
                     for (let i=0; i<this.game_count; i++) {
                         let rand_index = Math.floor(Math.random() * this.poke_count) + 1
-                        this.$http.get('http://pokeapi.co/api/v2/pokemon/' + rand_index).then(response => {
+                        this.$http.get('http://pokeapi.salestock.net/api/v2/pokemon/' + rand_index).then(response => {
                             let poke_obj = this.buildPokeObj(response.body)
                             this.pokemon.push(poke_obj)
                             if (this.pokemon.length == this.game_count) {
@@ -479,7 +480,7 @@
                 }
             },
             created: function () {
-                this.$http.get('http://pokeapi.co/api/v2/pokemon-species/?limit=0').then(response => {
+                this.$http.get('http://pokeapi.salestock.net/api/v2/pokemon-species/?limit=0').then(response => {
                     this.poke_count = response.body.count
                 })
                 this.resetModalObject()
