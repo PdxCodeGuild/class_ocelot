@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        <style>
+
+        /*!* REGULAR, NON-FLEXBOX STYLES*!*/
+        main {
+            background: white;
+        }
+
+        header {
+            background: grey;
+            border-bottom: solid lightgrey;
+            letter-spacing: .3em;
+            font-weight: lighter;
+            text-align: center;
+            color: whitesmoke;
+        }
+        sidebar {
+            background: grey;
+        }
+        .sidebar-header {
+            color: white;
+            text-align: center;
+        }
+        body {
+            padding: .25em;
+            font-family: "Helvetica", "Arial", sans-serif;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        /*TABLE STYLES*/
+
+        th, td {
+            padding: 2px;
+        }
+        .table-book-list {
+            border: .5px solid rgba(211, 211, 211, .5);
+        }
+        table {
+            background-color: #c8d0d3;
+            border: 2px solid white;
+            font-weight: lighter;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        /*BUTTON STYLES*/
+        .bt-no-border {
+            padding: 0;
+            margin: 0;
+            border: none;
+            background: none;
+            font-size: 14px;
+        }
+        .bt-no-border:hover {
+            color: whitesmoke;
+        }
+
+        .checked-out {
+            color: darkgrey;
+        }
+        .checked-out-bt-clr {
+            background: rgba(47, 150, 180, 0.47);
+            transition: width 2s;
+        }
+        .input_field {
+            width: 40%;
+            align-items: left;
+        }
+
+    </style>
+
+</head>
+<body>
+<h1>To Done</h1>
+<table>
+    <form action="{% url 'todone:index' %}" method="post">
+        {% csrf_token %}
+        <input type="text" name="todo_text" value="" placeholder="todo" autofocus/>
+        <input type="submit" value="add"/>
+    </form>
+    <tr>
+        <th></th>
+        <th>Todo Item</th>
+        <th>Date Created</th>
+        <th>Date Completed</th>
+    </tr>
+
+    {% for todo_item in todo_items %}
+    <tr class="{% if todo_item.completed %}completed{% else %}uncompleted{% endif %}">
+        <td>
+            {% if not todo_item.completed %}
+            <form action="{% url 'todone:complete_todo' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="todo_item_id" value="{{todo_item.id}}"/>
+                <input type="submit" value="✓"/>
+            </form>
+            {% endif %}
+        </td>
+        <td>{{todo_item.text}}</td>
+        <td>{{ todo_item.date_created|date:'Y-m-d H:i' }}</td>
+        <td>{{ todo_item.date_completed|date:'Y-m-d H:i' }}</td>
+    </tr>
+    {% endfor %}
+</table>
+</body>
+</html>
